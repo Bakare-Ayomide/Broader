@@ -1,0 +1,6 @@
+{
+  "name": "Broader",
+  "description": "Broader ride-sharing application with real-time location, interactive map, driver selection, and ride management.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

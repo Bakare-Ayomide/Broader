@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-100: #F5F8FF;
+  --color-primary-200: #EBF4FF;
+  --color-primary-300: #C3D9FF;
+  --color-primary-400: #9BBFFF;
+  --color-primary-500: #0286FF;
+  --color-primary-600: #6A85E6;
+  --color-primary-700: #475A99;
+  --color-primary-800: #364573;
+  --color-primary-900: #242B4D;
+
+  --color-general-100: #CED1DD;
+  --color-general-200: #858585;
+  --color-general-300: #EEEEEE;
+  --color-general-400: #0CC25F;
+  --color-general-500: #F6F8FA;
+  --color-general-600: #E6F3FF;
+  --color-general-700: #EBEBEB;
+  --color-general-800: #ADADAD;
+
+  --font-Jakarta: 'Plus Jakarta Sans', sans-serif;
+  --font-JakartaBold: 'Plus Jakarta Sans', sans-serif;
+  --font-JakartaExtraBold: 'Plus Jakarta Sans', sans-serif;
+  --font-JakartaSemiBold: 'Plus Jakarta Sans', sans-serif;
+  --font-JakartaMedium: 'Plus Jakarta Sans', sans-serif;
+  --font-JakartaRegular: 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-JakartaExtraBold {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+}
+
+.font-JakartaBold {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+}
+
+.font-JakartaSemiBold {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+}
+
+.font-JakartaMedium {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 500;
+}
+
+.font-JakartaRegular {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+}
