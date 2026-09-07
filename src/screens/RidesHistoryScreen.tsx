@@ -26,10 +26,41 @@ export const RidesHistoryScreen: React.FC = () => {
   const activeTrip = useBroaderStore((s) => s.activeTrip);
   const setScreen = useBroaderStore((s) => s.setScreen);
 
+  const setDestinationLocation = useBroaderStore((s) => s.setDestinationLocation);
+  const setUserLocation = useBroaderStore((s) => s.setUserLocation);
+
   const [activeTab, setActiveTab] = useState<ActivityTab>('completed');
   const [selectedRide, setSelectedRide] = useState<Ride | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [showLostItemModal, setShowLostItemModal] = useState(false);
+  const [lostItemDesc, setLostItemDesc] = useState('');
+  const [lostItemSubmitted, setLostItemSubmitted] = useState(false);
+
+  const handleRebook = (ride: Ride) => {
+    setUserLocation({
+      latitude: ride.origin_latitude,
+      longitude: ride.origin_longitude,
+      address: ride.origin_address,
+    });
+    setDestinationLocation({
+      latitude: ride.destination_latitude,
+      longitude: ride.destination_longitude,
+      address: ride.destination_address,
+    });
+    setSelectedRide(null);
+    setScreen('confirm-ride');
+  };
+
+  const handleReportLostItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLostItemSubmitted(true);
+    setTimeout(() => {
+      setLostItemSubmitted(false);
+      setShowLostItemModal(false);
+      setLostItemDesc('');
+    }, 2500);
+  };
 
   // Convert activeTrip to Ride format if ongoing
   const ongoingRides: Ride[] = activeTrip
@@ -312,23 +343,94 @@ export const RidesHistoryScreen: React.FC = () => {
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-2">
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowLostItemModal(true)}
+                  className="flex-1 py-2.5 rounded-full border border-amber-300 bg-amber-50 text-amber-800 font-JakartaBold text-xs flex items-center justify-center gap-1"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Report Lost Item</span>
+                </button>
+                <button
+                  onClick={() => handleRebook(selectedRide)}
+                  className="flex-1 py-2.5 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/20 flex items-center justify-center gap-1"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                  <span>Re-book Trip</span>
+                </button>
+              </div>
               <button
                 onClick={() => setSelectedRide(null)}
-                className="flex-1 py-3 rounded-full border border-slate-200 text-slate-700 font-JakartaBold text-xs"
+                className="w-full py-2.5 rounded-full border border-slate-200 text-slate-600 font-JakartaMedium text-xs hover:bg-slate-50"
               >
-                Close
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedRide(null);
-                  setScreen('find-ride');
-                }}
-                className="flex-1 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/20"
-              >
-                Re-book Trip
+                Done
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Lost Item Modal */}
+      {showLostItemModal && selectedRide && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-slate-200 animate-in zoom-in-95">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-JakartaBold text-slate-900 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-amber-600" />
+                <span>Report Lost Item</span>
+              </h4>
+              <button
+                onClick={() => setShowLostItemModal(false)}
+                className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            {lostItemSubmitted ? (
+              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center">
+                <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                <h5 className="font-JakartaBold text-sm text-emerald-900">Claim Logged with Support</h5>
+                <p className="text-xs text-emerald-700 font-JakartaMedium mt-1">
+                  We have notified driver {selectedRide.driver.first_name} and our 24/7 Lagos Lost & Found Desk.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleReportLostItem} className="space-y-3">
+                <p className="text-xs text-slate-500 font-JakartaMedium">
+                  Trip with {selectedRide.driver.first_name} • {selectedRide.driver.plate_number}
+                </p>
+                <div>
+                  <label className="block text-[11px] font-JakartaBold text-slate-700 mb-1">
+                    Describe your missing item
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={lostItemDesc}
+                    onChange={(e) => setLostItemDesc(e.target.value)}
+                    required
+                    placeholder="e.g. Black leather wallet or Samsung phone left on the back passenger seat..."
+                    className="w-full text-xs font-JakartaMedium border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-[#0286FF]"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowLostItemModal(false)}
+                    className="flex-1 py-2.5 rounded-full border border-slate-200 text-slate-600 font-JakartaBold text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-JakartaBold text-xs"
+                  >
+                    Submit Report
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

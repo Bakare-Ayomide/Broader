@@ -12,6 +12,13 @@ import { RidesHistoryScreen } from './screens/RidesHistoryScreen';
 import { ChatScreen } from './screens/ChatScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { WalletScreen } from './screens/WalletScreen';
+import { RentalScreen } from './screens/RentalScreen';
+import { ParcelScreen } from './screens/ParcelScreen';
+import { FreightScreen } from './screens/FreightScreen';
+import { AmbulanceScreen } from './screens/AmbulanceScreen';
+import { BecomeDriverScreen } from './screens/BecomeDriverScreen';
+import { DriverHomeScreen } from './screens/DriverHomeScreen';
+import { DriverEarningsScreen } from './screens/DriverEarningsScreen';
 
 export default function App() {
   const currentScreen = useBroaderStore((s) => s.currentScreen);
@@ -31,6 +38,20 @@ export default function App() {
         return <ConfirmRideScreen />;
       case 'book-ride':
         return <BookRideScreen />;
+      case 'rental':
+        return <RentalScreen />;
+      case 'parcel':
+        return <ParcelScreen />;
+      case 'freight':
+        return <FreightScreen />;
+      case 'ambulance':
+        return <AmbulanceScreen />;
+      case 'become-driver':
+        return <BecomeDriverScreen />;
+      case 'driver-home':
+        return <DriverHomeScreen />;
+      case 'driver-earnings':
+        return <DriverEarningsScreen />;
       case 'wallet':
         return (
           <div className="flex flex-col min-h-screen justify-between relative">

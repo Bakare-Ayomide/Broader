@@ -12,7 +12,6 @@ import {
   ChevronRight,
   Sparkles,
 } from 'lucide-react';
-import { VEHICLE_CATEGORIES } from '../data/mockData';
 
 export const BecomeDriverScreen: React.FC = () => {
   const setScreen = useBroaderStore((s) => s.setScreen);
@@ -42,17 +41,38 @@ export const BecomeDriverScreen: React.FC = () => {
     registration: true,
     insurance: true,
     inspection: true,
+    driverPhoto: true,
+    vehiclePhoto: true,
   });
 
   const handleDocToggle = (key: string) => {
     setUploadedDocs((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const handleSaveDraft = () => {
+    submitDriverApplication({
+      id: driverApplication?.id || 'app_drv_' + Date.now().toString().slice(-4),
+      fullName: formData.fullName,
+      phone: formData.phone,
+      vehicleType: formData.vehicleType,
+      vehicleModel: `${formData.vehicleMake} ${formData.vehicleModel}`,
+      plateNumber: formData.plateNumber,
+      status: 'draft',
+      submissionDate: new Date().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      documentsUploaded: ['In progress draft'],
+    });
+  };
+
   const handleFinalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     submitDriverApplication({
-      id: 'app_drv_' + Date.now().toString().slice(-4),
+      id: driverApplication?.id || 'app_drv_' + Date.now().toString().slice(-4),
       applicantName: formData.fullName,
+      fullName: formData.fullName,
       phone: formData.phone,
       vehicleType: formData.vehicleType,
       vehicleModel: `${formData.vehicleMake} ${formData.vehicleModel} (${formData.plateNumber})`,
@@ -63,12 +83,18 @@ export const BecomeDriverScreen: React.FC = () => {
         day: 'numeric',
         year: 'numeric',
       }),
-      documentsUploaded: ['Driver License', 'Vehicle Registration', 'Roadworthiness & Insurance'],
+      documentsUploaded: [
+        'Driver License',
+        'Vehicle Registration',
+        'Roadworthiness & Insurance',
+        'Driver Photo',
+        'Vehicle Photos',
+      ],
     });
   };
 
-  // If already applied and has status
-  if (driverApplication) {
+  // If already applied and has status other than not_submitted
+  if (driverApplication && driverApplication.status && driverApplication.status !== 'not_submitted') {
     return (
       <div className="flex flex-col h-full bg-[#F6F8FA] select-none">
         {/* Header */}
@@ -88,18 +114,19 @@ export const BecomeDriverScreen: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 flex flex-col items-center justify-center text-center">
-          {driverApplication.status === 'pending' ? (
+          {/* 1. Pending Review State */}
+          {(driverApplication.status === 'pending' || driverApplication.status === 'pending_review') && (
             <div className="w-full max-w-sm bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-3">
                 <Clock className="w-7 h-7" />
               </div>
               <span className="text-[10px] font-JakartaBold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full uppercase">
-                Under Verification
+                Pending Review
               </span>
-              <h3 className="text-lg font-JakartaBold text-slate-900 mt-2">Application Submitted</h3>
+              <h3 className="text-lg font-JakartaBold text-slate-900 mt-2">Application Under Review</h3>
               <p className="text-xs text-slate-500 font-JakartaMedium mt-1 leading-relaxed">
-                Thank you for applying, <span className="font-bold text-slate-800">{driverApplication.applicantName}</span>.
-                Our Lagos safety team is verifying your LASDRI license and vehicle papers.
+                Thank you for applying, <span className="font-bold text-slate-800">{driverApplication.applicantName || driverApplication.fullName}</span>.
+                Our Lagos safety desk is actively verifying your vehicle documents and license papers.
               </p>
 
               <div className="bg-slate-50 rounded-2xl p-3 my-4 text-left text-xs space-y-1.5 border border-slate-100">
@@ -117,20 +144,115 @@ export const BecomeDriverScreen: React.FC = () => {
                 </div>
               </div>
 
-              {/* Instant demo approval button for evaluation */}
+              {/* Status Simulation Buttons for Review */}
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    setDriverApplicationStatus('approved');
+                    setIsDriverMode(true);
+                    setScreen('driver-home');
+                  }}
+                  className="w-full py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-JakartaBold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-1.5"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Simulate Admin Approval</span>
+                </button>
+                <button
+                  onClick={() => setDriverApplicationStatus('requires_correction')}
+                  className="w-full py-2 rounded-full border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 font-JakartaBold text-xs transition-all"
+                >
+                  Simulate Correction Required
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Requires Correction State */}
+          {driverApplication.status === 'requires_correction' && (
+            <div className="w-full max-w-sm bg-white rounded-3xl p-6 border border-amber-200 shadow-sm">
+              <div className="w-14 h-14 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3">
+                <AlertCircle className="w-8 h-8" />
+              </div>
+              <span className="text-[10px] font-JakartaBold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase">
+                Correction Required
+              </span>
+              <h3 className="text-lg font-JakartaBold text-slate-900 mt-2">Action Required</h3>
+              <div className="my-3 p-3 bg-amber-50/70 border border-amber-200 rounded-2xl text-left text-xs text-amber-900 leading-relaxed font-JakartaMedium">
+                <p className="font-JakartaBold mb-1">Feedback from Lagos Verification Desk:</p>
+                <p>The uploaded Driver's License photo was blurry and LASDRI certificate was obscured. Please provide clear, legible scans to complete approval.</p>
+              </div>
+
               <button
                 onClick={() => {
-                  setDriverApplicationStatus('approved');
-                  setIsDriverMode(true);
-                  setScreen('driver-home');
+                  setStep(3);
+                  setDriverApplicationStatus('draft');
                 }}
-                className="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-JakartaBold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 transition-all"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Simulate Instant Approval & Open Driver App</span>
+                Re-upload Documents & Resubmit
               </button>
             </div>
-          ) : (
+          )}
+
+          {/* 3. Rejected State */}
+          {driverApplication.status === 'rejected' && (
+            <div className="w-full max-w-sm bg-white rounded-3xl p-6 border border-rose-200 shadow-sm">
+              <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-3">
+                <AlertCircle className="w-8 h-8" />
+              </div>
+              <span className="text-[10px] font-JakartaBold text-rose-800 bg-rose-100 px-2.5 py-0.5 rounded-full uppercase">
+                Application Rejected
+              </span>
+              <h3 className="text-lg font-JakartaBold text-slate-900 mt-2">Unable to Verify</h3>
+              <p className="text-xs text-slate-500 font-JakartaMedium mt-2 leading-relaxed">
+                Unfortunately, your vehicle or documents did not meet the regulatory criteria mandated for commercial ride-hailing in Lagos.
+              </p>
+
+              <div className="mt-4 space-y-2">
+                <button
+                  onClick={() => {
+                    setDriverApplicationStatus('draft');
+                    setStep(1);
+                  }}
+                  className="w-full py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-JakartaBold text-xs"
+                >
+                  Start New Application
+                </button>
+                <a
+                  href="mailto:support@broader.ng"
+                  className="block w-full py-2 text-center text-xs font-JakartaBold text-slate-500 hover:underline"
+                >
+                  Contact Driver Support
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* 4. Draft State */}
+          {driverApplication.status === 'draft' && (
+            <div className="w-full max-w-sm bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+              <div className="w-14 h-14 rounded-full bg-blue-50 text-[#0286FF] flex items-center justify-center mx-auto mb-3">
+                <FileText className="w-8 h-8" />
+              </div>
+              <span className="text-[10px] font-JakartaBold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full uppercase">
+                Saved Draft
+              </span>
+              <h3 className="text-lg font-JakartaBold text-slate-900 mt-2">Continue Your Application</h3>
+              <p className="text-xs text-slate-500 font-JakartaMedium mt-1 leading-relaxed">
+                You have a saved draft. Your entered information and document progress are ready for completion.
+              </p>
+
+              <button
+                onClick={() => setStep(step)}
+                className="w-full mt-4 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 transition-all"
+              >
+                Resume Application (Step {step} of 3)
+              </button>
+            </div>
+          )}
+
+          {/* 5. Approved State */}
+          {driverApplication.status === 'approved' && (
             <div className="w-full max-w-sm bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
               <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
                 <CheckCircle2 className="w-8 h-8" />
@@ -238,13 +360,22 @@ export const BecomeDriverScreen: React.FC = () => {
               />
             </div>
 
-            <button
-              onClick={() => setStep(2)}
-              className="w-full mt-2 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 flex items-center justify-center gap-1"
-            >
-              <span>Continue to Vehicle Details</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleSaveDraft}
+                className="flex-1 py-3 rounded-full border border-slate-200 text-slate-700 font-JakartaBold text-xs hover:bg-slate-50"
+              >
+                Save Draft
+              </button>
+              <button
+                onClick={() => setStep(2)}
+                className="flex-2 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 flex items-center justify-center gap-1"
+              >
+                <span>Continue to Vehicle</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         )}
 
@@ -323,10 +454,17 @@ export const BecomeDriverScreen: React.FC = () => {
                 Back
               </button>
               <button
+                type="button"
+                onClick={handleSaveDraft}
+                className="flex-1 py-3 rounded-full border border-blue-200 bg-blue-50/50 text-[#0286FF] font-JakartaBold text-xs hover:bg-blue-100/50"
+              >
+                Save Draft
+              </button>
+              <button
                 onClick={() => setStep(3)}
                 className="flex-2 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 flex items-center justify-center gap-1"
               >
-                <span>Continue to Documents</span>
+                <span>Documents</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -337,9 +475,9 @@ export const BecomeDriverScreen: React.FC = () => {
         {step === 3 && (
           <form onSubmit={handleFinalSubmit} className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-3.5">
             <div>
-              <h3 className="text-sm font-JakartaBold text-slate-900">Required Official Documents</h3>
+              <h3 className="text-sm font-JakartaBold text-slate-900">Required Official Documents & Photos</h3>
               <p className="text-[11px] text-slate-400 font-JakartaMedium">
-                Broader requires valid regulatory documents for passenger transport certification.
+                Broader requires official regulatory licenses and vehicle photos for verification.
               </p>
             </div>
 
@@ -349,6 +487,8 @@ export const BecomeDriverScreen: React.FC = () => {
                 { id: 'registration', title: 'Vehicle License & Proof of Ownership', sub: 'State motor registry' },
                 { id: 'insurance', title: 'Third-Party or Comprehensive Insurance', sub: 'Active policy' },
                 { id: 'inspection', title: 'Roadworthiness Certificate / LASDRI', sub: 'Lagos State certified' },
+                { id: 'driverPhoto', title: 'Driver Passport Photograph', sub: 'Clear portrait, plain background' },
+                { id: 'vehiclePhoto', title: 'Vehicle Exterior Photos', sub: 'Front, rear & plate visible' },
               ].map((doc) => (
                 <div
                   key={doc.id}

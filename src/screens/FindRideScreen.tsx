@@ -200,6 +200,62 @@ export const FindRideScreen: React.FC = () => {
             </div>
           </div>
 
+          {/* Pickup Instructions Field (Optional Note for Driver) */}
+          <div className="my-2">
+            <label className="block text-[11px] font-JakartaBold text-slate-700 mb-1 uppercase tracking-wider">
+              Pickup Instructions (Optional)
+            </label>
+            <div className="flex items-center bg-white border border-slate-200 rounded-2xl px-3.5 py-2 transition-all shadow-xs focus-within:border-[#0286FF] focus-within:ring-2 focus-within:ring-blue-100">
+              <input
+                type="text"
+                value={useBroaderStore.getState().pickupInstructions}
+                onChange={(e) => useBroaderStore.getState().setPickupInstructions(e.target.value)}
+                placeholder="e.g. Waiting at second gate beside the pharmacy"
+                className="w-full text-xs font-JakartaMedium text-slate-900 focus:outline-none bg-transparent"
+              />
+            </div>
+          </div>
+
+          {/* Neighborhood & Short-Distance Ride Presets */}
+          <div className="mt-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-JakartaBold text-slate-500 uppercase tracking-wider block">
+                Short-Distance / Neighborhood Rides
+              </span>
+              <span className="text-[10px] text-[#0286FF] font-JakartaBold bg-blue-50 px-2 py-0.5 rounded-full">
+                Quick Dispatch
+              </span>
+            </div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+              {[
+                { name: 'Estate Security Gate', dist: '500m', lat: 6.4480, lng: 3.4730 },
+                { name: 'Admiralty Shopping Mall', dist: '1.0 km', lat: 6.4495, lng: 3.4760 },
+                { name: 'Local Market & Bus Stop', dist: '1.5 km', lat: 6.4520, lng: 3.4800 },
+                { name: 'Victoria Island Ferry Jet', dist: '2.5 km', lat: 6.4290, lng: 3.4240 },
+                { name: 'Lekki Medical Diagnostic', dist: '3.0 km', lat: 6.4460, lng: 3.4850 },
+              ].map((preset, pIdx) => (
+                <button
+                  key={pIdx}
+                  type="button"
+                  onClick={() =>
+                    handleSelectLocation({
+                      name: preset.name,
+                      address: `${preset.name} (${preset.dist})`,
+                      latitude: preset.lat,
+                      longitude: preset.lng,
+                    })
+                  }
+                  className="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 text-slate-700 text-xs font-JakartaMedium shrink-0 transition-all flex items-center gap-1.5 shadow-xs"
+                >
+                  <span className="font-JakartaBold text-slate-900 text-[11px]">{preset.name}</span>
+                  <span className="text-[10px] font-mono text-[#0286FF] bg-blue-50 px-1.5 py-0.2 rounded-md">
+                    {preset.dist}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Saved Locations (Home, Work) */}
           <div className="mt-3.5">
             <span className="text-[11px] font-JakartaBold text-slate-500 uppercase tracking-wider block mb-1.5">

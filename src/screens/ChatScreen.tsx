@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
-import { Send, Phone, ArrowLeft } from 'lucide-react';
+import { Send, Phone, ArrowLeft, Mic, MicOff, Volume2, PhoneOff, ShieldCheck, X } from 'lucide-react';
 
 export const ChatScreen: React.FC = () => {
   const messages = useBroaderStore((s) => s.messages);
@@ -8,6 +8,9 @@ export const ChatScreen: React.FC = () => {
   const activeTrip = useBroaderStore((s) => s.activeTrip);
   const setScreen = useBroaderStore((s) => s.setScreen);
   const [inputText, setInputText] = useState('');
+  const [showCallModal, setShowCallModal] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isSpeaker, setIsSpeaker] = useState(false);
 
   const driverName = activeTrip
     ? `${activeTrip.driver.first_name} ${activeTrip.driver.last_name}`
@@ -19,11 +22,20 @@ export const ChatScreen: React.FC = () => {
     ? activeTrip.driver.profile_image_url
     : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&auto=format&fit=crop&q=80';
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
-    addMessage(inputText.trim(), 'user');
-    setInputText('');
+  const quickMessages = [
+    "I'm beside the pharmacy.",
+    "Please use the second entrance.",
+    "I'm wearing a blue shirt.",
+    "I'm at the second gate.",
+    "I'm coming down now.",
+  ];
+
+  const handleSend = (e?: React.FormEvent, customText?: string) => {
+    if (e) e.preventDefault();
+    const textToSend = customText || inputText;
+    if (!textToSend.trim()) return;
+    addMessage(textToSend.trim(), 'user');
+    if (!customText) setInputText('');
 
     // Automated driver reply simulation (Nigerian context)
     setTimeout(() => {
@@ -67,13 +79,14 @@ export const ChatScreen: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-1">
-          <a
-            href="tel:+2348031123344"
-            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-[#0286FF] transition-colors"
-            title="Call driver"
+          <button
+            type="button"
+            onClick={() => setShowCallModal(true)}
+            className="w-8 h-8 rounded-full bg-blue-50 hover:bg-blue-100 flex items-center justify-center text-[#0286FF] transition-colors border border-blue-200"
+            title="In-app voice call"
           >
             <Phone className="w-3.5 h-3.5" />
-          </a>
+          </button>
         </div>
       </div>
 
@@ -121,6 +134,20 @@ export const ChatScreen: React.FC = () => {
         })}
       </div>
 
+      {/* Quick Message Chips */}
+      <div className="px-3 pt-2 pb-1 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        {quickMessages.map((chip, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => handleSend(undefined, chip)}
+            className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-[#0286FF] text-slate-600 text-[11px] font-JakartaMedium shrink-0 transition-colors border border-slate-200/60"
+          >
+            {chip}
+          </button>
+        ))}
+      </div>
+
       {/* Input bar */}
       <form
         onSubmit={handleSend}
@@ -141,6 +168,70 @@ export const ChatScreen: React.FC = () => {
           <Send className="w-4 h-4 ml-0.5" />
         </button>
       </form>
+
+      {/* Masked In-App VoIP Call Modal */}
+      {showCallModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 w-full max-w-xs rounded-3xl p-6 text-center text-white shadow-2xl animate-in zoom-in-95">
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowCallModal(false)}
+                className="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="relative mx-auto w-20 h-20 my-3">
+              <img
+                src={driverPhoto}
+                alt={driverName}
+                className="w-20 h-20 rounded-full object-cover border-2 border-blue-500 shadow-xl"
+              />
+              <span className="absolute bottom-0 right-1 w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-slate-900 animate-pulse" />
+            </div>
+
+            <h3 className="text-base font-JakartaBold">{driverName}</h3>
+            <p className="text-xs text-slate-400 font-JakartaMedium mt-0.5">{driverVehicle}</p>
+            <div className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-JakartaSemiBold">
+              <ShieldCheck className="w-3 h-3 text-blue-400" />
+              <span>Masked Private VoIP Call</span>
+            </div>
+
+            <p className="text-xs font-mono text-emerald-400 my-4">Connected • 00:34</p>
+
+            <div className="flex items-center justify-center gap-4 my-2">
+              <button
+                onClick={() => setIsMuted(!isMuted)}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                  isMuted ? 'bg-amber-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                }`}
+                title="Mute"
+              >
+                {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              </button>
+
+              <button
+                onClick={() => setShowCallModal(false)}
+                className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg shadow-red-600/30 transition-all active:scale-95"
+                title="End Call"
+              >
+                <PhoneOff className="w-6 h-6" />
+              </button>
+
+              <button
+                onClick={() => setIsSpeaker(!isSpeaker)}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                  isSpeaker ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                }`}
+                title="Speaker"
+              >
+                <Volume2 className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

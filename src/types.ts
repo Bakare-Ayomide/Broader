@@ -7,17 +7,21 @@ export type VehicleCategory =
   | 'van'
   | 'bus'
   | 'pickup'
-  | 'lorry';
+  | 'lorry'
+  | 'freight'
+  | 'ambulance';
 
 export interface VehicleOption {
-  id: VehicleCategory;
+  id: string;
   name: string;
   category: VehicleCategory;
   capacity: string;
   etaMinutes: number;
   price: number; // in Naira (₦)
   description: string;
-  iconName: string;
+  iconName?: string;
+  icon?: string;
+  time?: number;
 }
 
 export interface Driver {
@@ -26,7 +30,7 @@ export interface Driver {
   last_name: string;
   title?: string;
   profile_image_url: string;
-  car_image_url: string;
+  car_image_url?: string;
   car_seats: number;
   rating: number;
   vehicle_type?: string;
@@ -79,6 +83,10 @@ export interface ActiveTrip {
   paymentMethod: 'wallet' | 'card' | 'cash';
   paymentStatus: 'paid' | 'pending';
   startTime: string;
+  ridePin?: string;
+  pickupInstructions?: string;
+  isScheduled?: boolean;
+  scheduledTime?: string;
 }
 
 export interface WalletTransaction {
@@ -129,6 +137,8 @@ export interface UserProfile {
   imageUrl: string;
   city?: string;
   country?: string;
+  name?: string;
+  walletBalance?: number;
 }
 
 export type ScreenType =
@@ -188,6 +198,8 @@ export interface DriverRequest {
   customerImage?: string;
   estimatedMinutes: number;
   expiresInSeconds: number;
+  pickupInstructions?: string;
+  ridePin?: string;
 }
 
 export interface DriverEarnings {
@@ -198,7 +210,41 @@ export interface DriverEarnings {
   pendingEarnings: number;
   completedTrips: number;
   commission: number; // e.g. 15%
+  commissionDeducted: number;
   bonuses: number;
+  bonusesEarned: number;
+}
+
+export interface DriverVehicle {
+  id: string;
+  name: string;
+  category: VehicleCategory;
+  categoryName: string;
+  plateNumber: string;
+  color: string;
+  year: number;
+  seats: number;
+  isVerified: boolean;
+  isActive: boolean;
+}
+
+export interface DriverTripRecord {
+  id: string;
+  passengerName: string;
+  passengerRating: number;
+  passengerImage?: string;
+  pickup: string;
+  destination: string;
+  distanceKm: number;
+  durationMinutes: number;
+  fare: number;
+  commission: number;
+  netEarnings: number;
+  tip: number;
+  status: 'completed' | 'cancelled' | 'upcoming';
+  timestamp: string;
+  serviceType: ServiceType;
+  vehiclePlate: string;
 }
 
 // 6. Become a Driver Types
@@ -206,32 +252,42 @@ export type DriverApplicationStatus =
   | 'not_submitted'
   | 'draft'
   | 'pending_review'
+  | 'pending'
   | 'approved'
   | 'rejected'
   | 'requires_correction';
 
 export interface DriverApplicationData {
+  id?: string;
+  applicantName?: string;
   fullName: string;
   phone: string;
-  email: string;
-  address: string;
-  licenseNumber: string;
-  licenseExpiry: string;
-  ninNumber: string;
-  vehicleCategory: VehicleCategory;
-  vehicleMake: string;
-  vehicleModel: string;
-  vehicleYear: string;
+  email?: string;
+  address?: string;
+  residentialAddress?: string;
+  city?: string;
+  state?: string;
+  licenseNumber?: string;
+  driversLicenseNumber?: string;
+  licenseExpiry?: string;
+  ninNumber?: string;
+  vehicleCategory?: VehicleCategory;
+  vehicleType?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
+  vehicleYear?: string;
   plateNumber: string;
-  vehicleColor: string;
+  vehicleColor?: string;
   driverPhotoUrl?: string;
   licensePhotoUrl?: string;
   vehiclePhotoUrl?: string;
   roadworthinessUrl?: string;
   status: DriverApplicationStatus;
+  submissionDate?: string;
   submittedAt?: string;
   reviewedAt?: string;
   reviewNotes?: string;
+  documentsUploaded?: string[];
 }
 
 // 7. Rental Functionality Types
@@ -243,6 +299,8 @@ export interface RentalVehicle {
   model: string;
   year: number;
   dailyPrice: number; // in ₦
+  dailyRate?: number; // in ₦
+  type?: string;
   hourlyPrice: number; // in ₦
   seats: number;
   transmission: 'Automatic' | 'Manual';
@@ -250,6 +308,8 @@ export interface RentalVehicle {
   hasAC: boolean;
   luggageCapacity: number;
   imageUrl: string;
+  image?: string;
+  fuelPolicy?: string;
   rating: number;
   tripsCount: number;
   pickupHub: string;
@@ -259,17 +319,25 @@ export interface RentalVehicle {
 
 export interface RentalBooking {
   id: string;
-  vehicleId: string;
-  vehicle: RentalVehicle;
-  startDate: string;
-  endDate: string;
-  durationDays: number;
+  vehicleId?: string;
+  vehicle?: RentalVehicle;
+  vehicleModel?: string;
+  vehicleType?: string;
+  startDate?: string;
+  endDate?: string;
+  pickupDate?: string;
+  returnDate?: string;
+  durationDays?: number;
   pickupLocation: string;
-  totalPrice: number;
-  paymentMethod: 'wallet' | 'card' | 'cash';
-  paymentStatus: 'paid' | 'pending';
-  bookingStatus: 'confirmed' | 'active' | 'completed' | 'cancelled';
-  createdAt: string;
+  withDriver?: boolean;
+  totalPrice?: number;
+  totalFare?: number;
+  depositAmount?: number;
+  paymentMethod?: 'wallet' | 'card' | 'cash';
+  paymentStatus?: 'paid' | 'pending';
+  bookingStatus?: 'confirmed' | 'active' | 'completed' | 'cancelled';
+  status?: string;
+  createdAt?: string;
 }
 
 // 8. Parcel Delivery Types
@@ -281,21 +349,32 @@ export interface ParcelDelivery {
   senderName: string;
   senderPhone: string;
   pickupAddress: string;
-  receiverName: string;
-  receiverPhone: string;
-  dropoffAddress: string;
-  packageType: PackageCategory;
-  packageSize: PackageSize;
+  receiverName?: string;
+  recipientName?: string;
+  receiverPhone?: string;
+  recipientPhone?: string;
+  dropoffAddress?: string;
+  deliveryAddress?: string;
+  packageType: PackageCategory | string;
+  packageSize?: PackageSize;
   weightKg: number;
+  isExpress?: boolean;
   instructions?: string;
-  deliveryFee: number;
-  paymentMethod: 'wallet' | 'card' | 'cash';
-  paymentStatus: 'paid' | 'pending';
-  status: 'order_placed' | 'courier_assigned' | 'in_transit' | 'delivered' | 'cancelled';
+  deliveryFee?: number;
+  fare?: number;
+  paymentMethod?: 'wallet' | 'card' | 'cash';
+  paymentStatus?: 'paid' | 'pending';
+  status: 'order_placed' | 'courier_assigned' | 'in_transit' | 'delivered' | 'cancelled' | string;
   courierName?: string;
   courierPhone?: string;
   courierVehicle?: string;
-  createdAt: string;
+  courier?: {
+    name: string;
+    phone: string;
+    vehiclePlate: string;
+  };
+  createdAt?: string;
+  createdDate?: string;
   estimatedDeliveryTime?: string;
 }
 
@@ -305,23 +384,34 @@ export type FreightVehicleType = 'pickup' | 'van' | 'lorry' | 'heavy_truck';
 
 export interface FreightShipment {
   id: string;
-  cargoType: CargoCategory;
-  cargoWeightKg: number;
-  dimensions: { length: number; width: number; height: number };
-  pickupAddress: string;
-  destinationAddress: string;
-  vehicleType: FreightVehicleType;
+  cargoType: CargoCategory | string;
+  cargoWeightKg?: number;
+  weightTons?: number;
+  dimensions?: { length: number; width: number; height: number };
+  pickupAddress?: string;
+  origin?: string;
+  destinationAddress?: string;
+  destination?: string;
+  vehicleType?: FreightVehicleType | string;
+  truckType?: string;
   loadingInstructions?: string;
   requiresForklift?: boolean;
   requiresHelpers?: boolean;
-  totalFreightCost: number;
-  paymentMethod: 'wallet' | 'card' | 'cash';
-  paymentStatus: 'paid' | 'pending';
-  status: 'booked' | 'assigned' | 'loading' | 'in_transit' | 'delivered' | 'cancelled';
+  totalFreightCost?: number;
+  estimatedPrice?: number;
+  paymentMethod?: 'wallet' | 'card' | 'cash';
+  paymentStatus?: 'paid' | 'pending';
+  status: 'booked' | 'assigned' | 'loading' | 'in_transit' | 'delivered' | 'cancelled' | 'scheduled' | string;
   driverName?: string;
   driverPhone?: string;
   plateNumber?: string;
-  createdAt: string;
+  driverInfo?: {
+    name: string;
+    phone: string;
+    plateNumber: string;
+  };
+  scheduledDate?: string;
+  createdAt?: string;
 }
 
 // 10. Ambulance Emergency Types
@@ -329,20 +419,26 @@ export type AmbulanceType = 'bls' | 'als' | 'icu';
 
 export interface AmbulanceBooking {
   id: string;
-  patientName: string;
+  patientName?: string;
   patientAge?: string;
-  conditionDescription: string;
-  ambulanceType: AmbulanceType;
-  pickupAddress: string;
+  patientCondition?: string;
+  conditionDescription?: string;
+  ambulanceType: AmbulanceType | string;
+  pickupAddress?: string;
+  pickupLocation?: string;
   destinationHospital: string;
-  callerPhone: string;
-  priorityLevel: 'immediate' | 'urgent';
-  fee: number;
-  status: 'dispatched' | 'en_route_pickup' | 'on_scene' | 'transporting' | 'arrived_hospital';
-  unitNumber: string;
-  paramedicTeam: string;
-  paramedicContact: string;
-  createdAt: string;
+  callerPhone?: string;
+  priorityLevel?: 'immediate' | 'urgent';
+  fee?: number;
+  cost?: number;
+  status: 'dispatched' | 'en_route_pickup' | 'on_scene' | 'transporting' | 'arrived_hospital' | string;
+  unitNumber?: string;
+  paramedicTeam?: string;
+  paramedicName?: string;
+  paramedicContact?: string;
+  paramedicPhone?: string;
+  vehiclePlate?: string;
+  createdAt?: string;
   etaMinutes: number;
 }
 

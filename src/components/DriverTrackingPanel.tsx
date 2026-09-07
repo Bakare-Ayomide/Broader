@@ -36,6 +36,10 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [rating, setRating] = useState(5);
+  const [tipAmount, setTipAmount] = useState<number>(500);
+  const [selectedCompliments, setSelectedCompliments] = useState<string[]>(['Clean Car', 'Safe Driving']);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   if (!activeTrip) return null;
 
@@ -190,6 +194,31 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
         </div>
       </div>
 
+      {/* Safety Ride PIN Verification Banner */}
+      <div className="py-2.5 px-3 bg-blue-50/70 border border-blue-200/80 rounded-2xl my-2 flex items-center justify-between">
+        <div>
+          <span className="text-[10px] font-JakartaBold text-blue-800 uppercase tracking-wider block">
+            Trip Safety PIN
+          </span>
+          <p className="text-[11px] text-blue-700 font-JakartaMedium">
+            Share with driver to start ride
+          </p>
+        </div>
+        <div className="flex items-center gap-1.5 bg-white border border-blue-300 px-3 py-1 rounded-xl shadow-xs">
+          <span className="text-base font-JakartaExtraBold font-mono text-[#0286FF] tracking-widest">
+            {activeTrip.ridePin || '4921'}
+          </span>
+        </div>
+      </div>
+
+      {/* Pickup Instructions if provided */}
+      {activeTrip.pickupInstructions && (
+        <div className="px-3 py-1.5 bg-amber-50/80 border border-amber-200 rounded-xl mb-2 text-[11px] text-amber-900 font-JakartaMedium flex items-start gap-1.5">
+          <span className="font-JakartaBold shrink-0 text-amber-800">Note to Driver:</span>
+          <span className="truncate">{activeTrip.pickupInstructions}</span>
+        </div>
+      )}
+
       {/* Pickup & Destination Locations */}
       <div className="py-2.5 space-y-2 border-b border-slate-100 text-xs">
         <div className="flex items-center gap-2">
@@ -268,25 +297,95 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
           </button>
         </div>
       ) : (
-        /* Ride Completed Summary */
-        <div className="pt-3 flex flex-col items-center text-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+        /* Ride Completed Rating & Review Experience */
+        <div className="pt-2 flex flex-col items-center text-center">
+          <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-1">
             <CheckCircle2 className="w-6 h-6" />
           </div>
-          <div>
-            <h4 className="text-base font-JakartaBold text-slate-900">You have arrived!</h4>
-            <p className="text-xs font-JakartaMedium text-slate-500">
-              ₦{activeTrip.fare.toLocaleString()} successfully paid via {activeTrip.paymentMethod.toUpperCase()}
+          <h4 className="text-sm font-JakartaBold text-slate-900">Trip Completed</h4>
+          <p className="text-[11px] font-JakartaMedium text-slate-500">
+            ₦{activeTrip.fare.toLocaleString()} settled via {activeTrip.paymentMethod.toUpperCase()}
+          </p>
+
+          {/* Rating Stars */}
+          <div className="my-2.5 flex flex-col items-center">
+            <p className="text-[11px] font-JakartaSemiBold text-slate-700 mb-1">
+              How was your trip with {activeTrip.driver.first_name}?
             </p>
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRating(star)}
+                  className="p-1 hover:scale-110 active:scale-95 transition-transform"
+                >
+                  <Star
+                    className={`w-6 h-6 ${
+                      star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Compliments */}
+          <div className="w-full my-1 text-left">
+            <p className="text-[10px] font-JakartaSemiBold text-slate-500 mb-1">Add Compliments:</p>
+            <div className="flex flex-wrap gap-1">
+              {['Clean Car', 'Smooth Ride', 'Great Music', 'Safe Driver', 'Polite'].map((tag) => {
+                const isSelected = selectedCompliments.includes(tag);
+                return (
+                  <button
+                    key={tag}
+                    onClick={() => {
+                      if (isSelected) {
+                        setSelectedCompliments(selectedCompliments.filter((t) => t !== tag));
+                      } else {
+                        setSelectedCompliments([...selectedCompliments, tag]);
+                      }
+                    }}
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-JakartaSemiBold transition-all ${
+                      isSelected
+                        ? 'bg-blue-50 text-[#0286FF] border border-blue-200'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tip Options */}
+          <div className="w-full my-1.5 text-left">
+            <p className="text-[10px] font-JakartaSemiBold text-slate-500 mb-1">Driver Tip (Optional):</p>
+            <div className="grid grid-cols-4 gap-1">
+              {[0, 500, 1000, 2000].map((tip) => (
+                <button
+                  key={tip}
+                  onClick={() => setTipAmount(tip)}
+                  className={`py-1 rounded-xl text-[10px] font-JakartaBold border transition-all ${
+                    tipAmount === tip
+                      ? 'bg-emerald-500 text-white border-emerald-500'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {tip === 0 ? 'No Tip' : `₦${tip.toLocaleString()}`}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             onClick={() => {
               cancelActiveTrip();
               setScreen('rides');
             }}
-            className="w-full mt-1 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/20 transition-all"
+            className="w-full mt-2 py-2.5 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/20 transition-all"
           >
-            View in Rides History
+            Submit Review & Done
           </button>
         </div>
       )}

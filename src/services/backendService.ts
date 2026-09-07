@@ -294,7 +294,8 @@ export const requestBackendDriverMatch = async (
   pickup: { address: string; latitude: number; longitude: number },
   destination: { address: string; latitude: number; longitude: number },
   vehicle: VehicleOption,
-  paymentMethod: 'wallet' | 'card' | 'cash'
+  paymentMethod: 'wallet' | 'card' | 'cash',
+  pickupInstructions?: string
 ): Promise<ActiveTrip> => {
   // Simulate backend driver dispatch algorithm
   // Finds best rated driver supporting this category or fallback
@@ -312,6 +313,9 @@ export const requestBackendDriverMatch = async (
   // Initial driver location offset (approaching pickup)
   const driverLat = pickup.latitude + (Math.random() * 0.008 - 0.004);
   const driverLng = pickup.longitude + (Math.random() * 0.008 - 0.004);
+
+  // 4-digit Secure Ride PIN
+  const ridePin = String(Math.floor(1000 + Math.random() * 9000));
 
   const activeTrip: ActiveTrip = {
     id: 'trip_' + Date.now().toString().slice(-6),
@@ -344,6 +348,8 @@ export const requestBackendDriverMatch = async (
     paymentMethod,
     paymentStatus: paymentMethod === 'cash' ? 'pending' : 'paid',
     startTime: new Date().toISOString(),
+    ridePin,
+    pickupInstructions: pickupInstructions || '',
   };
 
   return activeTrip;
@@ -360,7 +366,9 @@ export const DEFAULT_DRIVER_EARNINGS = {
   pendingEarnings: 12500, // ₦12,500
   completedTrips: 8,
   commission: 5775, // 15% Broader commission
+  commissionDeducted: 5775,
   bonuses: 3500, // Peak hour incentive
+  bonusesEarned: 3500,
 };
 
 // Sample incoming driver requests pool
@@ -556,23 +564,40 @@ export const BROADER_RENTAL_FLEET = [
   },
 ];
 
+export const RENTAL_VEHICLE_FLEET = BROADER_RENTAL_FLEET.map((vehicle) => ({
+  ...vehicle,
+  image: vehicle.imageUrl,
+  fuelPolicy: 'Same to Same (Full-to-Full)',
+  dailyRate: vehicle.dailyPrice,
+  type: vehicle.category,
+}));
+
 // ==========================================================
 // 8. PARCEL DELIVERY PRICING & LOGISTICS BACKEND
 // ==========================================================
 export const calculateParcelPrice = (
-  distanceKm: number,
-  size: 'small' | 'medium' | 'large' | 'extra_large',
-  category: string
+  distanceOrKm: number,
+  sizeOrWeight: 'small' | 'medium' | 'large' | 'extra_large' | number,
+  categoryOrExpress?: string | boolean
 ): number => {
+  if (typeof sizeOrWeight === 'number') {
+    const base = 1200;
+    const kmRate = 120;
+    const weightRate = 250;
+    const expressMult = categoryOrExpress === true ? 1.4 : 1.0;
+    const calc = (base + distanceOrKm * kmRate + sizeOrWeight * weightRate) * expressMult;
+    return Math.round(Math.max(1200, calc) / 50) * 50;
+  }
+
   const sizeRates = {
     small: { base: 850, perKm: 90 },
     medium: { base: 1400, perKm: 140 },
     large: { base: 2600, perKm: 220 },
     extra_large: { base: 4500, perKm: 350 },
   };
-  const rate = sizeRates[size] || sizeRates.small;
-  const fragileMultiplier = category === 'fragile' ? 1.25 : 1.0;
-  const calculated = (rate.base + distanceKm * rate.perKm) * fragileMultiplier;
+  const rate = sizeRates[sizeOrWeight] || sizeRates.small;
+  const fragileMultiplier = categoryOrExpress === 'fragile' ? 1.25 : 1.0;
+  const calculated = (rate.base + distanceOrKm * rate.perKm) * fragileMultiplier;
   return Math.round(Math.max(1000, calculated) / 50) * 50;
 };
 
@@ -580,10 +605,37 @@ export const calculateParcelPrice = (
 // 9. FREIGHT COMMERCIAL TRANSPORTATION PRICING BACKEND
 // ==========================================================
 export const calculateFreightPrice = (
-  distanceKm: number,
-  vehicleType: 'pickup' | 'van' | 'lorry' | 'heavy_truck',
-  cargoWeightKg: number
+  arg1: number,
+  arg2: 'pickup' | 'van' | 'lorry' | 'heavy_truck' | number,
+  arg3?: number | string
 ): number => {
+  if (typeof arg2 === 'number') {
+    // Called as: calculateFreightPrice(weightTons, distanceKm, truckTypeString)
+    const weightTons = arg1;
+    const distanceKm = arg2;
+    const truckTypeStr = typeof arg3 === 'string' ? arg3.toLowerCase() : '';
+    let base = 25000;
+    let perKm = 900;
+    if (truckTypeStr.includes('heavy') || truckTypeStr.includes('30-ton')) {
+      base = 65000;
+      perKm = 2400;
+    } else if (truckTypeStr.includes('box') || truckTypeStr.includes('5-ton')) {
+      base = 35000;
+      perKm = 1300;
+    } else if (truckTypeStr.includes('van') || truckTypeStr.includes('3-ton')) {
+      base = 20000;
+      perKm = 850;
+    } else if (truckTypeStr.includes('1-ton') || truckTypeStr.includes('pickup')) {
+      base = 12000;
+      perKm = 500;
+    }
+    const total = base + distanceKm * perKm + weightTons * 2500;
+    return Math.round(total / 100) * 100;
+  }
+
+  const distanceKm = arg1;
+  const vehicleType = arg2;
+  const cargoWeightKg = typeof arg3 === 'number' ? arg3 : 1000;
   const freightConfig = {
     pickup: { base: 9500, perKm: 450, capacityKg: 1000 },
     van: { base: 14000, perKm: 600, capacityKg: 1800 },

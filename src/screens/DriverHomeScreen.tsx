@@ -6,19 +6,30 @@ import {
   DollarSign,
   Star,
   CheckCircle2,
-  XCircle,
   Clock,
-  MapPin,
   ChevronRight,
   TrendingUp,
   User,
-  Phone,
   ShieldAlert,
   ArrowRight,
   Car,
-  Bell,
-  Layers,
+  Compass,
+  Calendar,
+  Wallet,
+  ShieldCheck,
+  Send,
+  MapPin,
+  Radio,
+  FileText,
+  Phone,
 } from 'lucide-react';
+import { InteractiveMap } from '../components/InteractiveMap';
+import { DriverIncomingModal } from '../components/driver/DriverIncomingModal';
+import { DriverActiveTripHUD } from '../components/driver/DriverActiveTripHUD';
+import { DriverEarningsView } from '../components/driver/DriverEarningsView';
+import { DriverTripsView } from '../components/driver/DriverTripsView';
+import { DriverVehiclesView } from '../components/driver/DriverVehiclesView';
+import { DriverSafetyModal } from '../components/driver/DriverSafetyModal';
 import { SAMPLE_INCOMING_DRIVER_REQUESTS } from '../services/backendService';
 
 export const DriverHomeScreen: React.FC = () => {
@@ -30,345 +41,433 @@ export const DriverHomeScreen: React.FC = () => {
   const driverEarnings = useBroaderStore((s) => s.driverEarnings);
   const incomingDriverRequest = useBroaderStore((s) => s.incomingDriverRequest);
   const setIncomingDriverRequest = useBroaderStore((s) => s.setIncomingDriverRequest);
-  const respondToDriverRequest = useBroaderStore((s) => s.respondToDriverRequest);
+  const activeTrip = useBroaderStore((s) => s.activeTrip);
+  const rideStatus = useBroaderStore((s) => s.rideStatus);
+  const driverVehicles = useBroaderStore((s) => s.driverVehicles);
+  const activeDriverVehicleId = useBroaderStore((s) => s.activeDriverVehicleId);
+  const driverActiveTab = useBroaderStore((s) => s.driverActiveTab);
+  const setDriverActiveTab = useBroaderStore((s) => s.setDriverActiveTab);
+  const driverRating = useBroaderStore((s) => s.driverRating);
+  const driverAcceptanceRate = useBroaderStore((s) => s.driverAcceptanceRate);
+  const driverCancellationRate = useBroaderStore((s) => s.driverCancellationRate);
 
-  const [timerSeconds, setTimerSeconds] = useState(15);
-  const [activeDriverRideStep, setActiveDriverRideStep] = useState<'arriving' | 'arrived' | 'in_transit' | 'completed'>('arriving');
+  const [safetyModalOpen, setSafetyModalOpen] = useState(false);
 
-  // Countdown timer for incoming request
-  useEffect(() => {
-    if (!incomingDriverRequest) {
-      setTimerSeconds(15);
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setTimerSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          respondToDriverRequest(false);
-          return 15;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [incomingDriverRequest, respondToDriverRequest]);
+  const activeVehicle =
+    driverVehicles.find((v) => v.id === activeDriverVehicleId) || driverVehicles[0];
 
   const toggleOnlineStatus = () => {
     if (driverStatus === 'online') {
       setDriverStatus('offline');
+      setIncomingDriverRequest(null);
     } else {
       setDriverStatus('online');
-      // If no active request, offer sample incoming request for demonstration
-      if (!incomingDriverRequest) {
-        setIncomingDriverRequest(SAMPLE_INCOMING_DRIVER_REQUESTS[0]);
-      }
     }
   };
 
   const handleSimulateNewRequest = () => {
-    const randomReq = SAMPLE_INCOMING_DRIVER_REQUESTS[Math.floor(Math.random() * SAMPLE_INCOMING_DRIVER_REQUESTS.length)];
+    const randomReq =
+      SAMPLE_INCOMING_DRIVER_REQUESTS[
+        Math.floor(Math.random() * SAMPLE_INCOMING_DRIVER_REQUESTS.length)
+      ];
     setIncomingDriverRequest({
       ...randomReq,
       id: 'req_lag_' + Date.now().toString().slice(-4),
     });
-    setTimerSeconds(15);
   };
+
+  const isOnTrip = driverStatus === 'on_trip' || (activeTrip !== null && rideStatus !== 'idle');
 
   return (
     <div className="flex flex-col h-full bg-[#F6F8FA] select-none">
       {/* Top Driver Header */}
-      <div className="px-5 pt-4 pb-3 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between">
+      <header className="px-4 pt-3.5 pb-2.5 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between z-20">
         <div className="flex items-center gap-2.5">
           <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-JakartaBold text-sm shadow-xs">
-              DR
+            <div className="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-JakartaBold text-xs shadow-xs">
+              CB
             </div>
             <div
-              className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white ${
-                driverStatus === 'online'
+              className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
+                isOnTrip
+                  ? 'bg-blue-600'
+                  : driverStatus === 'online'
                   ? 'bg-emerald-500'
-                  : driverStatus === 'on_trip'
-                  ? 'bg-blue-500'
                   : 'bg-slate-400'
               }`}
             />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h2 className="text-sm font-JakartaBold text-slate-900 leading-none">Broader Driver</h2>
-              <span className="text-[10px] font-JakartaBold text-blue-600 bg-blue-50 px-1.5 py-0.2 rounded">
-                Lagos
+              <h2 className="text-xs font-JakartaBold text-slate-900 leading-none">Chris Bakare</h2>
+              <span className="text-[9px] font-mono font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+                {activeVehicle?.plateNumber || 'LND-394-AK'}
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 font-JakartaMedium mt-0.5">
-              {driverStatus === 'online'
-                ? 'Ready for trip requests'
-                : driverStatus === 'on_trip'
-                ? 'Active passenger trip'
-                : 'You are currently offline'}
+            <p className="text-[10px] text-slate-400 font-JakartaMedium mt-0.5">
+              {isOnTrip
+                ? 'Active Passenger Trip'
+                : driverStatus === 'online'
+                ? 'Online • Waiting for Dispatch'
+                : 'Offline'}
             </p>
           </div>
         </div>
 
-        {/* Switch Mode Pill */}
-        <button
-          onClick={() => setIsDriverMode(false)}
-          className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-JakartaBold flex items-center gap-1 transition-all"
-          title="Switch to Passenger Rider App"
-        >
-          <span>Rider App</span>
-          <ArrowRight className="w-3 h-3" />
-        </button>
-      </div>
+        {/* Quick Actions: Switch to Rider App & Emergency SOS */}
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setSafetyModalOpen(true)}
+            className="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition-colors"
+            title="Emergency SOS"
+          >
+            <ShieldAlert className="w-4 h-4" />
+          </button>
 
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-        {/* Online / Offline Switcher Banner */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              setIsDriverMode(false);
+              setScreen('home');
+            }}
+            className="px-2.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-JakartaBold flex items-center gap-1 transition-all"
+            title="Switch back to Passenger Rider App"
+          >
+            <span>Rider App</span>
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      </header>
+
+      {/* Driver Operational Tab Navigation */}
+      <nav className="px-4 py-1.5 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between gap-1 z-10">
+        {[
+          { id: 'hud', label: 'Cockpit', icon: Navigation },
+          { id: 'earnings', label: 'Earnings', icon: DollarSign },
+          { id: 'trips', label: 'Trips', icon: Clock },
+          { id: 'vehicles', label: 'Fleet', icon: Car },
+          { id: 'profile', label: 'Profile', icon: ShieldCheck },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = driverActiveTab === tab.id;
+          return (
             <button
-              onClick={toggleOnlineStatus}
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
-                driverStatus === 'online' || driverStatus === 'on_trip'
-                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 ring-4 ring-emerald-100'
-                  : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+              key={tab.id}
+              onClick={() => setDriverActiveTab(tab.id as any)}
+              className={`flex-1 py-1.5 px-1 rounded-xl text-[11px] font-JakartaBold flex items-center justify-center gap-1 transition-all ${
+                isActive
+                  ? 'bg-blue-50 text-[#0286FF] border border-blue-200'
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
               }`}
             >
-              <Power className="w-6 h-6" />
+              <Icon className="w-3.5 h-3.5" />
+              <span>{tab.label}</span>
             </button>
-            <div>
-              <span className="text-xs font-JakartaBold text-slate-800">
-                {driverStatus === 'online' ? 'You are Online' : driverStatus === 'on_trip' ? 'On Trip' : 'Go Online'}
-              </span>
-              <p className="text-[11px] text-slate-400 font-JakartaMedium">
-                {driverStatus === 'online' ? 'Receiving ride dispatches' : 'Tap power button to connect'}
-              </p>
-            </div>
-          </div>
+          );
+        })}
+      </nav>
 
-          <div className="flex items-center gap-2">
-            {driverStatus === 'online' && !incomingDriverRequest && (
-              <button
-                onClick={handleSimulateNewRequest}
-                className="px-2.5 py-1 rounded-xl bg-blue-50 border border-blue-200 text-[#0286FF] text-[10px] font-JakartaBold hover:bg-blue-100 transition-all"
-              >
-                Test Dispatch
-              </button>
-            )}
-            <span
-              className={`text-xs font-JakartaBold px-2.5 py-1 rounded-full ${
-                driverStatus === 'online'
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                  : 'bg-slate-100 text-slate-500'
-              }`}
-            >
-              {driverStatus.toUpperCase()}
-            </span>
-          </div>
-        </div>
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+        {/* TAB 1: COCKPIT / MAP HUD */}
+        {driverActiveTab === 'hud' && (
+          <div className="space-y-3">
+            {/* Interactive Map Cockpit */}
+            <div className="relative rounded-3xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100 h-[220px]">
+              <InteractiveMap height="h-[220px]" showRoute={isOnTrip} />
 
-        {/* Today's Operational Earnings Card */}
-        <div
-          onClick={() => setScreen('driver-earnings')}
-          className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs cursor-pointer hover:border-blue-300 transition-all"
-        >
-          <div className="flex items-center justify-between text-slate-500 mb-1">
-            <span className="text-xs font-JakartaMedium flex items-center gap-1">
-              <DollarSign className="w-3.5 h-3.5 text-[#0286FF]" />
-              Today’s Total Earnings
-            </span>
-            <span className="text-[11px] font-JakartaBold text-[#0286FF] flex items-center">
-              <span>View Statement</span>
-              <ChevronRight className="w-3 h-3 ml-0.5" />
-            </span>
-          </div>
+              {/* Map Floating Beacon: GPS & Demand Badge */}
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+                <div className="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-xs text-white text-[10px] font-JakartaBold flex items-center gap-1.5 shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Lekki Phase 1, Lagos • GPS 5G</span>
+                </div>
 
-          <div className="flex items-baseline justify-between mt-1">
-            <span className="text-2xl font-JakartaBold text-slate-900 tracking-tight">
-              ₦{driverEarnings.today.toLocaleString()}
-            </span>
-            <span className="text-xs font-JakartaSemiBold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-              {driverEarnings.completedTrips} Trips Completed
-            </span>
-          </div>
-
-          <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
-            <div>
-              <span className="text-[10px] font-JakartaMedium text-slate-400">Available to Withdraw</span>
-              <p className="font-JakartaBold text-slate-800">₦{driverEarnings.availableBalance.toLocaleString()}</p>
-            </div>
-            <div className="text-right">
-              <span className="text-[10px] font-JakartaMedium text-slate-400">Week-to-date</span>
-              <p className="font-JakartaBold text-slate-800">₦{driverEarnings.thisWeek.toLocaleString()}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Driver Performance Metrics */}
-        <div className="grid grid-cols-3 gap-2">
-          <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
-            <div className="flex items-center justify-center text-amber-500 mb-0.5">
-              <Star className="w-3.5 h-3.5 fill-amber-400" />
-            </div>
-            <span className="text-sm font-JakartaBold text-slate-900 block">4.93</span>
-            <span className="text-[10px] font-JakartaMedium text-slate-400">Rating</span>
-          </div>
-
-          <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
-            <div className="flex items-center justify-center text-emerald-500 mb-0.5">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-sm font-JakartaBold text-slate-900 block">98%</span>
-            <span className="text-[10px] font-JakartaMedium text-slate-400">Acceptance</span>
-          </div>
-
-          <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
-            <div className="flex items-center justify-center text-blue-500 mb-0.5">
-              <TrendingUp className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-sm font-JakartaBold text-slate-900 block">0.8%</span>
-            <span className="text-[10px] font-JakartaMedium text-slate-400">Cancellation</span>
-          </div>
-        </div>
-
-        {/* INCOMING RIDE REQUEST INTERFACE */}
-        {incomingDriverRequest && (
-          <div className="bg-white rounded-3xl p-4 shadow-xl border-2 border-[#0286FF] animate-in zoom-in-95 duration-200 space-y-3">
-            {/* Header with Countdown */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0286FF] animate-ping" />
-                <h4 className="text-sm font-JakartaBold text-slate-900 uppercase tracking-wider">
-                  New Ride Request
-                </h4>
+                <div className="px-2.5 py-1 rounded-full bg-[#0286FF]/90 backdrop-blur-xs text-white text-[10px] font-JakartaBold flex items-center gap-1 shadow-sm">
+                  <TrendingUp className="w-3 h-3" />
+                  <span>Surge 1.3x</span>
+                </div>
               </div>
 
-              {/* Countdown badge */}
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-[#0286FF] text-xs font-JakartaBold border border-blue-200">
-                <Clock className="w-3 h-3" />
-                <span>{timerSeconds}s</span>
-              </div>
-            </div>
-
-            {/* Countdown Progress Bar */}
-            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-              <div
-                className="bg-[#0286FF] h-full transition-all duration-1000 ease-linear"
-                style={{ width: `${(timerSeconds / 15) * 100}%` }}
-              />
-            </div>
-
-            {/* Price & Trip Spec */}
-            <div className="flex items-center justify-between p-3 bg-blue-50/60 rounded-2xl border border-blue-100">
-              <div>
-                <span className="text-[10px] font-JakartaBold text-blue-600 uppercase">Estimated Earnings</span>
-                <p className="text-xl font-JakartaBold text-slate-900">
-                  ₦{incomingDriverRequest.estimatedEarnings.toLocaleString()}
-                </p>
-              </div>
-              <div className="text-right">
-                <span className="text-xs font-JakartaBold text-slate-800 block">
-                  {incomingDriverRequest.distanceKm} km • ~{incomingDriverRequest.estimatedMinutes} mins
-                </span>
-                <span className="text-[10px] font-JakartaMedium text-slate-500">
-                  {incomingDriverRequest.vehicleType}
-                </span>
-              </div>
-            </div>
-
-            {/* Passenger Info */}
-            <div className="flex items-center gap-2.5 px-1">
-              <img
-                src={incomingDriverRequest.customerImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'}
-                alt="Passenger"
-                className="w-9 h-9 rounded-full object-cover"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-JakartaBold text-slate-900 truncate">
-                  {incomingDriverRequest.customerName}
-                </p>
-                <div className="flex items-center gap-1 text-[10px] text-amber-500 font-bold">
-                  <Star className="w-2.5 h-2.5 fill-amber-400" />
-                  <span>{incomingDriverRequest.customerRating}</span>
+              {/* Map Floating Current Vehicle Indicator */}
+              <div className="absolute bottom-2.5 left-3 pointer-events-none">
+                <div className="px-2 py-0.5 rounded-lg bg-white/90 backdrop-blur-xs text-slate-800 text-[9px] font-mono font-bold shadow-xs border border-slate-200">
+                  {activeVehicle?.name} ({activeVehicle?.plateNumber})
                 </div>
               </div>
             </div>
 
-            {/* Pickup & Dropoff */}
-            <div className="space-y-2 p-3 bg-slate-50 rounded-2xl text-xs">
-              <div className="flex items-start gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#0286FF] mt-1 shrink-0" />
-                <p className="font-JakartaMedium text-slate-800 text-[11px] truncate">
-                  {incomingDriverRequest.pickup}
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 mt-1 shrink-0" />
-                <p className="font-JakartaMedium text-slate-800 text-[11px] truncate">
-                  {incomingDriverRequest.destination}
-                </p>
-              </div>
-            </div>
+            {/* ACTIVE TRIP ON-COURSE HUD */}
+            {isOnTrip ? (
+              <DriverActiveTripHUD />
+            ) : incomingDriverRequest ? (
+              /* INCOMING DISPATCH MODAL */
+              <DriverIncomingModal />
+            ) : (
+              /* ONLINE / OFFLINE AVAILABILITY CONTROLLER */
+              <div className="space-y-3">
+                <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={toggleOnlineStatus}
+                        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                          driverStatus === 'online'
+                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 ring-4 ring-emerald-100'
+                            : 'bg-slate-100 text-slate-400 hover:bg-slate-200 active:scale-95'
+                        }`}
+                        title={driverStatus === 'online' ? 'Tap to go Offline' : 'Tap to go Online'}
+                      >
+                        <Power className="w-5 h-5" />
+                      </button>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="text-xs font-JakartaBold text-slate-900">
+                            {driverStatus === 'online' ? 'You are Online' : 'You are Offline'}
+                          </h4>
+                          <span
+                            className={`w-2 h-2 rounded-full ${
+                              driverStatus === 'online' ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'
+                            }`}
+                          />
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-JakartaMedium">
+                          {driverStatus === 'online'
+                            ? 'Actively receiving trip dispatches'
+                            : 'Go online to start receiving ride requests'}
+                        </p>
+                      </div>
+                    </div>
 
-            {/* Accept / Reject Action Buttons */}
-            <div className="grid grid-cols-3 gap-2 pt-1">
-              <button
-                onClick={() => respondToDriverRequest(false)}
-                className="py-3 rounded-2xl border border-slate-200 text-slate-600 font-JakartaBold text-xs hover:bg-slate-50 active:scale-95 transition-all"
-              >
-                Reject
-              </button>
+                    <span
+                      className={`text-[10px] font-JakartaBold px-2.5 py-1 rounded-full ${
+                        driverStatus === 'online'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-slate-100 text-slate-500'
+                      }`}
+                    >
+                      {driverStatus === 'online' ? 'READY' : 'OFFLINE'}
+                    </span>
+                  </div>
 
-              <button
-                onClick={() => respondToDriverRequest(true)}
-                className="col-span-2 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-lg shadow-blue-500/25 active:scale-95 transition-all flex items-center justify-center gap-1.5"
-              >
-                <span>Accept Trip</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
+                  {/* Operational Controls when Online */}
+                  {driverStatus === 'online' && (
+                    <div className="p-3 bg-emerald-50/70 rounded-2xl border border-emerald-100 flex items-center justify-between text-xs animate-in fade-in duration-150">
+                      <div className="flex items-center gap-2">
+                        <Radio className="w-4 h-4 text-emerald-600 animate-pulse" />
+                        <span className="text-[11px] font-JakartaMedium text-emerald-900">
+                          Scanning Lekki & VI for passengers...
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleSimulateNewRequest}
+                        className="px-2.5 py-1 rounded-xl bg-white hover:bg-emerald-100 text-emerald-800 text-[10px] font-JakartaBold border border-emerald-200 shadow-xs transition-colors"
+                        title="Simulate incoming passenger booking"
+                      >
+                        Test Dispatch
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Selected Vehicle Indicator */}
+                  <div
+                    onClick={() => setDriverActiveTab('vehicles')}
+                    className="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-100 flex items-center justify-between text-xs cursor-pointer transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Car className="w-4 h-4 text-slate-600" />
+                      <div>
+                        <span className="text-xs font-JakartaBold text-slate-800 block">
+                          {activeVehicle?.name}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {activeVehicle?.plateNumber} • {activeVehicle?.categoryName}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-JakartaBold text-[#0286FF] flex items-center">
+                      Change <ChevronRight className="w-3 h-3 ml-0.5" />
+                    </span>
+                  </div>
+                </div>
+
+                {/* Today's Quick Summary Pill */}
+                <div
+                  onClick={() => setDriverActiveTab('earnings')}
+                  className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs cursor-pointer hover:border-blue-300 transition-all"
+                >
+                  <div className="flex items-center justify-between text-slate-500 mb-1">
+                    <span className="text-xs font-JakartaMedium flex items-center gap-1">
+                      <DollarSign className="w-3.5 h-3.5 text-[#0286FF]" />
+                      Today's Operational Earnings
+                    </span>
+                    <span className="text-[11px] font-JakartaBold text-[#0286FF] flex items-center">
+                      Statement <ChevronRight className="w-3 h-3 ml-0.5" />
+                    </span>
+                  </div>
+
+                  <div className="flex items-baseline justify-between mt-1">
+                    <span className="text-lg font-JakartaBold text-slate-900 tracking-tight">
+                      ₦{driverEarnings.today.toLocaleString()}
+                    </span>
+                    <span className="text-xs font-JakartaSemiBold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                      {driverEarnings.completedTrips} Completed
+                    </span>
+                  </div>
+                </div>
+
+                {/* Driver Performance Metrics (3 Columns) */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
+                    <div className="flex items-center justify-center text-amber-500 mb-0.5">
+                      <Star className="w-3.5 h-3.5 fill-amber-400" />
+                    </div>
+                    <span className="text-xs font-JakartaBold text-slate-900 block">
+                      {driverRating}
+                    </span>
+                    <span className="text-[10px] font-JakartaMedium text-slate-400">Driver Rating</span>
+                  </div>
+
+                  <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
+                    <div className="flex items-center justify-center text-emerald-500 mb-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="text-xs font-JakartaBold text-slate-900 block">
+                      {driverAcceptanceRate}%
+                    </span>
+                    <span className="text-[10px] font-JakartaMedium text-slate-400">Acceptance</span>
+                  </div>
+
+                  <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
+                    <div className="flex items-center justify-center text-blue-500 mb-0.5">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="text-xs font-JakartaBold text-slate-900 block">
+                      {driverCancellationRate}%
+                    </span>
+                    <span className="text-[10px] font-JakartaMedium text-slate-400">Cancellation</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* ACTIVE ON-TRIP OPERATOR FLOW */}
-        {driverStatus === 'on_trip' && (
-          <div className="bg-white rounded-3xl p-4 shadow-md border border-slate-200 space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <h4 className="text-xs font-JakartaBold text-slate-900 uppercase">Active Turn-by-Turn Navigation</h4>
-              </div>
-              <span className="text-[11px] font-JakartaBold text-[#0286FF]">GPS Pinned</span>
-            </div>
+        {/* TAB 2: EARNINGS VIEW */}
+        {driverActiveTab === 'earnings' && <DriverEarningsView />}
 
-            <div className="p-3 bg-slate-900 text-white rounded-2xl flex items-center justify-between">
+        {/* TAB 3: TRIPS ACTIVITY VIEW */}
+        {driverActiveTab === 'trips' && <DriverTripsView />}
+
+        {/* TAB 4: VEHICLES FLEET VIEW */}
+        {driverActiveTab === 'vehicles' && <DriverVehiclesView />}
+
+        {/* TAB 5: PROFILE & COMPLIANCE VIEW */}
+        {driverActiveTab === 'profile' && (
+          <div className="space-y-3 pb-6 animate-in fade-in duration-200">
+            {/* Driver Identity Card */}
+            <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center">
-                  <Navigation className="w-4 h-4" />
+                <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-JakartaBold text-sm shadow-xs">
+                  CB
                 </div>
                 <div>
-                  <p className="text-xs font-JakartaBold">In 200m Turn Right</p>
-                  <p className="text-[10px] text-slate-400 font-JakartaMedium">onto Ozumba Mbadiwe Ave, Victoria Island</p>
+                  <h3 className="text-sm font-JakartaBold text-slate-900">Chris Bakare</h3>
+                  <p className="text-[11px] text-slate-400 font-JakartaMedium">
+                    Verified Professional Driver • Lagos State
+                  </p>
                 </div>
               </div>
-              <span className="text-xs font-mono font-bold text-emerald-400">12 min</span>
+
+              <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span className="font-JakartaBold text-emerald-900">Account Approved & Active</span>
+                </div>
+                <span className="text-[10px] font-JakartaBold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                  Verified
+                </span>
+              </div>
             </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  setDriverStatus('online');
-                }}
-                className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-JakartaBold text-xs shadow-md shadow-emerald-600/20"
-              >
-                Complete Ride & Collect Fare
-              </button>
+            {/* Regulatory Credentials */}
+            <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
+              <h4 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wide">
+                Regulatory Licenses & Documents
+              </h4>
+
+              <div className="space-y-2">
+                <div className="p-2.5 bg-slate-50 rounded-xl flex items-center justify-between">
+                  <div>
+                    <span className="text-slate-500 font-JakartaMedium block text-[10px]">FRSC Driver's Licence</span>
+                    <span className="font-mono font-bold text-slate-800">FRSC-LA-2022-88190</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-600 font-JakartaBold">Expires 2027</span>
+                </div>
+
+                <div className="p-2.5 bg-slate-50 rounded-xl flex items-center justify-between">
+                  <div>
+                    <span className="text-slate-500 font-JakartaMedium block text-[10px]">LASDRI Certification</span>
+                    <span className="font-mono font-bold text-slate-800">LASDRI-VI-44910</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-600 font-JakartaBold">Active</span>
+                </div>
+
+                <div className="p-2.5 bg-slate-50 rounded-xl flex items-center justify-between">
+                  <div>
+                    <span className="text-slate-500 font-JakartaMedium block text-[10px]">National Identity (NIN)</span>
+                    <span className="font-mono font-bold text-slate-800">9281-7264-819</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-600 font-JakartaBold">NIMC Verified</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Support & Safety Dispatch */}
+            <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-2.5">
+              <h4 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wide">
+                Support & Emergency
+              </h4>
+
+              <div className="space-y-2">
+                <button
+                  onClick={() => setSafetyModalOpen(true)}
+                  className="w-full p-3 rounded-2xl bg-red-50 hover:bg-red-100 border border-red-200 text-left flex items-center justify-between transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <ShieldAlert className="w-4 h-4 text-red-600" />
+                    <div>
+                      <span className="text-xs font-JakartaBold text-red-900 block">
+                        Emergency SOS & Lagos 112
+                      </span>
+                      <span className="text-[10px] text-red-700">Immediate police & medical dispatch</span>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-red-400" />
+                </button>
+
+                <a
+                  href="tel:+2348002762337"
+                  className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left flex items-center justify-between transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Phone className="w-4 h-4 text-[#0286FF]" />
+                    <div>
+                      <span className="text-xs font-JakartaBold text-slate-900 block">
+                        Broader Driver Support Helpline
+                      </span>
+                      <span className="text-[10px] text-slate-400">+234 800 BROADER (Toll-Free)</span>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </a>
+              </div>
             </div>
           </div>
         )}
-      </div>
+      </main>
+
+      {/* Safety SOS Modal */}
+      <DriverSafetyModal isOpen={safetyModalOpen} onClose={() => setSafetyModalOpen(false)} />
     </div>
   );
 };

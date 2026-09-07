@@ -30,6 +30,7 @@ export const HomeScreen: React.FC = () => {
   const recentDestinations = useBroaderStore((s) => s.recentDestinations);
   const setDestinationLocation = useBroaderStore((s) => s.setDestinationLocation);
   const walletBalance = useBroaderStore((s) => s.walletBalance);
+  const setIsDriverMode = useBroaderStore((s) => s.setIsDriverMode);
 
   // Time-of-day greeting
   const getGreeting = () => {
@@ -70,7 +71,20 @@ export const HomeScreen: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {/* Driver Mode Quick Switch */}
+          <button
+            onClick={() => {
+              setIsDriverMode(true);
+              setScreen('driver-home');
+            }}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 shadow-xs hover:bg-amber-100 active:scale-95 transition-all text-xs font-JakartaBold"
+            title="Switch to Broader Driver Console"
+          >
+            <Car className="w-3.5 h-3.5 text-amber-600" />
+            <span>Driver</span>
+          </button>
+
           {/* Quick Wallet Pill */}
           <button
             onClick={() => setScreen('wallet')}
