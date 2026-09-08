@@ -15,6 +15,7 @@ import {
 import { calculateFreightPrice } from '../services/backendService';
 import { FreightShipment } from '../types';
 import { soundEngine } from '../services/soundNotification';
+import { VEHICLE_3D_ASSETS } from '../data/vehicleAssets';
 
 interface FreightScreenProps {
   onClose?: () => void;
@@ -40,10 +41,10 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
   const [quoteSuccess, setQuoteSuccess] = useState<string | null>(null);
 
   const truckOptions = [
-    { type: '3-Tonne Mitsubishi Canter', cap: 'Up to 3 Tons', baseMultiplier: 1.0 },
-    { type: '10-Tonne Box Truck', cap: 'Up to 10 Tons', baseMultiplier: 1.6 },
-    { type: '20-Tonne Tipper / Flatbed', cap: 'Up to 20 Tons', baseMultiplier: 2.3 },
-    { type: '30-Tonne Articulated Container Hauler', cap: 'Up to 30 Tons', baseMultiplier: 3.2 },
+    { type: '3-Tonne Mitsubishi Canter', cap: 'Up to 3 Tons', baseMultiplier: 1.0, image: VEHICLE_3D_ASSETS.pickup },
+    { type: '10-Tonne Box Truck', cap: 'Up to 10 Tons', baseMultiplier: 1.6, image: VEHICLE_3D_ASSETS.truck },
+    { type: '20-Tonne Tipper / Flatbed', cap: 'Up to 20 Tons', baseMultiplier: 2.3, image: VEHICLE_3D_ASSETS.lorry },
+    { type: '30-Tonne Articulated Container Hauler', cap: 'Up to 30 Tons', baseMultiplier: 3.2, image: VEHICLE_3D_ASSETS.truck },
   ];
 
   const estimatedFreightFare = calculateFreightPrice(estimatedKm, weightTons, selectedTruckType);
@@ -97,14 +98,14 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
           </button>
           <div>
             <div className="flex items-center gap-1.5">
-              <Truck className="w-3.5 h-3.5 text-[#0286FF]" />
+              <Truck className="w-3.5 h-3.5 text-[#9EE6B5]" />
               <h2 className="text-sm font-JakartaBold text-white leading-none">Broader Freight & Cargo</h2>
             </div>
             <p className="text-[11px] text-neutral-400 font-JakartaMedium mt-0.5">Heavy Logistics Across Nigeria</p>
           </div>
         </div>
 
-        <span className="text-[10px] font-JakartaBold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
+        <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 border border-[#9EE6B5]/25 px-2.5 py-1 rounded-full">
           Commercial
         </span>
       </div>
@@ -119,7 +120,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
             }}
             className={`flex-1 py-2 rounded-xl transition-all ${
               activeTab === 'quote'
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -132,7 +133,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
             }}
             className={`flex-1 py-2 rounded-xl transition-all ${
               activeTab === 'shipments'
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -164,7 +165,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                 <select
                   value={cargoType}
                   onChange={(e) => setCargoType(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.05] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.05] focus:outline-none focus:border-[#9EE6B5]"
                 >
                   <option value="Industrial Machinery & Parts" className="bg-[#0a0f1d]">Industrial Machinery & Parts</option>
                   <option value="Building Materials & Cement" className="bg-[#0a0f1d]">Building Materials & Cement</option>
@@ -189,7 +190,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                       }}
                       className={`flex-1 py-1.5 rounded-xl border text-center font-JakartaBold text-xs transition-all ${
                         weightTons === t
-                          ? 'bg-[#0286FF] border-[#0286FF] text-white shadow-[0_0_10px_rgba(2,134,255,0.4)]'
+                          ? 'bg-[#9EE6B5] border-[#9EE6B5] text-black font-extrabold shadow-[0_0_10px_rgba(158,230,181,0.4)]'
                           : 'border-white/10 bg-white/[0.04] text-neutral-400 hover:bg-white/[0.08]'
                       }`}
                     >
@@ -206,7 +207,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                 Commercial Haulage Vehicle
               </h4>
 
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {truckOptions.map((truck) => (
                   <div
                     key={truck.type}
@@ -216,20 +217,24 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                     }}
                     className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${
                       selectedTruckType === truck.type
-                        ? 'bg-[#0286FF]/20 border-[#0286FF]'
+                        ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] shadow-[0_0_12px_rgba(158,230,181,0.2)]'
                         : 'border-white/10 bg-white/[0.03] hover:border-white/20'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-white/10 text-cyan-400 flex items-center justify-center">
-                        <Truck className="w-4 h-4" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-10 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center p-1">
+                        <img
+                          src={truck.image}
+                          alt={truck.type}
+                          className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+                        />
                       </div>
                       <div>
                         <p className="text-xs font-JakartaBold text-white">{truck.type}</p>
                         <p className="text-[10px] text-neutral-400 font-JakartaMedium">Rated: {truck.cap}</p>
                       </div>
                     </div>
-                    <span className="text-[10px] font-JakartaBold text-cyan-300">
+                    <span className={`text-[10px] font-JakartaBold ${selectedTruckType === truck.type ? 'text-[#9EE6B5]' : 'text-neutral-400'}`}>
                       {selectedTruckType === truck.type ? 'Selected' : 'Select'}
                     </span>
                   </div>
@@ -251,7 +256,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                     required
                     value={originCity}
                     onChange={(e) => setOriginCity(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
                 <div>
@@ -261,7 +266,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                     required
                     value={destinationCity}
                     onChange={(e) => setDestinationCity(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
               </div>
@@ -272,7 +277,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
               <div>
                 <span className="text-[10px] font-JakartaBold text-neutral-400 uppercase">Estimated Haulage Quote</span>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-xl font-JakartaBold text-[#0286FF]">
+                  <span className="text-xl font-JakartaBold text-[#9EE6B5]">
                     ₦{estimatedFreightFare.toLocaleString()}
                   </span>
                   <span className="text-[10px] text-neutral-400 font-JakartaMedium">({estimatedKm} km)</span>
@@ -281,7 +286,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
 
               <button
                 type="submit"
-                className="px-5 py-3 rounded-xl bg-[#0286FF] hover:bg-blue-500 active:scale-95 text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all flex items-center gap-1.5"
+                className="px-5 py-3 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-95 text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_18px_rgba(158,230,181,0.4)] transition-all flex items-center gap-1.5"
               >
                 <Truck className="w-4 h-4" />
                 <span>Confirm Haulage</span>
@@ -301,7 +306,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                     <span className="text-xs font-JakartaBold text-white">{shipment.id}</span>
                     <p className="text-[10px] text-neutral-400">{shipment.cargoDescription}</p>
                   </div>
-                  <span className="text-[10px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 border border-[#9EE6B5]/20 px-2 py-0.5 rounded-full">
                     Confirmed
                   </span>
                 </div>
@@ -317,7 +322,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                   </div>
                   <div className="flex justify-between items-baseline pt-1">
                     <span className="text-neutral-400">Agreed Fare:</span>
-                    <span className="font-JakartaBold text-cyan-300 text-sm">₦{shipment.quotedFare.toLocaleString()}</span>
+                    <span className="font-JakartaBold text-[#9EE6B5] text-sm">₦{shipment.quotedFare.toLocaleString()}</span>
                   </div>
                 </div>
 
@@ -325,7 +330,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                   <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs">
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-JakartaBold text-white">{shipment.hauler.driverName}</span>
-                      <span className="text-[10px] text-cyan-400">{shipment.hauler.truckPlate}</span>
+                      <span className="text-[10px] text-[#9EE6B5]">{shipment.hauler.truckPlate}</span>
                     </div>
                     <p className="text-[10px] text-neutral-400">{shipment.hauler.company}</p>
                   </div>
@@ -342,7 +347,7 @@ export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal =
                 </p>
                 <button
                   onClick={() => setActiveTab('quote')}
-                  className="mt-3 px-4 py-2 rounded-xl bg-[#0286FF] text-white text-xs font-JakartaBold shadow-md"
+                  className="mt-3 px-4 py-2 rounded-xl bg-[#9EE6B5] text-black font-extrabold text-xs shadow-[0_0_14px_rgba(158,230,181,0.35)]"
                 >
                   Create Freight Request
                 </button>

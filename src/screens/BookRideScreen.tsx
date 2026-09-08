@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
-import { ArrowLeft, Star, CheckCircle, CreditCard, Shield, MapPin, Clock } from 'lucide-react';
+import { ArrowLeft, Star, CreditCard, Shield, MapPin, Clock, Sparkles, CheckCircle2 } from 'lucide-react';
+import { VEHICLE_3D_ASSETS } from '../data/vehicleAssets';
 
 export const BookRideScreen: React.FC = () => {
   const setScreen = useBroaderStore((s) => s.setScreen);
@@ -28,13 +29,13 @@ export const BookRideScreen: React.FC = () => {
       addRide({
         ride_id: 'rd_' + Date.now().toString().slice(-5),
         origin_address: userAddress,
-        destination_address: destinationAddress || 'San Francisco Airport (SFO)',
-        origin_latitude: 37.78825,
-        origin_longitude: -122.4042,
-        destination_latitude: 37.6213,
-        destination_longitude: -122.3790,
+        destination_address: destinationAddress || 'Victoria Island, Lagos',
+        origin_latitude: 6.4549,
+        origin_longitude: 3.4246,
+        destination_latitude: 6.4281,
+        destination_longitude: 3.4219,
         ride_time: selectedDriver.time || 15,
-        fare_price: parseFloat(selectedDriver.price || '24.50'),
+        fare_price: parseFloat(selectedDriver.price || '3500'),
         payment_status: 'paid',
         driver_id: selectedDriver.id,
         user_id: user.id,
@@ -51,101 +52,117 @@ export const BookRideScreen: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full bg-[#F6F8FA] relative select-none">
+    <div className="flex flex-col min-h-full bg-[#020408] text-white relative select-none">
       {/* Header */}
-      <div className="flex items-center px-4 py-3 bg-white border-b border-slate-200 shrink-0">
+      <div className="flex items-center px-4 py-3.5 glass-nav border-b border-white/[0.08] shrink-0">
         <button
           onClick={() => setScreen('confirm-ride')}
-          className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors mr-3"
+          className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all active:scale-95 mr-3 text-neutral-300 hover:text-white"
         >
-          <ArrowLeft className="w-4 h-4 text-slate-700" />
+          <ArrowLeft className="w-4 h-4" />
         </button>
-        <h2 className="text-lg font-JakartaBold text-slate-900">Book Ride</h2>
+        <div>
+          <h2 className="text-sm font-JakartaBold text-white">Book Ride Confirmation</h2>
+          <p className="text-[11px] text-neutral-400 font-JakartaMedium">Verify trip details & driver</p>
+        </div>
       </div>
 
-      <div className="p-5 flex-1 flex flex-col justify-between overflow-y-auto">
-        <div>
-          <h3 className="text-sm font-JakartaBold text-slate-900 uppercase tracking-wider mb-3">
-            Ride Summary
-          </h3>
-
+      <div className="p-4 flex-1 flex flex-col justify-between overflow-y-auto custom-scrollbar space-y-4">
+        <div className="space-y-3">
           {/* Driver Highlight Card */}
-          <div className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-slate-200 shadow-xs mb-4">
-            <img
-              src={selectedDriver.profile_image_url}
-              alt={selectedDriver.title}
-              className="w-20 h-20 rounded-full object-cover border-4 border-blue-50 shadow-sm"
-            />
-            <h4 className="text-base font-JakartaBold text-slate-900 mt-2">
-              {selectedDriver.title}
-            </h4>
-            <div className="flex items-center gap-1 mt-0.5 text-xs text-amber-600 font-JakartaSemiBold">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>{selectedDriver.rating} Rating</span>
-              <span className="text-slate-300 mx-1">•</span>
-              <span className="text-slate-500 font-JakartaRegular">{selectedDriver.car_seats} seats</span>
+          <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 flex items-center gap-3.5 shadow-lg relative overflow-hidden">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/15 shrink-0 relative bg-black/40">
+              <img
+                src={selectedDriver.profile_image_url}
+                alt={selectedDriver.title}
+                className="w-full h-full object-cover"
+              />
             </div>
-          </div>
-
-          {/* Pricing & Time Breakdown (Matching Ryde bg-general-600) */}
-          <div className="bg-[#E6F3FF] rounded-2xl p-4 border border-blue-100 text-sm space-y-2.5 mb-4">
-            <div className="flex items-center justify-between pb-2 border-b border-blue-200/50">
-              <span className="text-slate-600 font-JakartaMedium">Ride Price</span>
-              <span className="text-base font-JakartaBold text-[#0CC25F]">
-                ${selectedDriver.price || '24.50'}
+            <div className="flex-1 min-w-0">
+              <h4 className="text-sm font-JakartaBold text-white truncate">
+                {selectedDriver.title}
+              </h4>
+              <div className="flex items-center gap-1.5 mt-0.5 text-xs text-amber-400 font-JakartaSemiBold">
+                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                <span>{selectedDriver.rating} Rating</span>
+                <span className="text-neutral-600 mx-0.5">•</span>
+                <span className="text-neutral-400 font-JakartaRegular">{selectedDriver.car_seats} seats</span>
+              </div>
+              <span className="text-[10px] font-JakartaMedium text-[#9EE6B5] bg-[#9EE6B5]/10 border border-[#9EE6B5]/25 px-2 py-0.5 rounded-full inline-block mt-1">
+                Verified Pro Driver
               </span>
             </div>
 
-            <div className="flex items-center justify-between pb-2 border-b border-blue-200/50">
-              <span className="text-slate-600 font-JakartaMedium">Estimated Pickup</span>
-              <span className="font-JakartaBold text-slate-800">
-                {selectedDriver.time || 4} mins
+            {/* 3D Car Thumbnail */}
+            <div className="w-16 h-12 shrink-0 flex items-center justify-center">
+              <img
+                src={VEHICLE_3D_ASSETS.car}
+                alt="Vehicle"
+                className="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
+              />
+            </div>
+          </div>
+
+          {/* Pricing & Time Breakdown */}
+          <div className="glass-panel rounded-2xl p-4 border border-white/[0.08] text-xs space-y-2.5 shadow-lg">
+            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+              <span className="text-neutral-400 font-JakartaMedium">Estimated Fare</span>
+              <span className="text-base font-JakartaBold text-[#9EE6B5]">
+                ₦{selectedDriver.price ? parseFloat(selectedDriver.price).toLocaleString() : '3,500'}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+              <span className="text-neutral-400 font-JakartaMedium">Estimated Pickup ETA</span>
+              <span className="font-JakartaBold text-white flex items-center gap-1">
+                <Clock className="w-3 h-3 text-[#9EE6B5]" />
+                <span>{selectedDriver.time || 4} mins</span>
               </span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-slate-600 font-JakartaMedium">Vehicle Type</span>
-              <span className="font-JakartaBold text-slate-800">Sedan</span>
+              <span className="text-neutral-400 font-JakartaMedium">Vehicle Class</span>
+              <span className="font-JakartaBold text-white">Broader 3D Premium Sedan</span>
             </div>
           </div>
 
           {/* Route Locations */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-200 text-xs space-y-3 mb-4">
+          <div className="glass-panel rounded-2xl p-4 border border-white/[0.08] text-xs space-y-3 shadow-lg">
             <div className="flex items-start gap-2.5">
-              <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#0286FF]" />
+              <div className="w-4 h-4 rounded-full bg-[#9EE6B5]/20 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#9EE6B5]" />
               </div>
               <div>
-                <span className="text-[10px] font-JakartaBold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[10px] font-JakartaBold text-neutral-400 uppercase tracking-wider block">
                   Pickup Location
                 </span>
-                <span className="font-JakartaMedium text-slate-800 text-xs">
-                  {userAddress}
+                <span className="font-JakartaMedium text-white text-xs">
+                  {userAddress || '15 Admiralty Way, Lekki Phase 1, Lagos'}
                 </span>
               </div>
             </div>
 
-            <div className="h-px bg-slate-100" />
+            <div className="h-px bg-white/[0.06]" />
 
             <div className="flex items-start gap-2.5">
-              <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               </div>
               <div>
-                <span className="text-[10px] font-JakartaBold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[10px] font-JakartaBold text-neutral-400 uppercase tracking-wider block">
                   Dropoff Location
                 </span>
-                <span className="font-JakartaMedium text-slate-800 text-xs">
-                  {destinationAddress || 'San Francisco International Airport (SFO)'}
+                <span className="font-JakartaMedium text-white text-xs">
+                  {destinationAddress || 'Victoria Island, Lagos'}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Payment Method Selector */}
-          <div className="mb-4">
-            <span className="text-xs font-JakartaBold text-slate-500 uppercase tracking-wider block mb-2">
-              Payment Method (Stripe)
+          <div>
+            <span className="text-xs font-JakartaBold text-neutral-400 uppercase tracking-wider block mb-2">
+              Payment Method
             </span>
             <div className="grid grid-cols-3 gap-2">
               <button
@@ -153,8 +170,8 @@ export const BookRideScreen: React.FC = () => {
                 onClick={() => setPaymentMethod('card')}
                 className={`py-2 px-2.5 rounded-xl border text-xs font-JakartaSemiBold flex flex-col items-center justify-center gap-1 transition-all ${
                   paymentMethod === 'card'
-                    ? 'bg-[#0286FF] text-white border-[#0286FF] shadow-xs'
-                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    ? 'bg-[#9EE6B5]/15 text-[#9EE6B5] border-[#9EE6B5] shadow-xs'
+                    : 'glass-panel text-neutral-300 border-white/[0.08] hover:bg-white/5'
                 }`}
               >
                 <CreditCard className="w-4 h-4" />
@@ -166,8 +183,8 @@ export const BookRideScreen: React.FC = () => {
                 onClick={() => setPaymentMethod('apple')}
                 className={`py-2 px-2.5 rounded-xl border text-xs font-JakartaSemiBold flex flex-col items-center justify-center gap-1 transition-all ${
                   paymentMethod === 'apple'
-                    ? 'bg-[#0286FF] text-white border-[#0286FF] shadow-xs'
-                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    ? 'bg-[#9EE6B5]/15 text-[#9EE6B5] border-[#9EE6B5] shadow-xs'
+                    : 'glass-panel text-neutral-300 border-white/[0.08] hover:bg-white/5'
                 }`}
               >
                 <span className="font-bold"> Pay</span>
@@ -179,11 +196,11 @@ export const BookRideScreen: React.FC = () => {
                 onClick={() => setPaymentMethod('cash')}
                 className={`py-2 px-2.5 rounded-xl border text-xs font-JakartaSemiBold flex flex-col items-center justify-center gap-1 transition-all ${
                   paymentMethod === 'cash'
-                    ? 'bg-[#0286FF] text-white border-[#0286FF] shadow-xs'
-                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    ? 'bg-[#9EE6B5]/15 text-[#9EE6B5] border-[#9EE6B5] shadow-xs'
+                    : 'glass-panel text-neutral-300 border-white/[0.08] hover:bg-white/5'
                 }`}
               >
-                <span className="font-bold">$ Cash</span>
+                <span className="font-bold">₦ Cash</span>
                 <span>Pay in Car</span>
               </button>
             </div>
@@ -194,34 +211,30 @@ export const BookRideScreen: React.FC = () => {
         <button
           onClick={handleConfirmRide}
           disabled={isProcessing}
-          className="w-full mt-2 py-3.5 rounded-full bg-[#0286FF] hover:bg-blue-600 active:scale-[0.99] text-white font-JakartaBold text-sm shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2"
+          className="w-full mt-2 py-4 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-[0.99] text-[#020408] font-extrabold font-JakartaBold text-sm shadow-[0_0_20px_rgba(158,230,181,0.4)] transition-all flex items-center justify-center gap-2"
         >
           {isProcessing ? (
             <span>Securing Ride...</span>
           ) : (
-            <span>Confirm & Book Ride (${selectedDriver.price || '24.50'})</span>
+            <span>Confirm & Book Ride (₦{selectedDriver.price ? parseFloat(selectedDriver.price).toLocaleString() : '3,500'})</span>
           )}
         </button>
       </div>
 
       {/* Success Modal */}
       {showSuccessModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-xs shadow-2xl text-center flex flex-col items-center animate-in fade-in zoom-in duration-200">
-            <div className="w-18 h-18 mb-3 flex items-center justify-center">
-              <img
-                src="/assets/images/check.png"
-                alt="Confirmed"
-                className="w-full h-full object-contain"
-              />
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="glass-panel border border-[#9EE6B5]/40 rounded-3xl p-6 w-full max-w-xs shadow-[0_0_30px_rgba(158,230,181,0.2)] text-center flex flex-col items-center animate-in fade-in zoom-in duration-200">
+            <div className="w-16 h-16 rounded-full bg-[#9EE6B5]/20 border border-[#9EE6B5]/40 mb-3 flex items-center justify-center text-[#9EE6B5]">
+              <CheckCircle2 className="w-9 h-9" />
             </div>
-            <h3 className="text-xl font-JakartaBold text-slate-900">Ride Confirmed!</h3>
-            <p className="text-xs text-slate-500 font-JakartaMedium mt-2 leading-relaxed">
-              <span className="font-bold text-slate-700">{selectedDriver.title}</span> has accepted your request and is heading to your pickup location.
+            <h3 className="text-lg font-JakartaBold text-white">Ride Confirmed!</h3>
+            <p className="text-xs text-neutral-300 font-JakartaMedium mt-2 leading-relaxed">
+              <span className="font-bold text-[#9EE6B5]">{selectedDriver.title}</span> has accepted your request and is heading to your pickup location.
             </p>
 
-            <div className="mt-4 p-2.5 bg-blue-50 rounded-xl w-full text-xs font-JakartaSemiBold text-blue-900 border border-blue-100 flex items-center justify-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-blue-600" />
+            <div className="mt-4 p-2.5 bg-[#9EE6B5]/10 rounded-xl w-full text-xs font-JakartaSemiBold text-[#9EE6B5] border border-[#9EE6B5]/25 flex items-center justify-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#9EE6B5]" />
               <span>Arriving in {selectedDriver.time || 4} minutes</span>
             </div>
 
@@ -230,7 +243,7 @@ export const BookRideScreen: React.FC = () => {
                 setShowSuccessModal(false);
                 setScreen('rides');
               }}
-              className="w-full mt-5 py-3 rounded-full bg-[#0286FF] text-white font-JakartaBold text-sm hover:bg-blue-600 transition-all shadow-md shadow-blue-500/30"
+              className="w-full mt-5 py-3 rounded-full bg-[#9EE6B5] text-black font-extrabold font-JakartaBold text-xs hover:bg-[#8fd8a6] transition-all shadow-[0_0_16px_rgba(158,230,181,0.4)]"
             >
               View in My Rides
             </button>

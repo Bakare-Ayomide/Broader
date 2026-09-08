@@ -121,7 +121,7 @@ export default function App() {
   };
 
   return (
-    <main id="app-root" className="min-h-screen w-full bg-[#020408] text-white flex justify-center selection:bg-blue-500/30">
+    <main id="app-root" className="min-h-screen w-full bg-[#020408] text-white flex justify-center selection:bg-[#9EE6B5]/30 selection:text-white">
       <div id="app-viewport" className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl min-h-screen bg-[#020408] text-white relative flex flex-col shadow-2xl border-x border-white/[0.08]">
         {renderScreen()}
       </div>

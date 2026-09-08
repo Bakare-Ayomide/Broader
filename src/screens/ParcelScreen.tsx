@@ -18,6 +18,7 @@ import {
 import { calculateParcelPrice } from '../services/backendService';
 import { ParcelDelivery } from '../types';
 import { soundEngine } from '../services/soundNotification';
+import { VEHICLE_3D_ASSETS } from '../data/vehicleAssets';
 
 interface ParcelScreenProps {
   onClose?: () => void;
@@ -160,6 +161,26 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
       <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar">
         {activeTab === 'send' ? (
           <form onSubmit={handleSendPackage} className="space-y-3.5">
+            {/* 3D Dispatch Fleet Card */}
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-3.5 flex items-center gap-3.5 bg-gradient-to-r from-[#9EE6B5]/10 via-white/[0.02] to-transparent">
+              <img
+                src={VEHICLE_3D_ASSETS.dispatch}
+                alt="3D Dispatch Rider"
+                className="w-20 h-16 object-contain filter drop-shadow-[0_4px_12px_rgba(158,230,181,0.4)] shrink-0"
+              />
+              <div>
+                <span className="text-[10px] font-JakartaBold uppercase tracking-wider text-[#9EE6B5]">
+                  Broader Fast Express Logistics
+                </span>
+                <h3 className="text-xs font-JakartaBold text-white mt-0.5">
+                  Secure Moto & Boxed Courier
+                </h3>
+                <p className="text-[10px] text-neutral-400 mt-0.5">
+                  Tracked point-to-point dispatch across Lagos Island, Mainland & Peninsula.
+                </p>
+              </div>
+            </div>
+
             {/* Sender Card */}
             <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
               <div className="flex items-center gap-2 text-white font-JakartaBold text-xs uppercase tracking-wider">
@@ -390,11 +411,13 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                 </div>
 
                 {parcel.courier && (
-                  <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
+                  <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] flex items-center justify-center font-bold text-xs">
-                        SG
-                      </div>
+                      <img
+                        src={VEHICLE_3D_ASSETS.dispatch}
+                        alt="Dispatch Courier"
+                        className="w-12 h-10 object-contain drop-shadow-[0_2px_8px_rgba(158,230,181,0.4)] shrink-0"
+                      />
                       <div>
                         <span className="text-xs font-JakartaBold text-white block">{parcel.courier.name}</span>
                         <span className="text-[10px] text-neutral-400">{parcel.courier.vehiclePlate}</span>
@@ -402,7 +425,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                     </div>
                     <a
                       href={`tel:${parcel.courier.phone}`}
-                      className="px-3 py-1.5 rounded-lg bg-[#9EE6B5]/15 border border-[#9EE6B5]/30 text-[#9EE6B5] text-xs font-JakartaBold hover:bg-[#9EE6B5]/25 transition-all flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-lg bg-[#9EE6B5]/15 border border-[#9EE6B5]/30 text-[#9EE6B5] text-xs font-JakartaBold hover:bg-[#9EE6B5]/25 transition-all flex items-center gap-1 shrink-0"
                     >
                       <Phone className="w-3 h-3" />
                       <span>Call</span>

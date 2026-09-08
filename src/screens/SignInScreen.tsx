@@ -137,7 +137,7 @@ export const SignInScreen: React.FC = () => {
               }}
               className={`flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all ${
                 authMode === 'email'
-                  ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                  ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
@@ -153,7 +153,7 @@ export const SignInScreen: React.FC = () => {
               }}
               className={`flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all ${
                 authMode === 'phone'
-                  ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                  ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
@@ -183,7 +183,7 @@ export const SignInScreen: React.FC = () => {
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder="name@domain.ng"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all"
                   />
                 </div>
               </div>
@@ -194,7 +194,7 @@ export const SignInScreen: React.FC = () => {
                 </label>
                 <div className="relative flex items-center">
                   <div className="absolute left-3 flex items-center gap-1 border-r border-white/10 pr-2">
-                    <span className="text-xs font-JakartaBold text-cyan-300">+234</span>
+                    <span className="text-xs font-JakartaBold text-[#9EE6B5]">+234</span>
                   </div>
                   <input
                     type="tel"
@@ -203,7 +203,7 @@ export const SignInScreen: React.FC = () => {
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                     placeholder="803 123 4567"
-                    className="w-full pl-16 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaBold text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all tracking-wide"
+                    className="w-full pl-16 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaBold text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all tracking-wide"
                   />
                 </div>
               </div>
@@ -219,7 +219,7 @@ export const SignInScreen: React.FC = () => {
                     setUseOtpLogin(!useOtpLogin);
                     setError(null);
                   }}
-                  className="text-[10px] font-JakartaBold text-[#0286FF] hover:underline"
+                  className="text-[10px] font-JakartaBold text-[#9EE6B5] hover:underline"
                 >
                   {useOtpLogin ? 'Use Password instead' : 'Use SMS OTP instead'}
                 </button>
@@ -238,12 +238,12 @@ export const SignInScreen: React.FC = () => {
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                     placeholder="Enter 6-digit OTP"
-                    className="flex-1 px-3.5 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-mono font-bold tracking-widest text-white focus:outline-none focus:border-[#0286FF] transition-all"
+                    className="flex-1 px-3.5 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-mono font-bold tracking-widest text-white focus:outline-none focus:border-[#9EE6B5] transition-all"
                   />
                   <button
                     type="button"
                     onClick={handleSendOtp}
-                    className="px-3 py-2.5 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 text-xs font-JakartaBold whitespace-nowrap border border-blue-500/30"
+                    className="px-3 py-2.5 rounded-xl bg-[#9EE6B5]/15 hover:bg-[#9EE6B5]/25 text-[#9EE6B5] text-xs font-JakartaBold whitespace-nowrap border border-[#9EE6B5]/30"
                   >
                     {otpSent ? 'Resend OTP' : 'Get OTP'}
                   </button>
@@ -266,7 +266,7 @@ export const SignInScreen: React.FC = () => {
                       soundEngine.playClick();
                       setShowForgotModal(true);
                     }}
-                    className="text-[10px] font-JakartaSemiBold text-[#0286FF] hover:underline"
+                    className="text-[10px] font-JakartaSemiBold text-[#9EE6B5] hover:underline"
                   >
                     Forgot password?
                   </button>
@@ -279,7 +279,7 @@ export const SignInScreen: React.FC = () => {
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
                     placeholder="Enter password"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all"
                   />
                 </div>
               </div>
@@ -287,7 +287,7 @@ export const SignInScreen: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full mt-3 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 active:scale-[0.98] text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all"
+              className="w-full mt-3 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-[0.98] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_18px_rgba(158,230,181,0.4)] transition-all"
             >
               Sign In to Broader
             </button>
@@ -319,7 +319,7 @@ export const SignInScreen: React.FC = () => {
                 soundEngine.playClick();
                 setScreen('sign-up');
               }}
-              className="text-[#0286FF] font-JakartaBold hover:underline ml-1"
+              className="text-[#9EE6B5] font-JakartaBold hover:underline ml-1"
             >
               Sign Up
             </button>
@@ -333,7 +333,7 @@ export const SignInScreen: React.FC = () => {
           <div className="glass-panel w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-white/15 text-white animate-in zoom-in-95">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-blue-500/20 text-[#0286FF] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] flex items-center justify-center">
                   <KeyRound className="w-4 h-4" />
                 </div>
                 <h4 className="text-sm font-JakartaBold text-white">Reset Password</h4>
@@ -356,7 +356,7 @@ export const SignInScreen: React.FC = () => {
                 </div>
                 <p className="text-xs font-JakartaBold text-white">Reset Link Dispatched</p>
                 <p className="text-[11px] text-neutral-400 font-JakartaMedium">
-                  We've sent password reset instructions to <span className="text-cyan-300">{forgotIdentifier}</span>.
+                  We've sent password reset instructions to <span className="text-[#9EE6B5]">{forgotIdentifier}</span>.
                 </p>
               </div>
             ) : (
@@ -374,12 +374,12 @@ export const SignInScreen: React.FC = () => {
                     value={forgotIdentifier}
                     onChange={(e) => setForgotIdentifier(e.target.value)}
                     placeholder="email@domain.com or 080..."
-                    className="w-full px-3.5 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3.5 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-md transition-all"
+                  className="w-full py-2.5 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-md transition-all"
                 >
                   Send Recovery Link
                 </button>

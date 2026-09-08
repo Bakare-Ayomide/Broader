@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { AmbulanceBooking } from '../types';
 import { soundEngine } from '../services/soundNotification';
+import { VEHICLE_3D_ASSETS } from '../data/vehicleAssets';
 
 interface AmbulanceScreenProps {
   onClose?: () => void;
@@ -158,6 +159,26 @@ export const AmbulanceScreen: React.FC<AmbulanceScreenProps> = ({ onClose, isMod
       <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar">
         {activeTab === 'request' ? (
           <form onSubmit={handleDispatch} className="space-y-3.5">
+            {/* 3D Ambulance Fleet Showcase */}
+            <div className="glass-panel rounded-2xl border border-red-500/20 p-3.5 flex items-center gap-3.5 bg-gradient-to-r from-red-950/30 to-black/40">
+              <img
+                src={VEHICLE_3D_ASSETS.ambulance}
+                alt="3D Ambulance"
+                className="w-24 h-16 object-contain filter drop-shadow-[0_4px_14px_rgba(239,68,68,0.5)] shrink-0"
+              />
+              <div>
+                <span className="text-[10px] font-JakartaBold uppercase tracking-wider text-red-400">
+                  Lagos MedDesk Emergency Fleet
+                </span>
+                <h3 className="text-xs font-JakartaBold text-white mt-0.5">
+                  Critical Response Ambulances
+                </h3>
+                <p className="text-[10px] text-neutral-400 mt-0.5">
+                  On-board ICU monitors, oxygen therapy, and emergency paramedics dispatched in minutes.
+                </p>
+              </div>
+            </div>
+
             {/* Quick condition selector */}
             <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
               <div className="flex items-center gap-2 text-white font-JakartaBold">
@@ -315,14 +336,21 @@ export const AmbulanceScreen: React.FC<AmbulanceScreenProps> = ({ onClose, isMod
                 </div>
 
                 {b.paramedic && (
-                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-JakartaBold text-white">{b.paramedic.name}</p>
-                      <p className="text-[10px] text-cyan-300">{b.paramedic.unitId}</p>
+                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <img
+                        src={VEHICLE_3D_ASSETS.ambulance}
+                        alt="Ambulance"
+                        className="w-12 h-9 object-contain drop-shadow-[0_2px_8px_rgba(239,68,68,0.4)]"
+                      />
+                      <div>
+                        <p className="text-xs font-JakartaBold text-white">{b.paramedic.name}</p>
+                        <p className="text-[10px] text-[#9EE6B5]">{b.paramedic.unitId}</p>
+                      </div>
                     </div>
                     <a
                       href={`tel:${b.paramedic.phone}`}
-                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-JakartaBold flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-JakartaBold flex items-center gap-1 shrink-0"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call Medic</span>

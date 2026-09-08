@@ -89,7 +89,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
           </button>
           <div>
             <div className="flex items-center gap-1.5">
-              <Key className="w-3.5 h-3.5 text-[#0286FF]" />
+              <Key className="w-3.5 h-3.5 text-[#9EE6B5]" />
               <h2 className="text-sm font-JakartaBold text-white leading-none">Vehicle Rentals & Chauffeur</h2>
             </div>
             <p className="text-[11px] text-neutral-400 font-JakartaMedium mt-0.5">
@@ -98,8 +98,8 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
           </div>
         </div>
 
-        <span className="text-[10px] font-JakartaBold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-full flex items-center gap-1">
-          <ShieldCheck className="w-3 h-3 text-[#0286FF]" />
+        <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 border border-[#9EE6B5]/25 px-2.5 py-1 rounded-full flex items-center gap-1">
+          <ShieldCheck className="w-3 h-3 text-[#9EE6B5]" />
           <span>Full Insurance</span>
         </span>
       </div>
@@ -114,7 +114,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
             }}
             className={`flex-1 py-2 rounded-xl transition-all ${
               activeTab === 'browse'
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -127,7 +127,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
             }}
             className={`flex-1 py-2 rounded-xl transition-all ${
               activeTab === 'my_rentals'
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -156,7 +156,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
                 <select
                   value={pickupHub}
                   onChange={(e) => setPickupHub(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-white/10 font-JakartaMedium text-white bg-white/[0.05] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 font-JakartaMedium text-white bg-white/[0.05] focus:outline-none focus:border-[#9EE6B5]"
                 >
                   {lagosHubs.map((hub) => (
                     <option key={hub} value={hub} className="bg-[#0a0f1d]">
@@ -210,7 +210,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
                     }}
                     className={`w-full py-2 px-2 rounded-xl border font-JakartaBold text-xs text-center transition-all ${
                       withDriver
-                        ? 'bg-[#0286FF]/20 border-[#0286FF] text-cyan-300'
+                        ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] text-[#9EE6B5]'
                         : 'bg-white/[0.04] border-white/10 text-neutral-400 hover:text-white'
                     }`}
                   >
@@ -233,14 +233,14 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
                       <img
                         src={vehicle.image}
                         alt={vehicle.name}
-                        className="w-24 h-20 rounded-xl object-cover border border-white/10 shrink-0 bg-black/40"
+                        className="w-24 h-20 rounded-xl object-contain p-1 border border-white/10 shrink-0 bg-black/40 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <h4 className="text-xs font-JakartaBold text-white truncate">
                             {vehicle.name}
                           </h4>
-                          <span className="text-[10px] font-JakartaBold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 rounded capitalize">
+                          <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 border border-[#9EE6B5]/20 px-1.5 py-0.5 rounded capitalize">
                             {vehicle.type}
                           </span>
                         </div>
@@ -273,7 +273,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
                               soundEngine.playClick();
                               setSelectedRentalVehicle(vehicle);
                             }}
-                            className="px-3.5 py-1.5 rounded-xl bg-[#0286FF] text-white text-xs font-JakartaBold hover:bg-blue-500 transition-all shadow-[0_0_12px_rgba(2,134,255,0.4)]"
+                            className="px-3.5 py-1.5 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black text-xs font-extrabold font-JakartaBold transition-all shadow-[0_0_12px_rgba(158,230,181,0.4)]"
                           >
                             Book Vehicle
                           </button>
@@ -292,7 +292,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
               rentals.map((item) => (
                 <div key={item.id} className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-cyan-300">{item.id}</span>
+                    <span className="font-mono font-bold text-[#9EE6B5]">{item.id}</span>
                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-JakartaBold text-[10px] uppercase border border-emerald-500/25">
                       {item.status}
                     </span>
@@ -312,7 +312,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
                     <span className="text-neutral-400 text-[11px]">
                       {item.withDriver ? 'Chauffeur Included' : 'Self-Drive'}
                     </span>
-                    <span className="text-sm font-JakartaBold text-[#0286FF]">
+                    <span className="text-sm font-JakartaBold text-[#9EE6B5]">
                       ₦{item.totalFare.toLocaleString()}
                     </span>
                   </div>
@@ -333,7 +333,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
                     soundEngine.playClick();
                     setActiveTab('browse');
                   }}
-                  className="mt-4 px-4 py-2 rounded-xl bg-[#0286FF] text-white text-xs font-JakartaBold shadow-md"
+                  className="mt-4 px-4 py-2 rounded-xl bg-[#9EE6B5] text-black font-extrabold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)]"
                 >
                   Browse Fleet
                 </button>
@@ -361,7 +361,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
               <img
                 src={selectedRentalVehicle.image}
                 alt={selectedRentalVehicle.name}
-                className="w-16 h-12 rounded-xl object-cover bg-black/40"
+                className="w-16 h-12 rounded-xl object-contain p-1 bg-black/40"
               />
               <div>
                 <h5 className="font-JakartaBold text-xs text-white">{selectedRentalVehicle.name}</h5>
@@ -390,11 +390,11 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
               </div>
               <div className="flex justify-between py-1 border-b border-white/[0.06]">
                 <span className="text-neutral-400 font-JakartaMedium">Refundable Security Deposit</span>
-                <span className="font-JakartaBold text-cyan-300">₦50,000</span>
+                <span className="font-JakartaBold text-[#9EE6B5]">₦50,000</span>
               </div>
               <div className="flex justify-between pt-1 font-JakartaBold text-sm text-white">
                 <span>Total Due Now</span>
-                <span className="text-[#0286FF]">
+                <span className="text-[#9EE6B5]">
                   ₦{((selectedRentalVehicle.dailyRate + (withDriver ? 10000 : 0)) * rentalDays).toLocaleString()}
                 </span>
               </div>
@@ -404,7 +404,7 @@ export const RentalScreen: React.FC<RentalScreenProps> = ({ onClose, isModal = f
               <button
                 type="button"
                 onClick={handleConfirmBooking}
-                className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all"
+                className="w-full py-3.5 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_18px_rgba(158,230,181,0.4)] transition-all"
               >
                 Confirm & Pay via Broader Wallet
               </button>

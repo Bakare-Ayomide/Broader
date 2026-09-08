@@ -671,10 +671,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               <span
                 className={`w-2 h-2 rounded-full ${
                   isRadarSearching
-                    ? 'bg-blue-400 animate-ping'
+                    ? 'bg-[#9EE6B5] animate-ping'
                     : isTracking
                     ? 'bg-emerald-400 animate-pulse'
-                    : 'bg-emerald-400'
+                    : 'bg-[#9EE6B5]'
                 }`}
               />
               <span className="truncate max-w-[150px] sm:max-w-xs text-[11px]">
@@ -879,7 +879,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           {/* Street View Top Header */}
           <div className="p-3 bg-gradient-to-b from-black/90 to-transparent flex items-center justify-between z-20">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[10px] font-JakartaBold flex items-center gap-1">
+              <span className="px-2.5 py-1 rounded-full bg-[#9EE6B5]/20 border border-[#9EE6B5]/40 text-[#9EE6B5] text-[10px] font-JakartaBold flex items-center gap-1">
                 <Eye className="w-3 h-3" />
                 3D Street Level
               </span>
@@ -906,12 +906,12 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               className="absolute bottom-[38%] w-[160%] flex items-end justify-around opacity-40 transition-transform duration-300"
               style={{ transform: `translateX(${streetViewPan * 0.4}px)` }}
             >
-              <div className="w-16 h-40 bg-[#121c2d] rounded-t-sm relative border-t border-blue-400/40">
+              <div className="w-16 h-40 bg-[#121c2d] rounded-t-sm relative border-t border-[#9EE6B5]/40">
                 <div className="w-2 h-2 rounded-full bg-red-500 animate-ping absolute -top-1 left-7" />
               </div>
-              <div className="w-24 h-56 bg-[#0f1726] rounded-t-md relative border-t border-sky-400/30" />
+              <div className="w-24 h-56 bg-[#0f1726] rounded-t-md relative border-t border-emerald-400/30" />
               <div className="w-20 h-48 bg-[#152238] rounded-t-md relative" />
-              <div className="w-32 h-64 bg-[#0d1624] rounded-t-lg relative border-t border-blue-400/40" />
+              <div className="w-32 h-64 bg-[#0d1624] rounded-t-lg relative border-t border-[#9EE6B5]/40" />
               <div className="w-24 h-44 bg-[#111d2e] rounded-t-sm relative" />
               <div className="w-16 h-52 bg-[#0e1726] rounded-t-md relative" />
             </div>
@@ -947,7 +947,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   alt="3D Car"
                   className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.95)]"
                 />
-                <span className="text-[10px] font-JakartaBold text-blue-400 bg-black/80 px-2 py-0.5 rounded-full -mt-4 border border-blue-500/30">
+                <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-black/80 px-2 py-0.5 rounded-full -mt-4 border border-[#9EE6B5]/30">
                   Broader Comfort
                 </span>
               </div>

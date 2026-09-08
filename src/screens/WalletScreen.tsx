@@ -71,10 +71,10 @@ export const WalletScreen: React.FC = () => {
         <div className="glass-panel rounded-3xl border border-white/[0.08] p-5 shadow-2xl flex flex-col justify-between backdrop-blur-2xl">
           <div className="flex items-center justify-between text-neutral-400 mb-2">
             <span className="text-xs font-JakartaMedium flex items-center gap-1.5">
-              <Wallet className="w-4 h-4 text-[#0286FF]" />
+              <Wallet className="w-4 h-4 text-[#9EE6B5]" />
               Available Broader Balance
             </span>
-            <span className="text-[11px] font-JakartaSemiBold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+            <span className="text-[11px] font-JakartaSemiBold text-[#9EE6B5] bg-[#9EE6B5]/10 px-2 py-0.5 rounded-full border border-[#9EE6B5]/20">
               Active • Nigeria
             </span>
           </div>
@@ -88,7 +88,7 @@ export const WalletScreen: React.FC = () => {
           <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/[0.06]">
             <button
               onClick={() => setShowTopUpModal(true)}
-              className="flex-1 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_20px_rgba(2,134,255,0.4)] flex items-center justify-center gap-1.5 transition-all active:scale-[0.99]"
+              className="flex-1 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_20px_rgba(158,230,181,0.4)] flex items-center justify-center gap-1.5 transition-all active:scale-[0.99]"
             >
               <Plus className="w-4 h-4" />
               <span>Top Up Wallet</span>
@@ -106,7 +106,7 @@ export const WalletScreen: React.FC = () => {
               <button
                 key={amt}
                 onClick={() => handleTopUp(amt)}
-                className="py-2.5 px-2 rounded-2xl glass-panel border border-white/10 hover:border-[#0286FF] hover:bg-blue-500/10 active:scale-95 text-xs font-JakartaBold text-white transition-all text-center"
+                className="py-2.5 px-2 rounded-2xl glass-panel border border-white/10 hover:border-[#9EE6B5] hover:bg-[#9EE6B5]/10 active:scale-95 text-xs font-JakartaBold text-white transition-all text-center"
               >
                 +₦{(amt / 1000).toFixed(0)}k
               </button>
@@ -120,13 +120,13 @@ export const WalletScreen: React.FC = () => {
             <h3 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
               Payment Methods
             </h3>
-            <span className="text-[11px] font-JakartaSemiBold text-[#0286FF]">3 Configured</span>
+            <span className="text-[11px] font-JakartaSemiBold text-[#9EE6B5]">3 Configured</span>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-[#0286FF] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/10 text-[#9EE6B5] flex items-center justify-center">
                   <Wallet className="w-4 h-4" />
                 </div>
                 <div>
@@ -134,7 +134,7 @@ export const WalletScreen: React.FC = () => {
                   <p className="text-[10px] text-neutral-400 font-JakartaMedium">Instant 1-tap checkout</p>
                 </div>
               </div>
-              <span className="text-[10px] font-JakartaBold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 px-2 py-0.5 rounded-full border border-[#9EE6B5]/20">
                 Primary
               </span>
             </div>
@@ -288,7 +288,7 @@ export const WalletScreen: React.FC = () => {
 
             <button
               onClick={() => setSelectedTransaction(null)}
-              className="w-full mt-5 py-3 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_16px_rgba(2,134,255,0.4)] transition-all"
+              className="w-full mt-5 py-3 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_16px_rgba(158,230,181,0.4)] transition-all"
             >
               Done
             </button>
@@ -312,7 +312,7 @@ export const WalletScreen: React.FC = () => {
                 onClick={() => setSelectedMethod('card')}
                 className={`py-2.5 px-3 rounded-2xl border text-xs font-JakartaSemiBold flex items-center justify-center gap-2 transition-all ${
                   selectedMethod === 'card'
-                    ? 'border-[#0286FF] bg-blue-500/20 text-blue-400'
+                    ? 'border-[#9EE6B5] bg-[#9EE6B5]/15 text-[#9EE6B5] font-JakartaBold'
                     : 'glass-panel border-white/10 text-neutral-300 hover:bg-white/5'
                 }`}
               >
@@ -325,7 +325,7 @@ export const WalletScreen: React.FC = () => {
                 onClick={() => setSelectedMethod('bank')}
                 className={`py-2.5 px-3 rounded-2xl border text-xs font-JakartaSemiBold flex items-center justify-center gap-2 transition-all ${
                   selectedMethod === 'bank'
-                    ? 'border-[#0286FF] bg-blue-500/20 text-blue-400'
+                    ? 'border-[#9EE6B5] bg-[#9EE6B5]/15 text-[#9EE6B5] font-JakartaBold'
                     : 'glass-panel border-white/10 text-neutral-300 hover:bg-white/5'
                 }`}
               >
@@ -344,7 +344,7 @@ export const WalletScreen: React.FC = () => {
                 placeholder="e.g. 5000"
                 value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
-                className="w-full px-4 py-3 bg-black/60 border border-white/15 rounded-2xl text-sm font-JakartaBold text-white placeholder-neutral-500 focus:outline-none focus:border-[#0286FF]"
+                className="w-full px-4 py-3 bg-black/60 border border-white/15 rounded-2xl text-sm font-JakartaBold text-white placeholder-neutral-500 focus:outline-none focus:border-[#9EE6B5]"
               />
             </div>
 
@@ -359,7 +359,7 @@ export const WalletScreen: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleTopUp(Number(customAmount) || 5000)}
-                className="flex-1 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_16px_rgba(2,134,255,0.4)]"
+                className="flex-1 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_16px_rgba(158,230,181,0.4)]"
               >
                 Pay ₦{Number(customAmount) ? Number(customAmount).toLocaleString() : '5,000'}
               </button>

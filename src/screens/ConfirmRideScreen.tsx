@@ -247,7 +247,7 @@ export const ConfirmRideScreen: React.FC = () => {
                     : 'text-neutral-400 hover:text-white'
                 }`}
               >
-                <Clock className="w-3.5 h-3.5 text-[#0286FF]" />
+                <Clock className="w-3.5 h-3.5 text-[#9EE6B5]" />
                 <span>Ride Now</span>
               </button>
               <button
@@ -328,7 +328,7 @@ export const ConfirmRideScreen: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setScreen('wallet')}
-                  className="text-[11px] font-JakartaBold text-[#0286FF] hover:underline flex items-center gap-1"
+                  className="text-[11px] font-JakartaBold text-[#9EE6B5] hover:underline flex items-center gap-1"
                 >
                   <Plus className="w-3 h-3" />
                   <span>Top Up Wallet</span>
@@ -345,12 +345,12 @@ export const ConfirmRideScreen: React.FC = () => {
                   }}
                   className={`p-2.5 rounded-2xl border text-left transition-all relative ${
                     selectedPaymentMethod === 'wallet'
-                      ? 'bg-blue-500/15 border-[#0286FF] ring-1 ring-[#0286FF]'
+                      ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] ring-1 ring-[#9EE6B5]'
                       : 'glass-panel border-white/[0.08] hover:bg-white/5'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <Wallet className="w-4 h-4 text-[#0286FF]" />
+                    <Wallet className="w-4 h-4 text-[#9EE6B5]" />
                     <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1 rounded">
                       Instant
                     </span>
@@ -372,7 +372,7 @@ export const ConfirmRideScreen: React.FC = () => {
                   }}
                   className={`p-2.5 rounded-2xl border text-left transition-all ${
                     selectedPaymentMethod === 'card'
-                      ? 'bg-blue-500/15 border-[#0286FF] ring-1 ring-[#0286FF]'
+                      ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] ring-1 ring-[#9EE6B5]'
                       : 'glass-panel border-white/[0.08] hover:bg-white/5'
                   }`}
                 >
@@ -394,7 +394,7 @@ export const ConfirmRideScreen: React.FC = () => {
                   }}
                   className={`p-2.5 rounded-2xl border text-left transition-all ${
                     selectedPaymentMethod === 'cash'
-                      ? 'bg-blue-500/15 border-[#0286FF] ring-1 ring-[#0286FF]'
+                      ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] ring-1 ring-[#9EE6B5]'
                       : 'glass-panel border-white/[0.08] hover:bg-white/5'
                   }`}
                 >
@@ -431,7 +431,7 @@ export const ConfirmRideScreen: React.FC = () => {
               ) : (
                 <button
                   onClick={handleStartBooking}
-                  className="w-full py-4 rounded-full bg-[#0286FF] hover:bg-blue-500 active:scale-[0.99] text-white font-JakartaBold text-sm shadow-[0_0_20px_rgba(2,134,255,0.4)] transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-[0.99] text-[#020408] font-extrabold font-JakartaBold text-sm shadow-[0_0_20px_rgba(158,230,181,0.4)] transition-all flex items-center justify-center gap-2"
                 >
                   <span>Request {currentSelectedVehicle ? currentSelectedVehicle.name : 'Broader Ride'}</span>
                   <ChevronRight className="w-4 h-4" />
