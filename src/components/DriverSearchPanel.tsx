@@ -129,14 +129,14 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
       {/* Search Radar Animation Card with 3D Image */}
       <div className="my-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex flex-col gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-16 h-16 rounded-xl bg-black/60 border border-white/10 overflow-hidden relative shrink-0 flex items-center justify-center">
+          <div className="w-16 h-16 relative shrink-0 flex items-center justify-center">
+            <div className="absolute bottom-1 w-12 h-2.5 bg-black/80 rounded-full blur-[2px] pointer-events-none" />
             <img
               src={vehicle3DImg}
               alt={vehicle.name}
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
           </div>
           <div className="min-w-0 flex-1">
             <span className="text-[10px] font-JakartaBold uppercase tracking-wider text-blue-400">

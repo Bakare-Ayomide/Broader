@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBroaderStore } from '../../store/useBroaderStore';
-import { Clock, MapPin, Star, ChevronRight, X, Check, Car, User, Navigation } from 'lucide-react';
+import { Clock, MapPin, Star, ChevronRight, X, Check, Car, User, Navigation, Volume2 } from 'lucide-react';
+import { soundEngine } from '../../services/soundNotification';
 
 export const DriverIncomingModal: React.FC = () => {
   const incomingDriverRequest = useBroaderStore((s) => s.incomingDriverRequest);
@@ -8,24 +9,32 @@ export const DriverIncomingModal: React.FC = () => {
 
   const [timerSeconds, setTimerSeconds] = useState(15);
 
-  // Synchronize timer with request
+  // Synchronize timer and sound alert with incoming request
   useEffect(() => {
     if (!incomingDriverRequest) {
+      soundEngine.stopDispatchLoop();
       setTimerSeconds(15);
       return;
     }
 
     setTimerSeconds(15);
+    // Start continuous audio dispatch alert chime for driver
+    soundEngine.startDispatchLoop();
+
     const timer = setInterval(() => {
       setTimerSeconds((prev) => Math.max(0, prev - 1));
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      soundEngine.stopDispatchLoop();
+    };
   }, [incomingDriverRequest]);
 
   // Request auto-expires when timer hits 0
   useEffect(() => {
     if (incomingDriverRequest && timerSeconds === 0) {
+      soundEngine.stopDispatchLoop();
       respondToDriverRequest(false);
     }
   }, [incomingDriverRequest, timerSeconds, respondToDriverRequest]);
@@ -34,14 +43,30 @@ export const DriverIncomingModal: React.FC = () => {
 
   const estimatedFare = Math.round(incomingDriverRequest.estimatedEarnings / 0.85);
 
+  const handleDecline = () => {
+    soundEngine.stopDispatchLoop();
+    soundEngine.playClick();
+    respondToDriverRequest(false);
+  };
+
+  const handleAccept = () => {
+    soundEngine.stopDispatchLoop();
+    soundEngine.playSuccess();
+    respondToDriverRequest(true);
+  };
+
   return (
-    <div className="glass-panel rounded-3xl p-4 shadow-2xl border border-blue-500/40 animate-in zoom-in-95 duration-200 space-y-3">
+    <div className="glass-panel rounded-3xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] border border-blue-500/50 animate-in zoom-in-95 duration-200 space-y-3 relative overflow-hidden">
+      {/* Top subtle blue laser line */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#0286FF] to-transparent shadow-[0_0_12px_rgba(2,134,255,0.9)]" />
+
       {/* Top Header with Pulse & Countdown Timer */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-[#0286FF] animate-ping" />
-          <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
-            Incoming Ride Dispatch
+          <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <span>Incoming Ride Dispatch</span>
+            <Volume2 className="w-3 h-3 text-[#0286FF] animate-pulse" />
           </h4>
         </div>
 
@@ -137,10 +162,11 @@ export const DriverIncomingModal: React.FC = () => {
         </div>
       )}
 
-      {/* Action Buttons: Reject & Accept with Icon Buttons */}
+      {/* Action Buttons: Reject & Accept */}
       <div className="grid grid-cols-3 gap-2 pt-1">
         <button
-          onClick={() => respondToDriverRequest(false)}
+          type="button"
+          onClick={handleDecline}
           className="py-3 rounded-2xl border border-white/15 hover:bg-white/5 active:scale-95 text-neutral-300 font-JakartaBold text-xs flex items-center justify-center gap-1.5 transition-all"
         >
           <X className="w-3.5 h-3.5 text-neutral-400" />
@@ -148,8 +174,9 @@ export const DriverIncomingModal: React.FC = () => {
         </button>
 
         <button
-          onClick={() => respondToDriverRequest(true)}
-          className="col-span-2 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
+          type="button"
+          onClick={handleAccept}
+          className="col-span-2 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
         >
           <Check className="w-4 h-4" />
           <span>Accept Trip</span>

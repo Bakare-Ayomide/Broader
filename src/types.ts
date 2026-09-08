@@ -55,6 +55,7 @@ export interface MarkerData {
   price?: string;
   plate_number?: string;
   car_model?: string;
+  vehicle_type?: string;
   car_color?: string;
   phone?: string;
 }
@@ -157,6 +158,7 @@ export type ScreenType =
   | 'parcel'
   | 'freight'
   | 'ambulance'
+  | 'parts'
   | 'become-driver'
   | 'driver-home'
   | 'driver-earnings';
@@ -328,10 +330,12 @@ export interface RentalBooking {
   pickupDate?: string;
   returnDate?: string;
   durationDays?: number;
+  days?: number;
   pickupLocation: string;
   withDriver?: boolean;
   totalPrice?: number;
   totalFare?: number;
+  dailyRate?: number;
   depositAmount?: number;
   paymentMethod?: 'wallet' | 'card' | 'cash';
   paymentStatus?: 'paid' | 'pending';
@@ -384,11 +388,13 @@ export type FreightVehicleType = 'pickup' | 'van' | 'lorry' | 'heavy_truck';
 
 export interface FreightShipment {
   id: string;
-  cargoType: CargoCategory | string;
+  cargoType?: CargoCategory | string;
+  cargoDescription?: string;
   cargoWeightKg?: number;
   weightTons?: number;
   dimensions?: { length: number; width: number; height: number };
   pickupAddress?: string;
+  pickupDate?: string;
   origin?: string;
   destinationAddress?: string;
   destination?: string;
@@ -398,6 +404,7 @@ export interface FreightShipment {
   requiresForklift?: boolean;
   requiresHelpers?: boolean;
   totalFreightCost?: number;
+  quotedFare?: number;
   estimatedPrice?: number;
   paymentMethod?: 'wallet' | 'card' | 'cash';
   paymentStatus?: 'paid' | 'pending';
@@ -409,6 +416,14 @@ export interface FreightShipment {
     name: string;
     phone: string;
     plateNumber: string;
+  };
+  hauler?: {
+    name?: string;
+    driverName?: string;
+    phone?: string;
+    truckId?: string;
+    truckPlate?: string;
+    company?: string;
   };
   scheduledDate?: string;
   createdAt?: string;
@@ -426,17 +441,24 @@ export interface AmbulanceBooking {
   ambulanceType: AmbulanceType | string;
   pickupAddress?: string;
   pickupLocation?: string;
+  patientLocation?: string;
   destinationHospital: string;
   callerPhone?: string;
   priorityLevel?: 'immediate' | 'urgent';
   fee?: number;
   cost?: number;
+  emergencyFare?: number;
   status: 'dispatched' | 'en_route_pickup' | 'on_scene' | 'transporting' | 'arrived_hospital' | string;
   unitNumber?: string;
   paramedicTeam?: string;
   paramedicName?: string;
   paramedicContact?: string;
   paramedicPhone?: string;
+  paramedic?: {
+    name: string;
+    phone: string;
+    unitId: string;
+  };
   vehiclePlate?: string;
   createdAt?: string;
   etaMinutes: number;

@@ -35,15 +35,15 @@ export const RideCard: React.FC<RideCardProps> = ({ ride, onPress }) => {
     >
       <div className="flex items-center gap-3.5">
         {/* Lifelike 3D Vehicle Render Thumbnail */}
-        <div className="relative w-20 h-20 rounded-xl bg-black/60 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+        <div className="relative w-20 h-20 shrink-0 flex items-center justify-center">
+          <div className="absolute bottom-1 w-16 h-3 bg-black/80 rounded-full blur-[2px] pointer-events-none" />
           <img
             src={vehicle3DImg}
             alt={ride.vehicle_type || 'Vehicle'}
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-          <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-JakartaBold text-blue-400 border border-white/10 shadow-xs">
+          <div className="absolute bottom-0 right-0 px-1.5 py-0.5 rounded-full bg-black/80 text-[8px] font-JakartaBold text-blue-400 border border-white/10 shadow-xs">
             3D
           </div>
         </div>

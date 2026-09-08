@@ -16,12 +16,14 @@ import { RentalScreen } from './screens/RentalScreen';
 import { ParcelScreen } from './screens/ParcelScreen';
 import { FreightScreen } from './screens/FreightScreen';
 import { AmbulanceScreen } from './screens/AmbulanceScreen';
+import { AutoPartsScreen } from './screens/AutoPartsScreen';
 import { BecomeDriverScreen } from './screens/BecomeDriverScreen';
 import { DriverHomeScreen } from './screens/DriverHomeScreen';
 import { DriverEarningsScreen } from './screens/DriverEarningsScreen';
 
 export default function App() {
   const currentScreen = useBroaderStore((s) => s.currentScreen);
+  const setScreen = useBroaderStore((s) => s.setScreen);
 
   // Determine which screen to render
   const renderScreen = () => {
@@ -39,13 +41,15 @@ export default function App() {
       case 'book-ride':
         return <BookRideScreen />;
       case 'rental':
-        return <RentalScreen />;
+        return <RentalScreen onClose={() => setScreen('home')} />;
       case 'parcel':
-        return <ParcelScreen />;
+        return <ParcelScreen onClose={() => setScreen('home')} />;
       case 'freight':
-        return <FreightScreen />;
+        return <FreightScreen onClose={() => setScreen('home')} />;
       case 'ambulance':
-        return <AmbulanceScreen />;
+        return <AmbulanceScreen onClose={() => setScreen('home')} />;
+      case 'parts':
+        return <AutoPartsScreen onClose={() => setScreen('home')} />;
       case 'become-driver':
         return <BecomeDriverScreen />;
       case 'driver-home':
@@ -58,19 +62,19 @@ export default function App() {
             <div className="flex-1 pb-24">
               <WalletScreen />
             </div>
-            <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
+            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40">
               <BottomNav />
             </div>
           </div>
         );
       case 'home':
         return (
-          <div className="flex flex-col min-h-screen justify-between relative">
-            <div className="flex-1 pb-24">
-              <HomeScreen />
-            </div>
-            <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
-              <BottomNav />
+          <div className="relative w-full h-screen overflow-hidden">
+            <HomeScreen />
+            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40 pointer-events-none">
+              <div className="pointer-events-auto">
+                <BottomNav />
+              </div>
             </div>
           </div>
         );
@@ -80,7 +84,7 @@ export default function App() {
             <div className="flex-1 pb-24">
               <RidesHistoryScreen />
             </div>
-            <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
+            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40">
               <BottomNav />
             </div>
           </div>
@@ -91,7 +95,7 @@ export default function App() {
             <div className="flex-1 pb-24">
               <ChatScreen />
             </div>
-            <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
+            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40">
               <BottomNav />
             </div>
           </div>
@@ -102,19 +106,28 @@ export default function App() {
             <div className="flex-1 pb-24">
               <ProfileScreen />
             </div>
-            <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
+            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40">
               <BottomNav />
             </div>
           </div>
         );
       default:
-        return <HomeScreen />;
+        return (
+          <div className="relative w-full h-screen overflow-hidden">
+            <HomeScreen />
+            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40 pointer-events-none">
+              <div className="pointer-events-auto">
+                <BottomNav />
+              </div>
+            </div>
+          </div>
+        );
     }
   };
 
   return (
-    <main id="app-root" className="min-h-screen w-full bg-[#000000] text-white flex justify-center selection:bg-blue-500/30">
-      <div id="app-viewport" className="w-full max-w-md min-h-screen bg-[#000000] text-white relative flex flex-col shadow-2xl border-x border-white/[0.06]">
+    <main id="app-root" className="min-h-screen w-full bg-[#020408] text-white flex justify-center selection:bg-blue-500/30">
+      <div id="app-viewport" className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl min-h-screen bg-[#020408] text-white relative flex flex-col shadow-2xl border-x border-white/[0.08]">
         {renderScreen()}
       </div>
     </main>

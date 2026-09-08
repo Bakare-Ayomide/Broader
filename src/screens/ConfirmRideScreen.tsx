@@ -174,17 +174,17 @@ export const ConfirmRideScreen: React.FC = () => {
         </button>
       </div>
 
-      {/* Map Route Area (Primary Visual Element) */}
-      <div className="p-3 shrink-0">
+      {/* Map Route Area (Visually Dominant Primary Element) */}
+      <div className="w-full relative px-2 pt-2 shrink-0">
         <InteractiveMap
           showRoute={true}
-          height={activeTrip || rideStatus === 'searching' ? 'h-[230px]' : 'h-[170px]'}
+          height={activeTrip || rideStatus === 'searching' ? 'h-[300px] sm:h-[340px]' : 'h-[250px] sm:h-[280px]'}
           isSearching={rideStatus === 'searching'}
         />
       </div>
 
-      {/* Route Addresses Summary Pill - Frosted Glass */}
-      <div className="mx-3 mb-2 px-3.5 py-2.5 glass-panel rounded-2xl border border-white/[0.08] text-[11px] flex items-center justify-between shadow-xl">
+      {/* Route Addresses Summary Pill - Frosted Glass Floating */}
+      <div className="mx-3 -mt-2 mb-2 px-3.5 py-2 glass-panel rounded-2xl border border-white/[0.08] text-[11px] flex items-center justify-between shadow-xl relative z-10">
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <div className="w-2 h-2 rounded-full bg-[#0286FF] shrink-0 shadow-[0_0_8px_#0286FF]" />
           <span className="font-JakartaSemiBold text-neutral-200 truncate">
@@ -198,8 +198,8 @@ export const ConfirmRideScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Dynamic Flow Container */}
-      <div className="flex-1 px-3 pb-4 overflow-y-auto">
+      {/* Main Dynamic Bottom-Sheet Container */}
+      <div className="flex-1 px-3 pb-6 overflow-y-auto relative z-20">
         {/* State 1: Searching for Driver */}
         {rideStatus === 'searching' && currentSelectedVehicle && (
           <DriverSearchPanel

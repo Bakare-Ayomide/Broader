@@ -1,21 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
+import { getVehicle3DImage, VEHICLE_3D_ASSETS } from '../data/vehicleAssets';
+import { VehicleMarker } from './vehicle/VehicleMarker';
 import {
   Plus,
   Minus,
-  Car,
   Crosshair,
   Landmark,
   Building2,
   Trees,
-  Key,
-  Package,
-  Truck,
-  Ambulance,
-  Bike,
-  Users,
-  ShieldCheck,
+  Maximize2,
+  Minimize2,
+  Compass,
+  Eye,
+  Layers,
+  Box,
+  RotateCcw,
   Navigation,
+  Sparkles,
+  Car,
+  X,
+  Phone,
+  Star,
+  ChevronRight,
+  ShieldCheck,
+  Zap,
 } from 'lucide-react';
 
 interface InteractiveMapProps {
@@ -24,14 +33,18 @@ interface InteractiveMapProps {
   height?: string;
   onSelectLandmark?: (name: string, lat: number, lng: number) => void;
   isSearching?: boolean;
+  initialFullPreview?: boolean;
+  topOffset?: string;
 }
 
 export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   showRoute = true,
   className = '',
-  height = 'h-[300px]',
+  height = 'h-[320px]',
   onSelectLandmark,
   isSearching = false,
+  initialFullPreview = false,
+  topOffset,
 }) => {
   const userLatitude = useBroaderStore((s) => s.userLatitude);
   const userLongitude = useBroaderStore((s) => s.userLongitude);
@@ -47,52 +60,60 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const rideStatus = useBroaderStore((s) => s.rideStatus);
   const activeTrip = useBroaderStore((s) => s.activeTrip);
 
+  // Map state
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isFullPreview, setIsFullPreview] = useState(initialFullPreview);
+  const [is3DTilt, setIs3DTilt] = useState(true);
+  const [mapMode, setMapMode] = useState<'vector' | 'satellite'>('vector');
+  const [bearing, setBearing] = useState(18); // slight aesthetic heading angle
   const [showLandmarks, setShowLandmarks] = useState(true);
+  const [isStreetView, setIsStreetView] = useState(false);
+  const [streetViewPan, setStreetViewPan] = useState(0);
+  const [inspectedDriver, setInspectedDriver] = useState<any | null>(null);
 
-  // Driver animated position for live tracking
-  const [driverAnimPos, setDriverAnimPos] = useState({ x: 120, y: 110 });
+  // Animated driver coordinates for live journey
+  const [driverAnimPos, setDriverAnimPos] = useState({ x: 135, y: 120, rotation: 35 });
 
   // Update animated driver position based on ride status
   useEffect(() => {
     if (!activeTrip) return;
 
     if (rideStatus === 'driver_assigned' || rideStatus === 'driver_arriving') {
-      // Approach pickup location (180, 160)
       const interval = setInterval(() => {
         setDriverAnimPos((prev) => {
           const targetX = 180;
           const targetY = 160;
-          const dx = (targetX - prev.x) * 0.15;
-          const dy = (targetY - prev.y) * 0.15;
+          const dx = (targetX - prev.x) * 0.16;
+          const dy = (targetY - prev.y) * 0.16;
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
           if (Math.abs(targetX - prev.x) < 2 && Math.abs(targetY - prev.y) < 2) {
-            return { x: 180, y: 160 };
+            return { x: 180, y: 160, rotation: 40 };
           }
-          return { x: prev.x + dx, y: prev.y + dy };
+          return { x: prev.x + dx, y: prev.y + dy, rotation: angle || 35 };
         });
-      }, 800);
+      }, 700);
       return () => clearInterval(interval);
     } else if (rideStatus === 'driver_arrived') {
-      setDriverAnimPos({ x: 180, y: 160 });
+      setDriverAnimPos({ x: 180, y: 160, rotation: 0 });
     } else if (rideStatus === 'ride_started') {
-      // Travel along route to destination (360, 240)
       const interval = setInterval(() => {
         setDriverAnimPos((prev) => {
           const targetX = 350;
           const targetY = 235;
-          const dx = (targetX - prev.x) * 0.12;
-          const dy = (targetY - prev.y) * 0.12;
-          return { x: prev.x + dx, y: prev.y + dy };
+          const dx = (targetX - prev.x) * 0.14;
+          const dy = (targetY - prev.y) * 0.14;
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+          return { x: prev.x + dx, y: prev.y + dy, rotation: angle || 45 };
         });
-      }, 800);
+      }, 700);
       return () => clearInterval(interval);
     } else if (rideStatus === 'ride_completed') {
-      setDriverAnimPos({ x: 360, y: 240 });
+      setDriverAnimPos({ x: 360, y: 240, rotation: 45 });
     }
   }, [rideStatus, activeTrip]);
 
-  // Lagos Landmarks data
+  // Lagos Landmarks
   const landmarks = [
     {
       id: 'lekki_bridge',
@@ -116,7 +137,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     },
     {
       id: 'eko_atlantic',
-      name: 'Eko Atlantic City',
+      name: 'Eko Atlantic Boulevard',
       x: 165,
       y: 95,
       lat: 6.4215,
@@ -126,7 +147,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     },
     {
       id: 'palms_mall',
-      name: 'The Palms Mall Lekki',
+      name: 'The Palms Lekki',
       x: 290,
       y: 255,
       lat: 6.4326,
@@ -136,39 +157,13 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     },
   ];
 
-  // Helper to render vehicle icon according to active service or vehicle type
-  const renderVehicleIcon = (service: typeof activeService) => {
-    const iconColor = '#FFFFFF';
-    switch (service) {
-      case 'rental':
-        return <Key width={12} height={12} color={iconColor} />;
-      case 'parcel':
-        return <Package width={12} height={12} color={iconColor} />;
-      case 'freight':
-        return <Truck width={13} height={13} color={iconColor} />;
-      case 'ambulance':
-        return <Ambulance width={14} height={14} color={iconColor} />;
-      case 'ride':
-      default:
-        return <Car width={13} height={13} color={iconColor} />;
-    }
-  };
-
-  const getServiceLabel = () => {
-    switch (activeService) {
-      case 'rental':
-        return 'Broader Rentals';
-      case 'parcel':
-        return 'Broader Parcels';
-      case 'freight':
-        return 'Freight Units';
-      case 'ambulance':
-        return 'Priority Responders';
-      case 'ride':
-      default:
-        return 'Broader Drivers';
-    }
-  };
+  // Coords for nearby 3D vehicles
+  const vehicleLocations = [
+    { x: 125, y: 125, heading: 45, category: 'car' },
+    { x: 235, y: 110, heading: -25, category: 'suv' },
+    { x: 135, y: 225, heading: 85, category: 'motorcycle' },
+    { x: 265, y: 185, heading: -60, category: 'tricycle' },
+  ];
 
   const handleLandmarkClick = (lm: (typeof landmarks)[0]) => {
     if (onSelectLandmark) {
@@ -189,390 +184,713 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       rideStatus
     );
 
+  const getCompassHeadingLabel = (deg: number) => {
+    const norm = ((deg % 360) + 360) % 360;
+    if (norm >= 337.5 || norm < 22.5) return `${Math.round(norm)}° N`;
+    if (norm >= 22.5 && norm < 67.5) return `${Math.round(norm)}° NE`;
+    if (norm >= 67.5 && norm < 112.5) return `${Math.round(norm)}° E`;
+    if (norm >= 112.5 && norm < 157.5) return `${Math.round(norm)}° SE`;
+    if (norm >= 157.5 && norm < 202.5) return `${Math.round(norm)}° S`;
+    if (norm >= 202.5 && norm < 247.5) return `${Math.round(norm)}° SW`;
+    if (norm >= 247.5 && norm < 292.5) return `${Math.round(norm)}° W`;
+    return `${Math.round(norm)}° NW`;
+  };
+
   return (
     <div
-      className={`relative w-full ${height} bg-[#06070a] rounded-2xl overflow-hidden shadow-2xl border border-white/[0.08] select-none group ${className}`}
+      id="broader-map-container"
+      className={`relative w-full ${
+        isFullPreview
+          ? 'fixed inset-0 z-50 h-screen w-screen bg-[#04060a] m-0 rounded-none border-0'
+          : height === 'h-full'
+          ? 'h-full rounded-none border-0 shadow-none'
+          : `${height} rounded-2xl border border-white/[0.08] shadow-2xl`
+      } bg-[#04060a] overflow-hidden select-none group transition-all duration-300 ${className}`}
     >
-      {/* Map Graphic SVG */}
-      <svg
-        className="w-full h-full cursor-grab active:cursor-grabbing transition-transform duration-200"
-        viewBox="0 0 500 350"
+      {/* 3D MAP VIEWPORT CONTAINER */}
+      <div
+        className="w-full h-full relative overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing"
         style={{
-          transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
+          perspective: is3DTilt ? '1000px' : 'none',
         }}
       >
-        <defs>
-          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#141824" strokeWidth="1" />
-          </pattern>
-          <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0286FF" />
-            <stop offset="100%" stopColor="#38BDF8" />
-          </linearGradient>
-          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.4" />
-          </filter>
-        </defs>
+        {/* Transformable 3D Map Plane */}
+        <div
+          className="w-full h-full relative transition-transform duration-500 ease-out origin-center"
+          style={{
+            transform: is3DTilt
+              ? `scale(${zoom}) rotateX(46deg) rotateZ(${bearing}deg) translate(${pan.x}px, ${pan.y}px)`
+              : `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
+          }}
+        >
+          {/* SVG Map Geometry */}
+          <svg
+            className="w-full h-full"
+            viewBox="0 0 500 350"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs>
+              {/* Pattern for dark vector street grid */}
+              <pattern id="streetGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#121722" strokeWidth="0.8" />
+              </pattern>
 
-        {/* Map Base Texture / Roads */}
-        <rect width="500" height="350" fill="#07090e" />
-        <rect width="500" height="350" fill="url(#grid)" />
+              {/* Satellite texture pattern */}
+              <linearGradient id="satOcean" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#051322" />
+                <stop offset="60%" stopColor="#081c33" />
+                <stop offset="100%" stopColor="#020914" />
+              </linearGradient>
 
-        {/* Water bodies (Lagos Lagoon & Atlantic coastline representation) */}
-        <path
-          d="M 370 0 Q 420 85 435 180 T 500 350 L 500 0 Z"
-          fill="#0a1220"
-          opacity="0.9"
-        />
-        <text x="435" y="65" fill="#3b6282" fontSize="9.5" fontWeight="600" className="italic">
-          Lagos Lagoon
-        </text>
+              <linearGradient id="satTerrain" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#0c1318" />
+                <stop offset="50%" stopColor="#0f191f" />
+                <stop offset="100%" stopColor="#080c10" />
+              </linearGradient>
 
-        {/* Atlantic Gulf waters at bottom */}
-        <path
-          d="M 0 315 Q 250 295 500 325 L 500 350 L 0 350 Z"
-          fill="#08101c"
-          opacity="0.8"
-        />
-        <text x="18" y="338" fill="#3b6282" fontSize="8" fontWeight="600" className="italic">
-          Gulf of Guinea (Atlantic)
-        </text>
+              {/* Glowing Route Line */}
+              <linearGradient id="routeGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#0286FF" />
+                <stop offset="50%" stopColor="#38BDF8" />
+                <stop offset="100%" stopColor="#00E5FF" />
+              </linearGradient>
 
-        {/* Green Zones / Parks */}
-        <rect x="30" y="45" width="80" height="85" rx="12" fill="#0d1811" opacity="0.85" stroke="#162e20" strokeWidth="1" />
-        <text x="42" y="88" fill="#48bb78" fontSize="8.5" fontWeight="600">
-          Tarkwa Bay
-        </text>
+              <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.55" floodColor="#000000" />
+              </filter>
+            </defs>
 
-        <rect x="260" y="225" width="105" height="65" rx="8" fill="#0d1811" opacity="0.85" stroke="#162e20" strokeWidth="1" />
-        <text x="275" y="258" fill="#48bb78" fontSize="8.5" fontWeight="600">
-          Lekki Nature Park
-        </text>
+            {/* BASE TERRAIN LAYER */}
+            {mapMode === 'satellite' ? (
+              <>
+                {/* Satellite Base Surface */}
+                <rect width="500" height="350" fill="url(#satTerrain)" />
+                {/* High tech terrain contour lines */}
+                <path
+                  d="M 20 60 Q 180 30 320 80 T 500 40"
+                  fill="none"
+                  stroke="#162633"
+                  strokeWidth="1.2"
+                  strokeDasharray="4 8"
+                />
+                <path
+                  d="M 0 140 Q 220 170 380 130 T 500 170"
+                  fill="none"
+                  stroke="#162633"
+                  strokeWidth="1.2"
+                  strokeDasharray="6 10"
+                />
+                {/* Realistic Lagos Lagoon Coastline */}
+                <path
+                  d="M 360 0 Q 420 80 435 180 T 500 350 L 500 0 Z"
+                  fill="url(#satOcean)"
+                  opacity="0.95"
+                />
+                {/* Atlantic Coast water */}
+                <path
+                  d="M 0 310 Q 240 290 500 320 L 500 350 L 0 350 Z"
+                  fill="url(#satOcean)"
+                  opacity="0.95"
+                />
+                {/* City nighttime light speckles */}
+                <circle cx="160" cy="110" r="1.5" fill="#38BDF8" opacity="0.6" />
+                <circle cx="210" cy="85" r="1.2" fill="#FBBF24" opacity="0.5" />
+                <circle cx="290" cy="140" r="1.8" fill="#38BDF8" opacity="0.7" />
+                <circle cx="340" cy="200" r="1.5" fill="#FBBF24" opacity="0.6" />
+                <circle cx="110" cy="200" r="1.2" fill="#38BDF8" opacity="0.5" />
+              </>
+            ) : (
+              <>
+                {/* Dark Obsidian Vector Grid Base */}
+                <rect width="500" height="350" fill="#06090e" />
+                <rect width="500" height="350" fill="url(#streetGrid)" />
 
-        {/* Main Arterial Roadways (e.g. Ahmadu Bello Way / Lekki-Epe Expressway) */}
-        <path
-          d="M -10 180 C 120 180 200 160 320 210 S 480 250 510 270"
-          fill="none"
-          stroke="#1b2230"
-          strokeWidth="14"
-        />
-        <path
-          d="M -10 180 C 120 180 200 160 320 210 S 480 250 510 270"
-          fill="none"
-          stroke="#0286FF"
-          strokeWidth="2.5"
-          strokeDasharray="8 6"
-          strokeOpacity="0.7"
-        />
+                {/* Lagoon & Ocean */}
+                <path
+                  d="M 370 0 Q 420 85 435 180 T 500 350 L 500 0 Z"
+                  fill="#091424"
+                  opacity="0.9"
+                />
+                <path
+                  d="M 0 315 Q 250 295 500 325 L 500 350 L 0 350 Z"
+                  fill="#07101d"
+                  opacity="0.9"
+                />
+              </>
+            )}
 
-        {/* Cross Boulevards (Ozumba Mbadiwe & Adeola Odeku) */}
-        <path d="M 180 -10 L 180 360" fill="none" stroke="#1a202c" strokeWidth="12" />
-        <path d="M 320 -10 L 320 360" fill="none" stroke="#1a202c" strokeWidth="10" />
-        <path d="M -10 80 L 380 80" fill="none" stroke="#1a202c" strokeWidth="10" />
-        <path d="M 80 -10 L 80 360" fill="none" stroke="#1a202c" strokeWidth="8" />
+            {/* Ocean & Lagoon labels */}
+            <text x="430" y="55" fill="#38bdf8" opacity="0.4" fontSize="8.5" fontWeight="700" letterSpacing="0.1em">
+              LAGOS LAGOON
+            </text>
+            <text x="24" y="338" fill="#38bdf8" opacity="0.35" fontSize="7.5" fontWeight="700" letterSpacing="0.1em">
+              GULF OF GUINEA (ATLANTIC)
+            </text>
 
-        {/* Route Line if destination set */}
-        {showRoute && (destinationLatitude || isTracking) && (
-          <>
+            {/* Green Parks / Coastal nature areas */}
+            <rect x="30" y="45" width="80" height="85" rx="12" fill="#0b1710" opacity="0.85" stroke="#132e1c" strokeWidth="1" />
+            <text x="44" y="88" fill="#34d399" fontSize="8" fontWeight="600" opacity="0.8">
+              Tarkwa Bay
+            </text>
+
+            <rect x="260" y="225" width="105" height="65" rx="10" fill="#0b1710" opacity="0.85" stroke="#132e1c" strokeWidth="1" />
+            <text x="275" y="258" fill="#34d399" fontSize="8" fontWeight="600" opacity="0.8">
+              Lekki Conservation
+            </text>
+
+            {/* 3D BUILDING EXTRUSIONS IN 3D MODE */}
+            {is3DTilt && (
+              <g className="transition-opacity duration-300">
+                {/* VI Highrises */}
+                <polygon points="190,110 215,100 215,130 190,140" fill="#131d2b" stroke="#1e2d42" strokeWidth="0.8" />
+                <polygon points="190,110 202,95 227,85 215,100" fill="#1e2c3f" />
+                {/* Lit windows in skyscraper */}
+                <circle cx="198" cy="118" r="1" fill="#38bdf8" opacity="0.7" />
+                <circle cx="206" cy="115" r="1" fill="#facc15" opacity="0.6" />
+                <circle cx="198" cy="128" r="1" fill="#38bdf8" opacity="0.7" />
+
+                {/* Lekki Commercial Tower */}
+                <polygon points="310,130 335,120 335,150 310,160" fill="#15202e" stroke="#22334a" strokeWidth="0.8" />
+                <polygon points="310,130 322,118 347,108 335,120" fill="#203046" />
+                <circle cx="318" cy="138" r="1" fill="#38bdf8" opacity="0.8" />
+                <circle cx="326" cy="135" r="1" fill="#38bdf8" opacity="0.8" />
+
+                {/* Eko Atlantic Crown */}
+                <polygon points="145,85 168,75 168,105 145,115" fill="#182333" stroke="#283d57" strokeWidth="0.8" />
+                <polygon points="145,85 155,75 178,65 168,75" fill="#24374e" />
+              </g>
+            )}
+
+            {/* MAIN ARTERIAL ROAD NETWORK (Lekki-Epe Expressway, Ozumba Mbadiwe, Ahmadu Bello Way) */}
             <path
-              d="M 180 160 Q 230 140 280 180 T 360 260"
+              d="M -10 180 C 120 180 200 160 320 210 S 480 250 510 270"
+              fill="none"
+              stroke="#18202d"
+              strokeWidth="15"
+            />
+            {/* Road center dash lighting */}
+            <path
+              d="M -10 180 C 120 180 200 160 320 210 S 480 250 510 270"
               fill="none"
               stroke="#0286FF"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeOpacity="0.3"
+              strokeWidth="2.5"
+              strokeDasharray="8 6"
+              strokeOpacity="0.8"
             />
-            <path
-              d="M 180 160 Q 230 140 280 180 T 360 260"
-              fill="none"
-              stroke="url(#routeGradient)"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeDasharray="6 4"
-            />
-          </>
-        )}
 
-        {/* Important Landmarks (Toggleable) */}
-        {showLandmarks &&
-          landmarks.map((lm) => (
-            <g
-              key={lm.id}
-              onClick={() => handleLandmarkClick(lm)}
-              className="cursor-pointer group/lm transition-all"
-              filter="url(#shadow)"
-            >
-              <circle
-                cx={lm.x}
-                cy={lm.y}
-                r="5.5"
-                fill="#000000"
-                stroke={lm.color}
-                strokeWidth="2"
-              />
-              <circle cx={lm.x} cy={lm.y} r="2" fill={lm.color} />
+            {/* Cross Avenues */}
+            <path d="M 180 -10 L 180 360" fill="none" stroke="#161e2a" strokeWidth="12" />
+            <path d="M 320 -10 L 320 360" fill="none" stroke="#161e2a" strokeWidth="10" />
+            <path d="M -10 80 L 380 80" fill="none" stroke="#161e2a" strokeWidth="10" />
+            <path d="M 80 -10 L 80 360" fill="none" stroke="#161e2a" strokeWidth="8" />
 
-              <rect
-                x={lm.x - 44}
-                y={lm.y - 19}
-                width="88"
-                height="15"
-                rx="4"
-                fill="#0e131d"
-                stroke="#2a364f"
-                strokeWidth="1"
-              />
-              <text
-                x={lm.x}
-                y={lm.y - 9}
-                fill="#e2e8f0"
-                fontSize="7"
-                fontWeight="700"
-                textAnchor="middle"
-              >
-                {lm.name}
+            {/* ROUTE LINE WITH CINEMATIC LIGHTING */}
+            {showRoute && (destinationLatitude || isTracking) && (
+              <>
+                {/* Wide neon glow backline */}
+                <path
+                  d="M 180 160 Q 230 140 280 180 T 360 260"
+                  fill="none"
+                  stroke="#0286FF"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  strokeOpacity="0.25"
+                />
+                {/* Crisp luminous core line */}
+                <path
+                  d="M 180 160 Q 230 140 280 180 T 360 260"
+                  fill="none"
+                  stroke="url(#routeGlow)"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  strokeDasharray="6 4"
+                />
+              </>
+            )}
+
+            {/* IMPORTANT LANDMARKS */}
+            {showLandmarks &&
+              landmarks.map((lm) => (
+                <g
+                  key={lm.id}
+                  onClick={() => handleLandmarkClick(lm)}
+                  className="cursor-pointer transition-all hover:scale-110"
+                  filter="url(#softShadow)"
+                >
+                  <circle cx={lm.x} cy={lm.y} r="5" fill="#000000" stroke={lm.color} strokeWidth="2" />
+                  <circle cx={lm.x} cy={lm.y} r="2" fill={lm.color} />
+                  <rect
+                    x={lm.x - 45}
+                    y={lm.y - 20}
+                    width="90"
+                    height="16"
+                    rx="5"
+                    fill="#0a0f18"
+                    stroke="#1e293b"
+                    strokeWidth="1"
+                  />
+                  <text
+                    x={lm.x}
+                    y={lm.y - 9}
+                    fill="#e2e8f0"
+                    fontSize="7"
+                    fontWeight="700"
+                    textAnchor="middle"
+                  >
+                    {lm.name}
+                  </text>
+                </g>
+              ))}
+
+            {/* RADAR PULSE IN SEARCHING MODE */}
+            {isRadarSearching && (
+              <g transform="translate(180, 160)">
+                <circle cx="0" cy="0" r="35" fill="#0286FF" opacity="0.15">
+                  <animate attributeName="r" values="10;90;130" dur="2.4s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.45;0.12;0" dur="2.4s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="0" cy="0" r="60" fill="none" stroke="#0286FF" strokeWidth="1.5" opacity="0.4">
+                  <animate attributeName="r" values="25;105;145" dur="2.4s" begin="0.8s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.5;0.15;0" dur="2.4s" begin="0.8s" repeatCount="indefinite" />
+                </circle>
+                <line x1="0" y1="0" x2="65" y2="65" stroke="#0286FF" strokeWidth="2.2" strokeOpacity="0.7">
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0"
+                    to="360"
+                    dur="3s"
+                    repeatCount="indefinite"
+                  />
+                </line>
+              </g>
+            )}
+
+            {/* PICKUP PIN (ORIGIN GPS) */}
+            <g filter="url(#softShadow)">
+              <circle cx="180" cy="160" r="18" fill="#0286FF" opacity="0.2">
+                <animate attributeName="r" values="12;22;12" dur="2.4s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.3;0.06;0.3" dur="2.4s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="180" cy="160" r="7" fill="#0286FF" stroke="#FFFFFF" strokeWidth="2" />
+              <circle cx="180" cy="160" r="2.5" fill="#FFFFFF" />
+              <rect x="135" y="126" width="90" height="17" rx="5" fill="#0f172a" stroke="#1e293b" strokeWidth="1" />
+              <text x="180" y="138" fill="#FFFFFF" fontSize="8" fontWeight="700" textAnchor="middle">
+                {isTracking ? 'Pickup Point' : 'Your Location'}
               </text>
             </g>
-          ))}
 
-        {/* DRIVER SEARCH RADAR PULSES (Feature 3) */}
-        {isRadarSearching && (
-          <g transform="translate(180, 160)">
-            {/* Concentric expanding scanning rings */}
-            <circle cx="0" cy="0" r="35" fill="#0286FF" opacity="0.15">
-              <animate attributeName="r" values="10;85;120" dur="2.4s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.4;0.15;0" dur="2.4s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="0" cy="0" r="55" fill="none" stroke="#0286FF" strokeWidth="1.5" opacity="0.4">
-              <animate attributeName="r" values="20;95;130" dur="2.4s" begin="0.8s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.5;0.15;0" dur="2.4s" begin="0.8s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="0" cy="0" r="75" fill="none" stroke="#0286FF" strokeWidth="1" opacity="0.2">
-              <animate attributeName="r" values="30;110;145" dur="2.4s" begin="1.6s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.4;0.1;0" dur="2.4s" begin="1.6s" repeatCount="indefinite" />
-            </circle>
-
-            {/* Radar scanner sweep line */}
-            <line x1="0" y1="0" x2="65" y2="65" stroke="#0286FF" strokeWidth="2" strokeOpacity="0.6">
-              <animateTransform
-                attributeName="transform"
-                type="rotate"
-                from="0"
-                to="360"
-                dur="3s"
-                repeatCount="indefinite"
-              />
-            </line>
-          </g>
-        )}
-
-        {/* Nearby Available Vehicles / Drivers (When not in full tracking) */}
-        {!isTracking &&
-          drivers.map((d, index) => {
-            const coords = [
-              { x: 125, y: 125 },
-              { x: 235, y: 110 },
-              { x: 135, y: 225 },
-              { x: 255, y: 175 },
-            ][index % 4];
-
-            const isSelected = selectedDriver === d.id;
-            const isEmergency = activeService === 'ambulance';
-
-            return (
-              <g
-                key={d.id}
-                onClick={() => setSelectedDriver(d.id)}
-                className="cursor-pointer transition-all duration-200"
-                filter="url(#shadow)"
-              >
-                {isEmergency && (
-                  <circle cx={coords.x} cy={coords.y} r="18" fill="#EF4444" opacity="0.25">
-                    <animate attributeName="r" values="14;22;14" dur="1.2s" repeatCount="indefinite" />
-                    <animate
-                      attributeName="opacity"
-                      values="0.35;0.05;0.35"
-                      dur="1.2s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                )}
-                <circle
-                  cx={coords.x}
-                  cy={coords.y}
-                  r={isSelected ? 15 : 12.5}
-                  fill={isEmergency ? '#DC2626' : isSelected ? '#0286FF' : '#1E293B'}
+            {/* DESTINATION PIN */}
+            {(destinationLatitude || isTracking) && (
+              <g filter="url(#softShadow)">
+                <path
+                  d="M 360 238 C 352 238 346 244 346 252 C 346 264 360 276 360 276 C 360 276 374 264 374 252 C 374 244 368 238 360 238 Z"
+                  fill="#EF4444"
                   stroke="#FFFFFF"
-                  strokeWidth={isSelected ? 2.5 : 2}
+                  strokeWidth="1.5"
                 />
-                <g transform={`translate(${coords.x - 6}, ${coords.y - 6})`}>
-                  {renderVehicleIcon(activeService)}
-                </g>
-
-                {/* ETA badge over vehicle in Naira ₦ */}
-                <rect
-                  x={coords.x - 19}
-                  y={coords.y - 26}
-                  width="38"
-                  height="13"
-                  rx="4"
-                  fill="#FFFFFF"
-                  stroke={isSelected ? '#0286FF' : isEmergency ? '#EF4444' : '#CBD5E1'}
-                  strokeWidth="1"
-                />
-                <text
-                  x={coords.x}
-                  y={coords.y - 17}
-                  fill={isSelected ? '#0286FF' : isEmergency ? '#DC2626' : '#334155'}
-                  fontSize="7.5"
-                  fontWeight="700"
-                  textAnchor="middle"
-                >
-                  {d.time || 4}m • ₦{d.price || '2,800'}
+                <circle cx="360" cy="251" r="3" fill="#FFFFFF" />
+                <rect x="295" y="214" width="130" height="18" rx="5" fill="#0f172a" stroke="#EF4444" strokeWidth="1" />
+                <text x="360" y="226" fill="#FFFFFF" fontSize="8" fontWeight="700" textAnchor="middle">
+                  {destinationAddress ? destinationAddress.slice(0, 20) + '...' : 'Destination LOS'}
                 </text>
               </g>
-            );
-          })}
+            )}
+          </svg>
 
-        {/* ACTIVE LIVE DRIVER MARKER (Feature 4 - Tracking Mode) */}
-        {isTracking && activeTrip && (
-          <g
-            transform={`translate(${driverAnimPos.x}, ${driverAnimPos.y})`}
-            filter="url(#shadow)"
-            className="transition-all duration-700 ease-out"
-          >
-            {/* Pulsing aura */}
-            <circle cx="0" cy="0" r="20" fill="#0286FF" opacity="0.2">
-              <animate attributeName="r" values="14;22;14" dur="1.8s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.3;0.08;0.3" dur="1.8s" repeatCount="indefinite" />
-            </circle>
+          {/* HTML 3D VEHICLE OVERLAYS WITH TRANSPARENT 3D RENDERS */}
+          {!isTracking &&
+            drivers.map((d, idx) => {
+              const loc = vehicleLocations[idx % vehicleLocations.length];
+              const isSelected = selectedDriver === d.id;
 
-            {/* Vehicle Icon Circle */}
-            <circle cx="0" cy="0" r="16" fill="#0286FF" stroke="#FFFFFF" strokeWidth="2.5" />
-            <g transform="translate(-7, -7)">
-              <Car width={14} height={14} color="#FFFFFF" />
-            </g>
+              return (
+                <div
+                  key={d.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedDriver(d.id);
+                    setInspectedDriver(d);
+                  }}
+                  className="absolute cursor-pointer group/vehicle z-20"
+                  style={{
+                    left: `${(loc.x / 500) * 100}%`,
+                    top: `${(loc.y / 350) * 100}%`,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                >
+                  <VehicleMarker
+                    vehicleType={d.vehicle_type || loc.category || 'car'}
+                    heading={loc.heading}
+                    isMoving={true}
+                    hasHeadlights={true}
+                    size="sm"
+                    selected={isSelected}
+                    showLabel={true}
+                    label={`${d.time || 3}m • ₦${d.price || '2,800'}`}
+                  />
+                </div>
+              );
+            })}
 
-            {/* Driver Callout Badge */}
-            <rect
-              x="-48"
-              y="-32"
-              width="96"
-              height="16"
-              rx="5"
-              fill="#1E293B"
-              stroke="#0286FF"
-              strokeWidth="1"
-            />
-            <text x="0" y="-21" fill="#FFFFFF" fontSize="7.5" fontWeight="700" textAnchor="middle">
-              {activeTrip.driver.first_name} • {activeTrip.driver.plate_number || 'EKY-428-AB'}
-            </text>
-          </g>
-        )}
-
-        {/* Current Pickup Location Pin (Origin GPS) */}
-        <g filter="url(#shadow)">
-          <circle cx="180" cy="160" r="20" fill="#0286FF" opacity="0.18">
-            <animate attributeName="r" values="12;24;12" dur="2.5s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.25;0.05;0.25" dur="2.5s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="180" cy="160" r="8" fill="#0286FF" stroke="#FFFFFF" strokeWidth="2.5" />
-          <circle cx="180" cy="160" r="3" fill="#FFFFFF" />
-
-          {/* Pickup Tag */}
-          <rect x="135" y="125" width="90" height="17" rx="5" fill="#1E293B" />
-          <text x="180" y="137" fill="#FFFFFF" fontSize="8" fontWeight="700" textAnchor="middle">
-            {isTracking ? 'Pickup Point' : 'Your Location'}
-          </text>
-        </g>
-
-        {/* Destination Pin (if set) */}
-        {(destinationLatitude || isTracking) && (
-          <g filter="url(#shadow)">
-            <path
-              d="M 360 238 C 352 238 346 244 346 252 C 346 264 360 276 360 276 C 360 276 374 264 374 252 C 374 244 368 238 360 238 Z"
-              fill="#EF4444"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-            />
-            <circle cx="360" cy="251" r="3" fill="#FFFFFF" />
-            <rect
-              x="295"
-              y="214"
-              width="130"
-              height="18"
-              rx="5"
-              fill="#FFFFFF"
-              stroke="#EF4444"
-              strokeWidth="1"
-            />
-            <text x="360" y="226" fill="#1E293B" fontSize="8" fontWeight="700" textAnchor="middle">
-              {destinationAddress ? destinationAddress.slice(0, 20) + '...' : 'Destination LOS'}
-            </text>
-          </g>
-        )}
-      </svg>
-
-      {/* Map Overlay Controls - Frosted Glass */}
-      <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
-        <button
-          onClick={() => setZoom((z) => Math.min(z + 0.2, 1.8))}
-          className="w-8 h-8 rounded-lg bg-black/60 backdrop-blur-xl border border-white/10 text-neutral-300 shadow-lg flex items-center justify-center hover:text-white hover:bg-white/10 active:scale-95 transition-all text-xs"
-          title="Zoom In"
-        >
-          <Plus className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => setZoom((z) => Math.max(z - 0.2, 0.8))}
-          className="w-8 h-8 rounded-lg bg-black/60 backdrop-blur-xl border border-white/10 text-neutral-300 shadow-lg flex items-center justify-center hover:text-white hover:bg-white/10 active:scale-95 transition-all text-xs"
-          title="Zoom Out"
-        >
-          <Minus className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => {
-            setZoom(1);
-            setPan({ x: 0, y: 0 });
-          }}
-          className="w-8 h-8 rounded-lg bg-black/60 backdrop-blur-xl border border-white/10 text-[#0286FF] shadow-lg flex items-center justify-center hover:bg-white/10 active:scale-95 transition-all"
-          title="Re-center Location"
-        >
-          <Crosshair className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => setShowLandmarks((prev) => !prev)}
-          className={`w-8 h-8 rounded-lg shadow-lg flex items-center justify-center transition-all border ${
-            showLandmarks
-              ? 'bg-[#0286FF] text-white border-[#0286FF]'
-              : 'bg-black/60 backdrop-blur-xl border-white/10 text-neutral-300 hover:text-white hover:bg-white/10'
-          }`}
-          title={showLandmarks ? 'Hide Landmarks' : 'Show Landmarks'}
-        >
-          <Landmark className="w-4 h-4" />
-        </button>
+          {/* ACTIVE ASSIGNED DRIVER 3D MARKER (Tracking Mode) */}
+          {isTracking && activeTrip && (
+            <div
+              className="absolute cursor-pointer z-30"
+              style={{
+                left: `${(driverAnimPos.x / 500) * 100}%`,
+                top: `${(driverAnimPos.y / 350) * 100}%`,
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              <VehicleMarker
+                vehicleType={activeTrip.vehicle?.category || 'car'}
+                heading={driverAnimPos.rotation}
+                isMoving={true}
+                hasHeadlights={true}
+                size="md"
+                selected={true}
+                showLabel={true}
+                label={`${activeTrip.driver.first_name} • ${activeTrip.driver.plate_number || 'EKY-428-AB'}`}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Map Footer Info Pill - Frosted Glass */}
-      <div className="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xl px-3 py-1.5 rounded-full text-[11px] font-JakartaMedium text-neutral-300 shadow-xl flex items-center gap-2 border border-white/10">
-        <span
-          className={`w-2 h-2 rounded-full ${
-            isRadarSearching
-              ? 'bg-blue-400 animate-ping'
+      {/* TOP CONTROLS BAR (FULL WIDTH & COMPACT FLOATING) */}
+      <div className={`absolute ${topOffset || 'top-3'} left-3 right-3 flex items-center justify-between pointer-events-none z-30`}>
+        {/* Left Status pill */}
+        <div className="pointer-events-auto bg-black/80 backdrop-blur-xl px-3 py-1.5 rounded-full border border-white/10 text-xs font-JakartaBold text-white shadow-xl flex items-center gap-2">
+          <span
+            className={`w-2 h-2 rounded-full ${
+              isRadarSearching
+                ? 'bg-blue-400 animate-ping'
+                : isTracking
+                ? 'bg-emerald-400 animate-pulse'
+                : 'bg-emerald-400'
+            }`}
+          />
+          <span className="truncate max-w-[150px] sm:max-w-xs text-[11px]">
+            {isRadarSearching
+              ? 'Scanning Lagos...'
               : isTracking
-              ? 'bg-emerald-400 animate-pulse'
-              : activeService === 'ambulance'
-              ? 'bg-red-400'
-              : 'bg-emerald-400'
-          }`}
-        />
-        <span>
-          {isRadarSearching
-            ? 'Scanning Lagos drivers nearby...'
-            : isTracking
-            ? `Live Tracking • ${activeTrip?.driver.first_name || 'Driver'}`
-            : `Live Map • ${getServiceLabel()}`}
-        </span>
+              ? `Live • ${activeTrip?.driver.first_name || 'Driver'}`
+              : mapMode === 'satellite'
+              ? 'Satellite 3D • Lagos'
+              : 'Broader 3D Navigation'}
+          </span>
+        </div>
+
+        {/* Right Action buttons */}
+        <div className="pointer-events-auto flex items-center gap-1.5">
+          {/* Street View Toggle */}
+          <button
+            onClick={() => setIsStreetView(true)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-black/80 backdrop-blur-xl border border-white/15 text-xs font-JakartaSemiBold text-neutral-200 hover:text-white hover:border-[#0286FF] shadow-lg active:scale-95 transition-all"
+            title="Open 3D Street View"
+          >
+            <Eye className="w-3.5 h-3.5 text-[#0286FF]" />
+            <span className="hidden sm:inline text-[11px]">Street View</span>
+          </button>
+
+          {/* Satellite 3D Toggle */}
+          <button
+            onClick={() => setMapMode((m) => (m === 'vector' ? 'satellite' : 'vector'))}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl backdrop-blur-xl border text-xs font-JakartaSemiBold shadow-lg active:scale-95 transition-all ${
+              mapMode === 'satellite'
+                ? 'bg-[#0286FF] text-white border-[#0286FF]'
+                : 'bg-black/80 border-white/15 text-neutral-200 hover:text-white'
+            }`}
+            title="Toggle Satellite 3D"
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline text-[11px]">Satellite</span>
+          </button>
+
+          {/* 3D Tilt View Mode */}
+          <button
+            onClick={() => setIs3DTilt((t) => !t)}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl backdrop-blur-xl border text-xs font-JakartaSemiBold shadow-lg active:scale-95 transition-all ${
+              is3DTilt
+                ? 'bg-white/15 text-white border-white/30'
+                : 'bg-black/80 border-white/15 text-neutral-400 hover:text-white'
+            }`}
+            title={is3DTilt ? '2D Top-Down' : '3D Perspective'}
+          >
+            <Box className="w-3.5 h-3.5 text-[#0286FF]" />
+            <span className="text-[11px] font-JakartaBold">{is3DTilt ? '3D' : '2D'}</span>
+          </button>
+
+          {/* Full Preview Toggle */}
+          <button
+            onClick={() => setIsFullPreview((p) => !p)}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-black/80 backdrop-blur-xl border border-white/15 text-white hover:border-[#0286FF] shadow-lg active:scale-95 transition-all"
+            title={isFullPreview ? 'Exit Full Preview' : 'Full Preview (3D)'}
+          >
+            {isFullPreview ? (
+              <>
+                <Minimize2 className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-[11px] font-JakartaBold">Exit</span>
+              </>
+            ) : (
+              <>
+                <Maximize2 className="w-3.5 h-3.5 text-[#0286FF]" />
+                <span className="text-[11px] font-JakartaBold">Full 3D</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* FLOATING COMPASS & MAP MANIPULATION CONTROLS */}
+      <div className={`absolute right-3 ${topOffset ? 'top-24' : 'top-14'} flex flex-col items-center gap-2 z-30`}>
+        {/* Interactive Working Compass */}
+        <button
+          onClick={() => setBearing(0)}
+          className="w-10 h-10 rounded-2xl bg-black/85 backdrop-blur-xl border border-white/15 shadow-2xl flex flex-col items-center justify-center active:scale-90 hover:border-white/30 transition-all group/compass relative"
+          title={`Heading: ${getCompassHeadingLabel(bearing)} (Click to reset North)`}
+        >
+          {/* Rotating Compass Needle */}
+          <div
+            className="w-6 h-6 flex items-center justify-center transition-transform duration-300"
+            style={{ transform: `rotate(${-bearing}deg)` }}
+          >
+            <div className="w-0.5 h-3 bg-red-500 rounded-t-sm" />
+            <div className="w-0.5 h-3 bg-slate-300 rounded-b-sm" />
+          </div>
+          <span className="text-[8px] font-JakartaBold text-neutral-300 -mt-0.5 tracking-tighter">
+            {getCompassHeadingLabel(bearing).split(' ')[1] || 'N'}
+          </span>
+        </button>
+
+        {/* Rotate left/right buttons for 3D bearing */}
+        <div className="flex flex-col rounded-xl bg-black/80 backdrop-blur-xl border border-white/10 overflow-hidden shadow-xl">
+          <button
+            onClick={() => setBearing((b) => b - 15)}
+            className="w-8 h-7 text-neutral-300 hover:text-white hover:bg-white/10 flex items-center justify-center text-[10px] font-JakartaBold active:scale-95"
+            title="Rotate Left"
+          >
+            ↺
+          </button>
+          <div className="w-full h-px bg-white/10" />
+          <button
+            onClick={() => setBearing((b) => b + 15)}
+            className="w-8 h-7 text-neutral-300 hover:text-white hover:bg-white/10 flex items-center justify-center text-[10px] font-JakartaBold active:scale-95"
+            title="Rotate Right"
+          >
+            ↻
+          </button>
+        </div>
+
+        {/* Zoom Controls */}
+        <div className="flex flex-col rounded-xl bg-black/80 backdrop-blur-xl border border-white/10 overflow-hidden shadow-xl">
+          <button
+            onClick={() => setZoom((z) => Math.min(z + 0.2, 2.2))}
+            className="w-8 h-8 text-neutral-300 hover:text-white hover:bg-white/10 flex items-center justify-center active:scale-95 transition-all"
+            title="Zoom In"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+          <div className="w-full h-px bg-white/10" />
+          <button
+            onClick={() => setZoom((z) => Math.max(z - 0.2, 0.7))}
+            className="w-8 h-8 text-neutral-300 hover:text-white hover:bg-white/10 flex items-center justify-center active:scale-95 transition-all"
+            title="Zoom Out"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+          <div className="w-full h-px bg-white/10" />
+          <button
+            onClick={() => {
+              setZoom(1);
+              setPan({ x: 0, y: 0 });
+              setBearing(18);
+            }}
+            className="w-8 h-8 text-[#0286FF] hover:bg-white/10 flex items-center justify-center active:scale-95 transition-all"
+            title="Re-center View"
+          >
+            <Crosshair className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* INSPECTED DRIVER POPUP CARD */}
+      {inspectedDriver && (
+        <div className="absolute bottom-3 left-3 right-3 max-w-sm mx-auto bg-black/90 backdrop-blur-2xl p-3 rounded-2xl border border-[#0286FF]/40 shadow-[0_10px_35px_rgba(0,0,0,0.9)] z-40 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-black/70 border border-white/15 flex items-center justify-center p-0.5">
+                <img
+                  src={getVehicle3DImage(inspectedDriver.vehicle_type, inspectedDriver.first_name)}
+                  alt="Vehicle"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div>
+                <h4 className="text-xs font-JakartaBold text-white flex items-center gap-1.5">
+                  {inspectedDriver.first_name} {inspectedDriver.last_name}
+                  <span className="flex items-center text-[10px] text-amber-400">
+                    <Star className="w-3 h-3 fill-amber-400 inline mr-0.5" />
+                    {inspectedDriver.rating || 4.9}
+                  </span>
+                </h4>
+                <p className="text-[10px] font-JakartaMedium text-neutral-400">
+                  {inspectedDriver.car_seats || 4} Seats • {inspectedDriver.time || 3} mins away
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setInspectedDriver(null)}
+              className="w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-neutral-300 flex items-center justify-center"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <div>
+              <span className="text-[10px] text-neutral-400 block font-JakartaMedium">Estimated Fare</span>
+              <span className="text-sm font-JakartaBold text-[#0286FF]">₦{inspectedDriver.price || '2,800'}</span>
+            </div>
+            <button
+              onClick={() => {
+                setSelectedDriver(inspectedDriver.id);
+                setInspectedDriver(null);
+              }}
+              className="px-3.5 py-1.5 rounded-xl bg-[#0286FF] hover:bg-blue-600 text-white text-xs font-JakartaBold shadow-lg active:scale-95 transition-all"
+            >
+              Select Vehicle
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 3D STREET VIEW OVERLAY MODAL */}
+      {isStreetView && (
+        <div className="absolute inset-0 z-50 bg-[#020408] flex flex-col justify-between overflow-hidden animate-in fade-in duration-300">
+          {/* Street View Top Header */}
+          <div className="p-3 bg-gradient-to-b from-black/90 to-transparent flex items-center justify-between z-20">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[10px] font-JakartaBold flex items-center gap-1">
+                <Eye className="w-3 h-3" />
+                3D Street Level
+              </span>
+              <span className="text-xs font-JakartaBold text-white truncate max-w-[200px]">
+                Ozumba Mbadiwe Ave, Victoria Island
+              </span>
+            </div>
+            <button
+              onClick={() => setIsStreetView(false)}
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-JakartaBold flex items-center gap-1 transition-all"
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>Exit</span>
+            </button>
+          </div>
+
+          {/* 3D First-Person Perspective Viewport */}
+          <div className="relative flex-1 w-full overflow-hidden flex items-center justify-center">
+            {/* Horizon Sky & Lagos Skyline */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#060c18] via-[#09152b] to-[#040810]" />
+
+            {/* Distant 3D Skyscrapers Skyline */}
+            <div
+              className="absolute bottom-[38%] w-[160%] flex items-end justify-around opacity-40 transition-transform duration-300"
+              style={{ transform: `translateX(${streetViewPan * 0.4}px)` }}
+            >
+              <div className="w-16 h-40 bg-[#121c2d] rounded-t-sm relative border-t border-blue-400/40">
+                <div className="w-2 h-2 rounded-full bg-red-500 animate-ping absolute -top-1 left-7" />
+              </div>
+              <div className="w-24 h-56 bg-[#0f1726] rounded-t-md relative border-t border-sky-400/30" />
+              <div className="w-20 h-48 bg-[#152238] rounded-t-md relative" />
+              <div className="w-32 h-64 bg-[#0d1624] rounded-t-lg relative border-t border-blue-400/40" />
+              <div className="w-24 h-44 bg-[#111d2e] rounded-t-sm relative" />
+              <div className="w-16 h-52 bg-[#0e1726] rounded-t-md relative" />
+            </div>
+
+            {/* 3D Roadway with vanishing point perspective */}
+            <div
+              className="absolute bottom-0 w-full h-[45%] bg-[#080d14] border-t-2 border-white/20 overflow-hidden flex justify-center"
+              style={{
+                perspective: '400px',
+              }}
+            >
+              <div
+                className="w-[140%] h-full bg-[#0d121c] border-x-4 border-amber-400/30 flex justify-center"
+                style={{
+                  transform: 'rotateX(65deg)',
+                  transformOrigin: 'bottom center',
+                }}
+              >
+                {/* Dashed Center Road Divider */}
+                <div className="w-2 h-full border-r-2 border-dashed border-white/70" />
+              </div>
+            </div>
+
+            {/* Passing 3D Vehicles on the road */}
+            <div
+              className="absolute bottom-[10%] flex items-center gap-12 transition-transform duration-300"
+              style={{ transform: `translateX(${streetViewPan}px)` }}
+            >
+              {/* Sedan */}
+              <div className="relative w-44 h-44 flex flex-col items-center">
+                <img
+                  src={VEHICLE_3D_ASSETS.car}
+                  alt="3D Car"
+                  className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.95)]"
+                />
+                <span className="text-[10px] font-JakartaBold text-blue-400 bg-black/80 px-2 py-0.5 rounded-full -mt-4 border border-blue-500/30">
+                  Broader Comfort
+                </span>
+              </div>
+
+              {/* Keke */}
+              <div className="relative w-36 h-36 flex flex-col items-center">
+                <img
+                  src={VEHICLE_3D_ASSETS.tricycle}
+                  alt="3D Tricycle"
+                  className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.95)]"
+                />
+                <span className="text-[10px] font-JakartaBold text-emerald-400 bg-black/80 px-2 py-0.5 rounded-full -mt-3 border border-emerald-500/30">
+                  Keke Napep
+                </span>
+              </div>
+
+              {/* Express Okada */}
+              <div className="relative w-32 h-32 flex flex-col items-center">
+                <img
+                  src={VEHICLE_3D_ASSETS.motorcycle}
+                  alt="3D Bike"
+                  className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.95)]"
+                />
+                <span className="text-[10px] font-JakartaBold text-amber-400 bg-black/80 px-2 py-0.5 rounded-full -mt-2 border border-amber-500/30">
+                  Express Bike
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Street View Bottom Pan Navigation Controls */}
+          <div className="p-3 bg-black/90 backdrop-blur-2xl border-t border-white/10 flex items-center justify-between z-20">
+            <button
+              onClick={() => setStreetViewPan((p) => Math.min(p + 60, 160))}
+              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-JakartaBold text-white flex items-center gap-1.5"
+            >
+              ← Pan Left
+            </button>
+            <span className="text-[11px] font-JakartaMedium text-neutral-400">
+              Drag or use pan arrows to look 360°
+            </span>
+            <button
+              onClick={() => setStreetViewPan((p) => Math.max(p - 60, -160))}
+              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-JakartaBold text-white flex items-center gap-1.5"
+            >
+              Pan Right →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

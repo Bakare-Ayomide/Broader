@@ -4,107 +4,119 @@ import {
   ArrowLeft,
   HeartPulse,
   Phone,
-  ShieldAlert,
-  MapPin,
   Clock,
-  CheckCircle2,
+  MapPin,
+  ShieldAlert,
   AlertTriangle,
-  ChevronRight,
+  Hospital,
   Activity,
+  User,
+  Sparkles,
 } from 'lucide-react';
 import { AmbulanceBooking } from '../types';
+import { soundEngine } from '../services/soundNotification';
 
-export const AmbulanceScreen: React.FC = () => {
+interface AmbulanceScreenProps {
+  onClose?: () => void;
+  isModal?: boolean;
+}
+
+export const AmbulanceScreen: React.FC<AmbulanceScreenProps> = ({ onClose, isModal = false }) => {
   const setScreen = useBroaderStore((s) => s.setScreen);
   const ambulanceBookings = useBroaderStore((s) => s.ambulanceBookings);
   const requestAmbulance = useBroaderStore((s) => s.requestAmbulance);
   const userAddress = useBroaderStore((s) => s.userAddress);
 
   const [activeTab, setActiveTab] = useState<'request' | 'active'>('request');
-  const [patientCondition, setPatientCondition] = useState('Severe Difficulty Breathing / Cardiac');
-  const [ambulanceType, setAmbulanceType] = useState<'bls' | 'als' | 'nicu'>('als');
-  const [pickupLocation, setPickupLocation] = useState(userAddress || '15 Admiralty Way, Lekki Phase 1, Lagos');
-  const [destinationHospital, setDestinationHospital] = useState('Reddington Hospital, Victoria Island, Lagos');
-  const [contactPhone, setContactPhone] = useState('+234 803 123 4567');
-  const [emergencyAlertSent, setEmergencyAlertSent] = useState(false);
-
-  const lagosHospitals = [
-    'Reddington Hospital, Victoria Island, Lagos',
-    'Lagos University Teaching Hospital (LUTH), Idi-Araba',
-    'First Cardiology Consultants, Ikoyi, Lagos',
-    'Lagoon Hospital, Ikeja, Lagos',
-    'St. Nicholas Hospital, Lagos Island',
-    'Evercare Hospital, Lekki Phase 1, Lagos',
-  ];
+  const [patientCondition, setPatientCondition] = useState('Cardiac / Severe Chest Pain');
+  const [ambulanceType, setAmbulanceType] = useState<'basic' | 'advanced' | 'icu'>('advanced');
+  const [patientLocation, setPatientLocation] = useState(userAddress || '12 Adeola Hopewell, Victoria Island, Lagos');
+  const [destinationHospital, setDestinationHospital] = useState('Reddington Hospital (Victoria Island)');
+  const [patientName, setPatientName] = useState('Babatunde Adebayo');
+  const [contactPhone, setContactPhone] = useState('+234 802 888 1234');
+  const [emergencySuccess, setEmergencySuccess] = useState<string | null>(null);
 
   const ambulanceTiers = [
     {
-      id: 'bls',
+      id: 'basic',
       name: 'Basic Life Support (BLS)',
-      desc: 'EMT certified, medical oxygen, basic vitals & stretcher',
-      price: 25000,
+      desc: 'Oxygen, AED, certified paramedic crew. Suitable for non-critical stabilization.',
+      price: 35000,
     },
     {
-      id: 'als',
+      id: 'advanced',
       name: 'Advanced Life Support (ALS)',
-      desc: 'Intensive care, cardiac monitor, defibrillator & paramedic',
-      price: 45000,
+      desc: 'ECG monitor, ventilator, IV lines, emergency physician onboard.',
+      price: 65000,
     },
     {
-      id: 'nicu',
-      name: 'Neonatal / Pediatric ICU',
-      desc: 'Transport incubator, specialized pediatric respiratory kit',
-      price: 60000,
+      id: 'icu',
+      name: 'Mobile Intensive Care Unit (MICU)',
+      desc: 'Full portable ICU setup for critical cardiac, neurological, and trauma emergencies.',
+      price: 110000,
     },
   ];
 
+  const selectedTier = ambulanceTiers.find((t) => t.id === ambulanceType)!;
+
   const handleDispatch = (e: React.FormEvent) => {
     e.preventDefault();
+    soundEngine.playDispatchAlert();
 
-    const selectedTier = ambulanceTiers.find((t) => t.id === ambulanceType)!;
-
-    const newAmbulance: AmbulanceBooking = {
+    const newBooking: AmbulanceBooking = {
       id: 'amb_lag_' + Date.now().toString().slice(-4),
       patientCondition,
       ambulanceType,
-      pickupLocation,
+      patientLocation,
       destinationHospital,
-      status: 'dispatched',
+      emergencyFare: selectedTier.price,
       etaMinutes: 6,
-      paramedicName: 'Dr. Tunde Alabi (Senior Paramedic)',
-      paramedicPhone: '+234 802 999 4433',
-      vehiclePlate: 'MED-771-LG (Mercedes Sprinter ICU)',
-      cost: selectedTier.price,
+      status: 'dispatched',
+      paramedic: {
+        name: 'Dr. Chinedu Okafor (Lead ER Medic)',
+        phone: '+234 809 111 9900',
+        unitId: 'MED-UNIT 04 (Ford Transit MICU)',
+      },
     };
 
-    requestAmbulance(newAmbulance);
-    setEmergencyAlertSent(true);
+    requestAmbulance(newBooking);
+    setEmergencySuccess(`Ambulance dispatched! Paramedic unit on route (ETA: 6 mins). Reference: ${newBooking.id}`);
     setActiveTab('active');
   };
 
+  const handleBack = () => {
+    soundEngine.playClick();
+    if (onClose) {
+      onClose();
+    } else {
+      setScreen('home');
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full bg-[#F6F8FA] select-none">
-      {/* Calm & Urgent Header */}
-      <div className="px-5 pt-4 pb-3 bg-white border-b border-red-200 shrink-0 flex items-center justify-between shadow-xs">
+    <div className="flex flex-col h-full bg-[#020408] text-white select-none relative overflow-hidden">
+      {/* Header */}
+      <div className="px-5 pt-4 pb-3.5 glass-nav border-b border-red-500/20 shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setScreen('home')}
-            className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200"
+            onClick={handleBack}
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-neutral-300 hover:text-white transition-all active:scale-95"
+            title="Go Back"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping" />
-              <h2 className="text-base font-JakartaBold text-slate-900 leading-none">Broader MedDesk</h2>
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
+              <h2 className="text-sm font-JakartaBold text-white leading-none">Broader MedDesk</h2>
             </div>
-            <p className="text-[11px] text-red-600 font-JakartaSemiBold mt-0.5">Emergency Ambulance Dispatch</p>
+            <p className="text-[11px] text-red-400 font-JakartaSemiBold mt-0.5">Emergency Ambulance Dispatch</p>
           </div>
         </div>
 
         <a
           href="tel:112"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-600 text-white font-JakartaBold text-xs shadow-md shadow-red-600/30 hover:bg-red-700 transition-all"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-600 hover:bg-red-500 text-white font-JakartaBold text-xs shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all"
         >
           <Phone className="w-3.5 h-3.5" />
           <span>Call 112 / 767</span>
@@ -113,19 +125,29 @@ export const AmbulanceScreen: React.FC = () => {
 
       {/* Tabs */}
       <div className="px-4 pt-3 shrink-0">
-        <div className="flex p-1 bg-slate-200/70 rounded-xl text-xs font-JakartaBold">
+        <div className="flex p-1 bg-white/[0.05] border border-white/[0.08] rounded-2xl text-xs font-JakartaBold">
           <button
-            onClick={() => setActiveTab('request')}
-            className={`flex-1 py-1.5 rounded-lg transition-all ${
-              activeTab === 'request' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+            onClick={() => {
+              soundEngine.playClick();
+              setActiveTab('request');
+            }}
+            className={`flex-1 py-2 rounded-xl transition-all ${
+              activeTab === 'request'
+                ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.4)]'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Emergency Dispatch
           </button>
           <button
-            onClick={() => setActiveTab('active')}
-            className={`flex-1 py-1.5 rounded-lg transition-all ${
-              activeTab === 'active' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+            onClick={() => {
+              soundEngine.playClick();
+              setActiveTab('active');
+            }}
+            className={`flex-1 py-2 rounded-xl transition-all ${
+              activeTab === 'active'
+                ? 'bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.4)]'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Active Medics ({ambulanceBookings.length})
@@ -133,13 +155,13 @@ export const AmbulanceScreen: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar">
         {activeTab === 'request' ? (
-          <form onSubmit={handleDispatch} className="space-y-3">
+          <form onSubmit={handleDispatch} className="space-y-3.5">
             {/* Quick condition selector */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-              <div className="flex items-center gap-1.5 text-slate-900 font-JakartaBold">
-                <HeartPulse className="w-4 h-4 text-red-600" />
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
+              <div className="flex items-center gap-2 text-white font-JakartaBold">
+                <HeartPulse className="w-4 h-4 text-red-400" />
                 <span>Patient Situation & Triage</span>
               </div>
 
@@ -155,11 +177,14 @@ export const AmbulanceScreen: React.FC = () => {
                   <button
                     type="button"
                     key={situation}
-                    onClick={() => setPatientCondition(situation)}
-                    className={`p-2 rounded-xl text-left text-[11px] font-JakartaSemiBold border transition-all ${
+                    onClick={() => {
+                      soundEngine.playClick();
+                      setPatientCondition(situation);
+                    }}
+                    className={`p-2.5 rounded-xl text-left text-[11px] font-JakartaSemiBold border transition-all ${
                       patientCondition === situation
-                        ? 'bg-red-50 border-red-400 text-red-800'
-                        : 'border-slate-200 text-slate-600'
+                        ? 'bg-red-500/20 border-red-500 text-red-200 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+                        : 'border-white/10 bg-white/[0.03] text-neutral-300 hover:border-white/20'
                     }`}
                   >
                     {situation}
@@ -169,140 +194,156 @@ export const AmbulanceScreen: React.FC = () => {
             </div>
 
             {/* Ambulance Medical Tier */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2 text-xs">
-              <span className="text-xs font-JakartaBold text-slate-900 block">Ambulance Medical Equipment Tier</span>
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2 text-xs">
+              <span className="text-xs font-JakartaBold text-white block">Ambulance Medical Equipment Tier</span>
 
               <div className="space-y-1.5">
                 {ambulanceTiers.map((tier) => (
                   <div
                     key={tier.id}
-                    onClick={() => setAmbulanceType(tier.id as any)}
+                    onClick={() => {
+                      soundEngine.playClick();
+                      setAmbulanceType(tier.id as any);
+                    }}
                     className={`p-3 rounded-xl border cursor-pointer transition-all ${
                       ambulanceType === tier.id
-                        ? 'bg-red-50/70 border-red-400'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'bg-red-500/15 border-red-500/60 shadow-[0_0_12px_rgba(239,68,68,0.2)]'
+                        : 'border-white/10 bg-white/[0.03] hover:border-white/20'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-JakartaBold text-slate-900 text-xs">{tier.name}</span>
-                      <span className="font-JakartaBold text-red-600 text-xs">₦{tier.price.toLocaleString()}</span>
+                      <span className="font-JakartaBold text-white text-xs">{tier.name}</span>
+                      <span className="font-JakartaBold text-red-400 text-xs">₦{tier.price.toLocaleString()}</span>
                     </div>
-                    <p className="text-[10px] text-slate-500 font-JakartaMedium mt-0.5">{tier.desc}</p>
+                    <p className="text-[10px] text-neutral-400 font-JakartaMedium mt-0.5">{tier.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Locations */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
               <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">
+                <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">
                   Patient Pickup Address in Lagos
                 </label>
                 <input
                   type="text"
                   required
-                  value={pickupLocation}
-                  onChange={(e) => setPickupLocation(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA]"
+                  value={patientLocation}
+                  onChange={(e) => setPatientLocation(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-red-500"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">
-                  Destination Emergency Center / Hospital
+                <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">
+                  Target Destination Hospital
                 </label>
                 <select
                   value={destinationHospital}
                   onChange={(e) => setDestinationHospital(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.05] focus:outline-none focus:border-red-500"
                 >
-                  {lagosHospitals.map((hosp) => (
-                    <option key={hosp} value={hosp}>
-                      {hosp}
-                    </option>
-                  ))}
+                  <option className="bg-[#0a0f1d]" value="Reddington Hospital (Victoria Island)">Reddington Hospital (Victoria Island)</option>
+                  <option className="bg-[#0a0f1d]" value="Lagoon Hospitals (Ikoyi & Ikeja)">Lagoon Hospitals (Ikoyi & Ikeja)</option>
+                  <option className="bg-[#0a0f1d]" value="Lagos University Teaching Hospital (LUTH)">Lagos University Teaching Hospital (LUTH)</option>
+                  <option className="bg-[#0a0f1d]" value="Epe General Hospital Emergency Unit">Epe General Hospital Emergency Unit</option>
+                  <option className="bg-[#0a0f1d]" value="Evercare Hospital Lekki">Evercare Hospital Lekki</option>
                 </select>
               </div>
 
-              <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">
-                  Emergency Contact Phone (+234)
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={contactPhone}
-                  onChange={(e) => setContactPhone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaBold text-slate-800 bg-[#F6F8FA]"
-                />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Patient Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={patientName}
+                    onChange={(e) => setPatientName(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-red-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Contact Phone</label>
+                  <input
+                    type="text"
+                    required
+                    value={contactPhone}
+                    onChange={(e) => setContactPhone(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaBold text-white bg-white/[0.04] focus:outline-none focus:border-red-500"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Emergency Action */}
+            {/* CTA */}
             <button
               type="submit"
-              className="w-full py-4 rounded-full bg-red-600 hover:bg-red-700 text-white font-JakartaBold text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+              className="w-full py-3.5 rounded-2xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-JakartaBold text-xs shadow-[0_0_24px_rgba(239,68,68,0.5)] transition-all flex items-center justify-center gap-2"
             >
-              <HeartPulse className="w-5 h-5 animate-pulse" />
-              <span>DISPATCH EMERGENCY AMBULANCE NOW</span>
+              <HeartPulse className="w-4 h-4 animate-pulse" />
+              <span>Dispatch Emergency Ambulance Now (₦{selectedTier.price.toLocaleString()})</span>
             </button>
           </form>
         ) : (
-          /* Active Ambulance Dispatches */
+          /* Active Medics Tab */
           <div className="space-y-3">
-            {ambulanceBookings.length > 0 ? (
-              ambulanceBookings.map((amb) => (
-                <div key={amb.id} className="bg-white rounded-2xl border border-red-200 p-4 shadow-sm space-y-3 text-xs">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping" />
-                      <span className="font-mono font-bold text-red-700">{amb.id}</span>
-                    </div>
-                    <span className="px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 font-JakartaBold text-[10px] uppercase border border-red-200">
-                      ETA: ~{amb.etaMinutes} Minutes
-                    </span>
+            {ambulanceBookings.map((b) => (
+              <div
+                key={b.id}
+                className="glass-panel rounded-2xl border border-red-500/30 p-4 space-y-3"
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+                  <div>
+                    <span className="text-xs font-JakartaBold text-white">{b.id}</span>
+                    <p className="text-[10px] text-neutral-400">{b.patientCondition}</p>
                   </div>
+                  <span className="text-[10px] font-JakartaBold text-red-400 bg-red-500/15 border border-red-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                    <span>ETA ~{b.etaMinutes} Mins</span>
+                  </span>
+                </div>
 
-                  <div className="bg-red-50/60 p-3 rounded-xl border border-red-100 space-y-1 text-[11px]">
-                    <p className="font-JakartaBold text-red-900">{amb.patientCondition}</p>
-                    <p className="text-slate-600 font-JakartaMedium">En route to: {amb.destinationHospital}</p>
-                  </div>
+                <div className="space-y-1 text-xs">
+                  <p className="text-neutral-400 text-[11px]">
+                    <span className="text-white font-JakartaBold">Pickup:</span> {b.patientLocation}
+                  </p>
+                  <p className="text-neutral-400 text-[11px]">
+                    <span className="text-white font-JakartaBold">Hospital:</span> {b.destinationHospital}
+                  </p>
+                </div>
 
-                  <div className="flex items-center justify-between pt-1 border-t border-slate-100">
+                {b.paramedic && (
+                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
                     <div>
-                      <p className="font-JakartaBold text-slate-900">{amb.paramedicName}</p>
-                      <p className="text-[10px] text-slate-400 font-JakartaMedium">{amb.vehiclePlate}</p>
+                      <p className="text-xs font-JakartaBold text-white">{b.paramedic.name}</p>
+                      <p className="text-[10px] text-cyan-300">{b.paramedic.unitId}</p>
                     </div>
                     <a
-                      href={`tel:${amb.paramedicPhone}`}
-                      className="px-3 py-1.5 rounded-full bg-red-600 text-white text-xs font-JakartaBold flex items-center gap-1 shadow-xs"
+                      href={`tel:${b.paramedic.phone}`}
+                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-JakartaBold flex items-center gap-1"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call Medic</span>
                     </a>
                   </div>
+                )}
+              </div>
+            ))}
 
-                  <div className="flex justify-between items-center pt-1 border-t border-slate-100 text-[11px]">
-                    <span className="text-slate-400">Fixed Fee Guarantee</span>
-                    <span className="font-JakartaBold text-red-600">₦{amb.cost.toLocaleString()}</span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="py-16 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mx-auto mb-3">
-                  <HeartPulse className="w-7 h-7 text-red-400" />
-                </div>
-                <h4 className="text-sm font-JakartaBold text-slate-800">No Active Medical Dispatches</h4>
-                <p className="text-xs text-slate-400 font-JakartaMedium mt-1">
-                  Broader MedDesk provides 24/7 rapid ambulance dispatch across Lagos.
+            {ambulanceBookings.length === 0 && (
+              <div className="py-16 text-center glass-panel rounded-2xl border border-white/[0.08] p-8">
+                <HeartPulse className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
+                <h4 className="text-xs font-JakartaBold text-white">No Active Medical Dispatches</h4>
+                <p className="text-[11px] text-neutral-400 mt-1">
+                  Broader MedDesk provides rapid response ambulances across Lagos with certified paramedics.
                 </p>
                 <button
                   onClick={() => setActiveTab('request')}
-                  className="mt-4 px-4 py-2 rounded-full bg-red-600 text-white text-xs font-JakartaBold"
+                  className="mt-3 px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-JakartaBold shadow-md"
                 >
-                  Book Ambulance
+                  Dispatch Ambulance
                 </button>
               </div>
             )}

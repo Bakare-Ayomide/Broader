@@ -13,11 +13,18 @@ import {
   ChevronRight,
   AlertCircle,
   Truck,
+  Sparkles,
 } from 'lucide-react';
 import { calculateParcelPrice } from '../services/backendService';
 import { ParcelDelivery } from '../types';
+import { soundEngine } from '../services/soundNotification';
 
-export const ParcelScreen: React.FC = () => {
+interface ParcelScreenProps {
+  onClose?: () => void;
+  isModal?: boolean;
+}
+
+export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = false }) => {
   const setScreen = useBroaderStore((s) => s.setScreen);
   const parcels = useBroaderStore((s) => s.parcels);
   const createParcelDelivery = useBroaderStore((s) => s.createParcelDelivery);
@@ -44,6 +51,7 @@ export const ParcelScreen: React.FC = () => {
 
   const handleSendPackage = (e: React.FormEvent) => {
     e.preventDefault();
+    soundEngine.playSuccess();
 
     const newParcel: ParcelDelivery = {
       id: 'pcl_lag_' + Date.now().toString().slice(-4),
@@ -72,43 +80,69 @@ export const ParcelScreen: React.FC = () => {
     setTimeout(() => setSuccessToast(null), 5000);
   };
 
+  const handleBack = () => {
+    soundEngine.playClick();
+    if (onClose) {
+      onClose();
+    } else {
+      setScreen('home');
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full bg-[#F6F8FA] select-none">
+    <div className="flex flex-col h-full bg-[#020408] text-white select-none relative overflow-hidden">
       {/* Header */}
-      <div className="px-5 pt-4 pb-3 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between">
+      <div className="px-5 pt-4 pb-3.5 glass-nav border-b border-white/[0.08] shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setScreen('home')}
-            className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200"
+            onClick={handleBack}
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-neutral-300 hover:text-white transition-all active:scale-95"
+            title="Go Back"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h2 className="text-base font-JakartaBold text-slate-900 leading-none">Broader Parcel Delivery</h2>
-            <p className="text-[11px] text-slate-400 font-JakartaMedium mt-0.5">Fast, Secure Dispatch in Lagos</p>
+            <div className="flex items-center gap-1.5">
+              <Package className="w-3.5 h-3.5 text-[#0286FF]" />
+              <h2 className="text-sm font-JakartaBold text-white leading-none">Broader Parcel Delivery</h2>
+            </div>
+            <p className="text-[11px] text-neutral-400 font-JakartaMedium mt-0.5">
+              Rapid On-Demand Dispatch in Lagos
+            </p>
           </div>
         </div>
 
-        <span className="text-xs font-JakartaBold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-          Live Dispatch
+        <span className="text-[10px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Live Dispatch</span>
         </span>
       </div>
 
       {/* Tabs */}
       <div className="px-4 pt-3 shrink-0">
-        <div className="flex p-1 bg-slate-200/70 rounded-xl text-xs font-JakartaBold">
+        <div className="flex p-1 bg-white/[0.05] border border-white/[0.08] rounded-2xl text-xs font-JakartaBold">
           <button
-            onClick={() => setActiveTab('send')}
-            className={`flex-1 py-1.5 rounded-lg transition-all ${
-              activeTab === 'send' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+            onClick={() => {
+              soundEngine.playClick();
+              setActiveTab('send');
+            }}
+            className={`flex-1 py-2 rounded-xl transition-all ${
+              activeTab === 'send'
+                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Send Package
           </button>
           <button
-            onClick={() => setActiveTab('track')}
-            className={`flex-1 py-1.5 rounded-lg transition-all ${
-              activeTab === 'track' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+            onClick={() => {
+              soundEngine.playClick();
+              setActiveTab('track');
+            }}
+            className={`flex-1 py-2 rounded-xl transition-all ${
+              activeTab === 'track'
+                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Track Deliveries ({parcels.length})
@@ -117,231 +151,277 @@ export const ParcelScreen: React.FC = () => {
       </div>
 
       {successToast && (
-        <div className="mx-4 mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2 text-xs text-emerald-800 font-JakartaMedium animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+        <div className="mx-4 mt-3 p-3 bg-emerald-500/15 border border-emerald-500/30 rounded-2xl flex items-center gap-2 text-xs text-emerald-300 font-JakartaMedium animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{successToast}</span>
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar">
         {activeTab === 'send' ? (
-          <form onSubmit={handleSendPackage} className="space-y-3">
+          <form onSubmit={handleSendPackage} className="space-y-3.5">
             {/* Sender Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-              <div className="flex items-center gap-1.5 text-slate-900 font-JakartaBold text-xs uppercase tracking-wider">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#0286FF]" />
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
+              <div className="flex items-center gap-2 text-white font-JakartaBold text-xs uppercase tracking-wider">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#0286FF] shadow-[0_0_8px_rgba(2,134,255,0.8)]" />
                 <span>Pickup / Sender Information</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Sender Name</label>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Sender Name</label>
                   <input
                     type="text"
                     required
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Sender Phone</label>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Sender Phone</label>
                   <input
                     type="text"
                     required
                     value={senderPhone}
                     onChange={(e) => setSenderPhone(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaBold text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaBold text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Pickup Address</label>
+                <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Pickup Address</label>
                 <input
                   type="text"
                   required
                   value={pickupAddress}
                   onChange={(e) => setPickupAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
                 />
               </div>
             </div>
 
             {/* Recipient Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-              <div className="flex items-center gap-1.5 text-slate-900 font-JakartaBold text-xs uppercase tracking-wider">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
+              <div className="flex items-center gap-2 text-white font-JakartaBold text-xs uppercase tracking-wider">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                 <span>Delivery / Recipient Information</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Recipient Name</label>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Recipient Name</label>
                   <input
                     type="text"
                     required
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Recipient Phone</label>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Recipient Phone</label>
                   <input
                     type="text"
                     required
                     value={recipientPhone}
                     onChange={(e) => setRecipientPhone(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaBold text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaBold text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Delivery Address</label>
+                <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Delivery Address</label>
                 <input
                   type="text"
                   required
                   value={deliveryAddress}
                   onChange={(e) => setDeliveryAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
                 />
               </div>
             </div>
 
-            {/* Package Type & Speed Selection */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 text-xs">
-              <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Package Category</label>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {['Documents & Files', 'Electronics', 'Clothing / Shoes', 'Food & Groceries', 'Fragile Goods'].map((cat) => (
-                    <button
-                      type="button"
-                      key={cat}
-                      onClick={() => setPackageType(cat)}
-                      className={`p-2 rounded-xl text-[11px] font-JakartaSemiBold border transition-all text-center ${
-                        packageType === cat
-                          ? 'bg-blue-50 border-[#0286FF] text-[#0286FF]'
-                          : 'border-slate-200 text-slate-600'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+            {/* Package Details */}
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-3 text-xs">
+              <div className="flex items-center gap-2 text-white font-JakartaBold text-xs uppercase tracking-wider">
+                <Package className="w-3.5 h-3.5 text-[#0286FF]" />
+                <span>Package Specifications</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Estimated Weight</label>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Category</label>
                   <select
-                    value={weightKg}
-                    onChange={(e) => setWeightKg(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                    value={packageType}
+                    onChange={(e) => setPackageType(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.06] focus:outline-none focus:border-[#0286FF]"
                   >
-                    <option value={1}>Under 1 kg</option>
-                    <option value={2}>1 - 3 kg</option>
-                    <option value={5}>3 - 7 kg</option>
-                    <option value={10}>7 - 15 kg</option>
+                    <option value="Documents & Files" className="bg-[#0a0f1d]">Documents & Files</option>
+                    <option value="Electronics & Gadgets" className="bg-[#0a0f1d]">Electronics & Gadgets</option>
+                    <option value="Clothing & Apparel" className="bg-[#0a0f1d]">Clothing & Apparel</option>
+                    <option value="Food & Perishables" className="bg-[#0a0f1d]">Food & Perishables</option>
+                    <option value="Fragile & Glassware" className="bg-[#0a0f1d]">Fragile & Glassware</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">Delivery Speed</label>
-                  <button
-                    type="button"
-                    onClick={() => setIsExpress(!isExpress)}
-                    className={`w-full py-2 px-2 rounded-xl border font-JakartaBold text-xs flex items-center justify-center gap-1 transition-all ${
-                      isExpress
-                        ? 'bg-amber-50 border-amber-300 text-amber-800'
-                        : 'bg-[#F6F8FA] border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    <Zap className="w-3 h-3 text-amber-500" />
-                    <span>{isExpress ? 'Express (45m)' : 'Standard'}</span>
-                  </button>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Weight (Kg)</label>
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 5, 10].map((kg) => (
+                      <button
+                        key={kg}
+                        type="button"
+                        onClick={() => {
+                          soundEngine.playClick();
+                          setWeightKg(kg);
+                        }}
+                        className={`flex-1 py-1.5 rounded-lg border text-xs font-bold transition-all ${
+                          weightKg === kg
+                            ? 'bg-[#0286FF] text-white border-[#0286FF]'
+                            : 'bg-white/[0.04] text-neutral-400 border-white/10 hover:bg-white/[0.08]'
+                        }`}
+                      >
+                        {kg}kg
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Instant Transparent Pricing Card */}
-              <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-100 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-JakartaBold text-blue-600 uppercase">Estimated Delivery Fee</span>
-                  <p className="text-lg font-JakartaBold text-slate-900">₦{estimatedFare.toLocaleString()}</p>
+              {/* Express Toggle */}
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-amber-400" />
+                  <div>
+                    <span className="text-xs font-JakartaBold text-white">Express Priority Dispatch</span>
+                    <p className="text-[10px] text-neutral-400">Direct courier route with no intermediate stops</p>
+                  </div>
                 </div>
-                <div className="text-right text-[10px] text-slate-500 font-JakartaMedium">
-                  <span>~{estimatedKm} km route</span>
-                  <span className="block text-emerald-600 font-JakartaBold">Instant Motorcycle Dispatch</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEngine.playClick();
+                    setIsExpress(!isExpress);
+                  }}
+                  className={`w-10 h-6 rounded-full p-0.5 transition-colors ${
+                    isExpress ? 'bg-[#0286FF]' : 'bg-white/20'
+                  }`}
+                >
+                  <div
+                    className={`w-5 h-5 rounded-full bg-white transition-transform ${
+                      isExpress ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">
+                  Delivery Notes for Rider
+                </label>
+                <input
+                  type="text"
+                  value={deliveryNote}
+                  onChange={(e) => setDeliveryNote(e.target.value)}
+                  placeholder="Gate code, landmark, calling instructions..."
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                />
+              </div>
+            </div>
+
+            {/* Pricing & Dispatch CTA */}
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 flex items-center justify-between shadow-lg">
+              <div>
+                <span className="text-[10px] font-JakartaBold text-neutral-400 uppercase">Estimated Delivery Fare</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xl font-JakartaBold text-[#0286FF]">
+                    ₦{estimatedFare.toLocaleString()}
+                  </span>
+                  <span className="text-[10px] text-neutral-400 font-JakartaMedium">({estimatedKm} km route)</span>
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-1.5"
+                className="px-5 py-3 rounded-xl bg-[#0286FF] hover:bg-blue-500 active:scale-95 text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all flex items-center gap-1.5"
               >
-                <span>Request Broader Dispatcher</span>
-                <ChevronRight className="w-4 h-4" />
+                <Truck className="w-4 h-4" />
+                <span>Dispatch Rider</span>
               </button>
             </div>
           </form>
         ) : (
-          /* Track Deliveries Tab */
+          /* Track Tab */
           <div className="space-y-3">
-            {parcels.length > 0 ? (
-              parcels.map((parcel) => (
-                <div key={parcel.id} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-slate-700">{parcel.id}</span>
-                    <span className="px-2 py-0.5 rounded-full bg-blue-50 text-[#0286FF] font-JakartaBold text-[10px] uppercase border border-blue-200">
-                      {parcel.status.replace('_', ' ')}
-                    </span>
+            {parcels.map((parcel) => (
+              <div
+                key={parcel.id}
+                className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-3 transition-all"
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+                  <div>
+                    <span className="text-xs font-JakartaBold text-white">{parcel.id}</span>
+                    <p className="text-[10px] text-neutral-400">{parcel.packageType} • {parcel.weightKg}kg</p>
                   </div>
+                  <span className="text-[10px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span>In Transit</span>
+                  </span>
+                </div>
 
-                  <div className="p-2.5 bg-slate-50 rounded-xl space-y-1 text-[11px]">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#0286FF]" />
-                      <span className="font-JakartaMedium text-slate-800 truncate">{parcel.pickupAddress}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span className="font-JakartaMedium text-slate-800 truncate">{parcel.deliveryAddress}</span>
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 rounded-full bg-[#0286FF] mt-1 shrink-0" />
+                    <div>
+                      <span className="text-[10px] text-neutral-400 uppercase block">Pickup</span>
+                      <p className="text-white font-JakartaMedium">{parcel.pickupAddress}</p>
                     </div>
                   </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400 mt-1 shrink-0" />
+                    <div>
+                      <span className="text-[10px] text-neutral-400 uppercase block">Dropoff</span>
+                      <p className="text-white font-JakartaMedium">{parcel.deliveryAddress}</p>
+                    </div>
+                  </div>
+                </div>
 
-                  {parcel.courier && (
-                    <div className="flex items-center justify-between pt-1 border-t border-slate-100">
-                      <div>
-                        <p className="font-JakartaBold text-slate-900">{parcel.courier.name}</p>
-                        <p className="text-[10px] text-slate-400 font-JakartaMedium">{parcel.courier.vehiclePlate}</p>
+                {parcel.courier && (
+                  <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-[#0286FF]/20 text-[#0286FF] flex items-center justify-center font-bold text-xs">
+                        SG
                       </div>
-                      <a
-                        href={`tel:${parcel.courier.phone}`}
-                        className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-JakartaBold"
-                      >
-                        Call Rider
-                      </a>
+                      <div>
+                        <span className="text-xs font-JakartaBold text-white block">{parcel.courier.name}</span>
+                        <span className="text-[10px] text-neutral-400">{parcel.courier.vehiclePlate}</span>
+                      </div>
                     </div>
-                  )}
-
-                  <div className="flex justify-between items-center pt-1 text-[11px]">
-                    <span className="text-slate-400">{parcel.packageType} ({parcel.weightKg}kg)</span>
-                    <span className="font-JakartaBold text-[#0286FF]">₦{parcel.fare.toLocaleString()}</span>
+                    <a
+                      href={`tel:${parcel.courier.phone}`}
+                      className="px-3 py-1.5 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-JakartaBold hover:bg-blue-500/25 transition-all flex items-center gap-1"
+                    >
+                      <Phone className="w-3 h-3" />
+                      <span>Call</span>
+                    </a>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="py-16 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mx-auto mb-3">
-                  <Package className="w-7 h-7" />
-                </div>
-                <h4 className="text-sm font-JakartaBold text-slate-800">No Parcels in Transit</h4>
-                <p className="text-xs text-slate-400 font-JakartaMedium mt-1">
-                  Send packages and documents anywhere in Lagos with live rider tracking.
+                )}
+              </div>
+            ))}
+
+            {parcels.length === 0 && (
+              <div className="p-8 text-center glass-panel rounded-2xl border border-white/[0.08]">
+                <Package className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
+                <h4 className="text-xs font-JakartaBold text-white">No Parcels in Transit</h4>
+                <p className="text-[11px] text-neutral-400 mt-1">
+                  You haven't requested any package deliveries yet. Send one in seconds!
                 </p>
                 <button
                   onClick={() => setActiveTab('send')}
-                  className="mt-4 px-4 py-2 rounded-full bg-[#0286FF] text-white text-xs font-JakartaBold"
+                  className="mt-3 px-4 py-2 rounded-xl bg-[#0286FF] text-white text-xs font-JakartaBold shadow-md"
                 >
                   Send a Package
                 </button>

@@ -3,20 +3,25 @@ import { useBroaderStore } from '../store/useBroaderStore';
 import {
   ArrowLeft,
   Truck,
-  Package,
-  Clock,
-  ShieldCheck,
-  CheckCircle2,
+  Box,
   MapPin,
+  Calendar,
+  CheckCircle2,
+  ShieldAlert,
+  Clock,
   ChevronRight,
-  Layers,
-  Scale,
-  Building,
+  Sparkles,
 } from 'lucide-react';
 import { calculateFreightPrice } from '../services/backendService';
 import { FreightShipment } from '../types';
+import { soundEngine } from '../services/soundNotification';
 
-export const FreightScreen: React.FC = () => {
+interface FreightScreenProps {
+  onClose?: () => void;
+  isModal?: boolean;
+}
+
+export const FreightScreen: React.FC<FreightScreenProps> = ({ onClose, isModal = false }) => {
   const setScreen = useBroaderStore((s) => s.setScreen);
   const freightShipments = useBroaderStore((s) => s.freightShipments);
   const bookFreightShipment = useBroaderStore((s) => s.bookFreightShipment);
@@ -24,104 +29,111 @@ export const FreightScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'quote' | 'shipments'>('quote');
   const [cargoType, setCargoType] = useState('Industrial Machinery & Parts');
   const [weightTons, setWeightTons] = useState(5);
-  const [originHub, setOriginHub] = useState('Apapa Container Port, Lagos');
-  const [destinationCity, setDestinationCity] = useState('Ikeja Industrial Estate, Lagos');
-  const [selectedTruckType, setSelectedTruckType] = useState('5-Ton Box Truck');
-  const [requiresLoadingCrew, setRequiresLoadingCrew] = useState(true);
+  const [selectedTruckType, setSelectedTruckType] = useState('10-Tonne Box Truck');
+
+  const [originCity, setOriginCity] = useState('Lagos (Apapa Port)');
+  const [destinationCity, setDestinationCity] = useState('Ibadan (Oyo State)');
+  const [estimatedKm, setEstimatedKm] = useState(145);
+
+  const [pickupDate, setPickupDate] = useState('Tomorrow, 08:00 AM');
+  const [requiresInsurance, setRequiresInsurance] = useState(true);
   const [quoteSuccess, setQuoteSuccess] = useState<string | null>(null);
 
-  const hubOptions = [
-    'Apapa Container Port, Lagos',
-    'Tin Can Island Terminal, Lagos',
-    'Ikeja Industrial Estate, Lagos',
-    'Lekki Free Trade Zone & Deep Sea Port',
-    'Sagamu Logistics Park, Ogun State',
-    'Onne Port, Rivers State',
-  ];
-
-  const destinationOptions = [
-    'Ikeja Industrial Estate, Lagos',
-    'Alaba International Market, Ojo, Lagos',
-    'Abuja Central Distribution Hub, FCT',
-    'Onitsha Main Commercial Hub, Anambra',
-    'Kano Bompai Industrial Zone',
-    'Port Harcourt Trans-Amadi, Rivers',
-  ];
-
   const truckOptions = [
-    { type: '1-Ton Pickup', cap: '1 Ton', rateMult: 1 },
-    { type: '3-Ton Covered Van', cap: '3 Tons', rateMult: 1.5 },
-    { type: '5-Ton Box Truck', cap: '5 Tons', rateMult: 2.2 },
-    { type: '10-Ton Heavy Hauler', cap: '10 Tons', rateMult: 3.8 },
-    { type: '30-Ton Flatbed Semi-Trailer', cap: '30 Tons', rateMult: 6.5 },
+    { type: '3-Tonne Mitsubishi Canter', cap: 'Up to 3 Tons', baseMultiplier: 1.0 },
+    { type: '10-Tonne Box Truck', cap: 'Up to 10 Tons', baseMultiplier: 1.6 },
+    { type: '20-Tonne Tipper / Flatbed', cap: 'Up to 20 Tons', baseMultiplier: 2.3 },
+    { type: '30-Tonne Articulated Container Hauler', cap: 'Up to 30 Tons', baseMultiplier: 3.2 },
   ];
 
-  // Calculate freight price based on weight and truck
-  const estimatedFreightPrice = calculateFreightPrice(weightTons, 45, selectedTruckType);
+  const estimatedFreightFare = calculateFreightPrice(estimatedKm, weightTons, selectedTruckType);
 
   const handleBookFreight = (e: React.FormEvent) => {
     e.preventDefault();
+    soundEngine.playSuccess();
 
     const newShipment: FreightShipment = {
       id: 'frt_ng_' + Date.now().toString().slice(-4),
-      cargoType,
-      weightTons,
+      cargoDescription: `${cargoType} (${weightTons} Tons)`,
       truckType: selectedTruckType,
-      origin: originHub,
+      origin: originCity,
       destination: destinationCity,
-      estimatedPrice: estimatedFreightPrice,
-      status: 'scheduled',
-      scheduledDate: 'Tomorrow, 08:00 AM',
-      driverInfo: {
-        name: 'Alhaji Musa Danladi',
-        phone: '+234 803 771 9900',
-        plateNumber: 'KRD-914-XA (Mack 5-Ton)',
+      pickupDate,
+      quotedFare: estimatedFreightFare,
+      status: 'driver_assigned',
+      hauler: {
+        company: 'Dangote & BUA Logistics Partner Net',
+        driverName: 'Alhaji Usman Danladi',
+        truckPlate: 'APP-998-XA (Mack 400)',
       },
     };
 
     bookFreightShipment(newShipment);
-    setQuoteSuccess(`Freight shipment booked! Consignment #${newShipment.id}`);
+    setQuoteSuccess(`Freight shipment scheduled! Reference ID: ${newShipment.id}`);
     setActiveTab('shipments');
     setTimeout(() => setQuoteSuccess(null), 5000);
   };
 
+  const handleBack = () => {
+    soundEngine.playClick();
+    if (onClose) {
+      onClose();
+    } else {
+      setScreen('home');
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full bg-[#F6F8FA] select-none">
+    <div className="flex flex-col h-full bg-[#020408] text-white select-none relative overflow-hidden">
       {/* Header */}
-      <div className="px-5 pt-4 pb-3 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between">
+      <div className="px-5 pt-4 pb-3.5 glass-nav border-b border-white/[0.08] shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setScreen('home')}
-            className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200"
+            onClick={handleBack}
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-neutral-300 hover:text-white transition-all active:scale-95"
+            title="Go Back"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h2 className="text-base font-JakartaBold text-slate-900 leading-none">Broader Freight & Cargo</h2>
-            <p className="text-[11px] text-slate-400 font-JakartaMedium mt-0.5">Heavy Logistics Across Nigeria</p>
+            <div className="flex items-center gap-1.5">
+              <Truck className="w-3.5 h-3.5 text-[#0286FF]" />
+              <h2 className="text-sm font-JakartaBold text-white leading-none">Broader Freight & Cargo</h2>
+            </div>
+            <p className="text-[11px] text-neutral-400 font-JakartaMedium mt-0.5">Heavy Logistics Across Nigeria</p>
           </div>
         </div>
 
-        <span className="text-xs font-JakartaBold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
+        <span className="text-[10px] font-JakartaBold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
           Commercial
         </span>
       </div>
 
       {/* Tabs */}
       <div className="px-4 pt-3 shrink-0">
-        <div className="flex p-1 bg-slate-200/70 rounded-xl text-xs font-JakartaBold">
+        <div className="flex p-1 bg-white/[0.05] border border-white/[0.08] rounded-2xl text-xs font-JakartaBold">
           <button
-            onClick={() => setActiveTab('quote')}
-            className={`flex-1 py-1.5 rounded-lg transition-all ${
-              activeTab === 'quote' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+            onClick={() => {
+              soundEngine.playClick();
+              setActiveTab('quote');
+            }}
+            className={`flex-1 py-2 rounded-xl transition-all ${
+              activeTab === 'quote'
+                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Freight Request
           </button>
           <button
-            onClick={() => setActiveTab('shipments')}
-            className={`flex-1 py-1.5 rounded-lg transition-all ${
-              activeTab === 'shipments' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+            onClick={() => {
+              soundEngine.playClick();
+              setActiveTab('shipments');
+            }}
+            className={`flex-1 py-2 rounded-xl transition-all ${
+              activeTab === 'shipments'
+                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Active Shipments ({freightShipments.length})
@@ -130,40 +142,40 @@ export const FreightScreen: React.FC = () => {
       </div>
 
       {quoteSuccess && (
-        <div className="mx-4 mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2 text-xs text-emerald-800 font-JakartaMedium animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+        <div className="mx-4 mt-3 p-3 bg-emerald-500/15 border border-emerald-500/30 rounded-2xl flex items-center gap-2 text-xs text-emerald-300 font-JakartaMedium animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{quoteSuccess}</span>
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar">
         {activeTab === 'quote' ? (
-          <form onSubmit={handleBookFreight} className="space-y-3">
+          <form onSubmit={handleBookFreight} className="space-y-3.5">
             {/* Cargo Details Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 text-xs">
-              <h4 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wider">
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-3 text-xs">
+              <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
                 Cargo Specifications
               </h4>
 
               <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">
+                <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">
                   Nature of Cargo / Goods
                 </label>
                 <select
                   value={cargoType}
                   onChange={(e) => setCargoType(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.05] focus:outline-none focus:border-[#0286FF]"
                 >
-                  <option>Industrial Machinery & Parts</option>
-                  <option>Building Materials & Cement</option>
-                  <option>FMCG & Packaged Retail Stock</option>
-                  <option>Commercial Furniture & Fixtures</option>
-                  <option>Agricultural Produce & Grains</option>
+                  <option value="Industrial Machinery & Parts" className="bg-[#0a0f1d]">Industrial Machinery & Parts</option>
+                  <option value="Building Materials & Cement" className="bg-[#0a0f1d]">Building Materials & Cement</option>
+                  <option value="FMCG & Packaged Retail Stock" className="bg-[#0a0f1d]">FMCG & Packaged Retail Stock</option>
+                  <option value="Commercial Furniture & Fixtures" className="bg-[#0a0f1d]">Commercial Furniture & Fixtures</option>
+                  <option value="Agricultural Produce & Grains" className="bg-[#0a0f1d]">Agricultural Produce & Grains</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">
+                <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">
                   Estimated Net Weight (Metric Tons)
                 </label>
                 <div className="flex items-center gap-2">
@@ -171,11 +183,14 @@ export const FreightScreen: React.FC = () => {
                     <button
                       type="button"
                       key={t}
-                      onClick={() => setWeightTons(t)}
+                      onClick={() => {
+                        soundEngine.playClick();
+                        setWeightTons(t);
+                      }}
                       className={`flex-1 py-1.5 rounded-xl border text-center font-JakartaBold text-xs transition-all ${
                         weightTons === t
-                          ? 'bg-blue-50 border-[#0286FF] text-[#0286FF]'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'bg-[#0286FF] border-[#0286FF] text-white shadow-[0_0_10px_rgba(2,134,255,0.4)]'
+                          : 'border-white/10 bg-white/[0.04] text-neutral-400 hover:bg-white/[0.08]'
                       }`}
                     >
                       {t}T
@@ -186,8 +201,8 @@ export const FreightScreen: React.FC = () => {
             </div>
 
             {/* Commercial Vehicle Selection */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-              <h4 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wider">
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
+              <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
                 Commercial Haulage Vehicle
               </h4>
 
@@ -195,23 +210,26 @@ export const FreightScreen: React.FC = () => {
                 {truckOptions.map((truck) => (
                   <div
                     key={truck.type}
-                    onClick={() => setSelectedTruckType(truck.type)}
+                    onClick={() => {
+                      soundEngine.playClick();
+                      setSelectedTruckType(truck.type);
+                    }}
                     className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${
                       selectedTruckType === truck.type
-                        ? 'bg-blue-50/70 border-[#0286FF]'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'bg-[#0286FF]/20 border-[#0286FF]'
+                        : 'border-white/10 bg-white/[0.03] hover:border-white/20'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
-                        <Truck className="w-3.5 h-3.5" />
+                      <div className="w-8 h-8 rounded-lg bg-white/10 text-cyan-400 flex items-center justify-center">
+                        <Truck className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs font-JakartaBold text-slate-900">{truck.type}</p>
-                        <p className="text-[10px] text-slate-400 font-JakartaMedium">Rated: {truck.cap}</p>
+                        <p className="text-xs font-JakartaBold text-white">{truck.type}</p>
+                        <p className="text-[10px] text-neutral-400 font-JakartaMedium">Rated: {truck.cap}</p>
                       </div>
                     </div>
-                    <span className="text-[10px] font-JakartaBold text-[#0286FF]">
+                    <span className="text-[10px] font-JakartaBold text-cyan-300">
                       {selectedTruckType === truck.type ? 'Selected' : 'Select'}
                     </span>
                   </div>
@@ -219,139 +237,114 @@ export const FreightScreen: React.FC = () => {
               </div>
             </div>
 
-            {/* Route Hubs Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-              <h4 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wider">
-                Origin & Destination Terminals
+            {/* Origin & Destination */}
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
+              <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
+                Interstate Haulage Route
               </h4>
 
-              <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">
-                  Origin Freight Hub / Port
-                </label>
-                <select
-                  value={originHub}
-                  onChange={(e) => setOriginHub(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA]"
-                >
-                  {hubOptions.map((h) => (
-                    <option key={h} value={h}>
-                      {h}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-JakartaSemiBold text-slate-500 mb-1">
-                  Destination City / Hub
-                </label>
-                <select
-                  value={destinationCity}
-                  onChange={(e) => setDestinationCity(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-JakartaMedium text-slate-800 bg-[#F6F8FA]"
-                >
-                  {destinationOptions.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Origin Hub</label>
+                  <input
+                    type="text"
+                    required
+                    value={originCity}
+                    onChange={(e) => setOriginCity(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Destination</label>
+                  <input
+                    type="text"
+                    required
+                    value={destinationCity}
+                    onChange={(e) => setDestinationCity(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Price & Booking Button */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 text-xs">
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <div>
-                  <span className="text-[10px] font-JakartaBold text-slate-400 uppercase">Haulage Quote</span>
-                  <p className="text-xl font-JakartaBold text-slate-900">
-                    ₦{estimatedFreightPrice.toLocaleString()}
-                  </p>
-                </div>
-                <div className="text-right text-[10px] text-slate-500 font-JakartaMedium">
-                  <span>GIT Insurance Included</span>
-                  <span className="block font-JakartaBold text-emerald-600">FRSC Certified Carrier</span>
+            {/* Fare Summary & CTA */}
+            <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 flex items-center justify-between shadow-lg">
+              <div>
+                <span className="text-[10px] font-JakartaBold text-neutral-400 uppercase">Estimated Haulage Quote</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xl font-JakartaBold text-[#0286FF]">
+                    ₦{estimatedFreightFare.toLocaleString()}
+                  </span>
+                  <span className="text-[10px] text-neutral-400 font-JakartaMedium">({estimatedKm} km)</span>
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-1.5"
+                className="px-5 py-3 rounded-xl bg-[#0286FF] hover:bg-blue-500 active:scale-95 text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all flex items-center gap-1.5"
               >
-                <span>Dispatch Commercial Hauler</span>
-                <ChevronRight className="w-4 h-4" />
+                <Truck className="w-4 h-4" />
+                <span>Confirm Haulage</span>
               </button>
             </div>
           </form>
         ) : (
           /* Active Shipments Tab */
           <div className="space-y-3">
-            {freightShipments.length > 0 ? (
-              freightShipments.map((shipment) => (
-                <div key={shipment.id} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-slate-700">{shipment.id}</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-JakartaBold text-[10px] uppercase border border-emerald-200">
-                      {shipment.status}
-                    </span>
-                  </div>
-
+            {freightShipments.map((shipment) => (
+              <div
+                key={shipment.id}
+                className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-3"
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
                   <div>
-                    <h4 className="text-sm font-JakartaBold text-slate-900">{shipment.cargoType}</h4>
-                    <p className="text-[11px] text-slate-500 font-JakartaMedium">
-                      {shipment.truckType} • {shipment.weightTons} Metric Tons
-                    </p>
+                    <span className="text-xs font-JakartaBold text-white">{shipment.id}</span>
+                    <p className="text-[10px] text-neutral-400">{shipment.cargoDescription}</p>
                   </div>
+                  <span className="text-[10px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                    Confirmed
+                  </span>
+                </div>
 
-                  <div className="p-2.5 bg-slate-50 rounded-xl space-y-1 text-[11px]">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#0286FF]" />
-                      <span className="font-JakartaMedium text-slate-800 truncate">{shipment.origin}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span className="font-JakartaMedium text-slate-800 truncate">{shipment.destination}</span>
-                    </div>
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-neutral-400">Route:</span>
+                    <span className="font-JakartaBold text-white">{shipment.origin} → {shipment.destination}</span>
                   </div>
-
-                  {shipment.driverInfo && (
-                    <div className="flex items-center justify-between pt-1 border-t border-slate-100">
-                      <div>
-                        <p className="font-JakartaBold text-slate-900">{shipment.driverInfo.name}</p>
-                        <p className="text-[10px] text-slate-400 font-JakartaMedium">{shipment.driverInfo.plateNumber}</p>
-                      </div>
-                      <a
-                        href={`tel:${shipment.driverInfo.phone}`}
-                        className="px-2.5 py-1 rounded-full bg-blue-50 text-[#0286FF] border border-blue-200 text-[10px] font-JakartaBold"
-                      >
-                        Call Driver
-                      </a>
-                    </div>
-                  )}
-
+                  <div className="flex justify-between">
+                    <span className="text-neutral-400">Vehicle:</span>
+                    <span className="text-white">{shipment.truckType}</span>
+                  </div>
                   <div className="flex justify-between items-baseline pt-1">
-                    <span className="text-slate-400 text-[11px]">{shipment.scheduledDate}</span>
-                    <span className="text-sm font-JakartaBold text-[#0286FF]">
-                      ₦{shipment.estimatedPrice.toLocaleString()}
-                    </span>
+                    <span className="text-neutral-400">Agreed Fare:</span>
+                    <span className="font-JakartaBold text-cyan-300 text-sm">₦{shipment.quotedFare.toLocaleString()}</span>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="py-16 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mx-auto mb-3">
-                  <Truck className="w-7 h-7" />
-                </div>
-                <h4 className="text-sm font-JakartaBold text-slate-800">No Freight Shipments</h4>
-                <p className="text-xs text-slate-400 font-JakartaMedium mt-1">
-                  Book commercial trucks, flatbeds, and containers across Nigeria.
+
+                {shipment.hauler && (
+                  <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-JakartaBold text-white">{shipment.hauler.driverName}</span>
+                      <span className="text-[10px] text-cyan-400">{shipment.hauler.truckPlate}</span>
+                    </div>
+                    <p className="text-[10px] text-neutral-400">{shipment.hauler.company}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {freightShipments.length === 0 && (
+              <div className="py-16 text-center glass-panel rounded-2xl border border-white/[0.08] p-8">
+                <Truck className="w-8 h-8 text-neutral-500 mx-auto mb-2" />
+                <h4 className="text-xs font-JakartaBold text-white">No Active Haulage Shipments</h4>
+                <p className="text-[11px] text-neutral-400 mt-1">
+                  Request an instant commercial logistics quote for heavy goods.
                 </p>
                 <button
                   onClick={() => setActiveTab('quote')}
-                  className="mt-4 px-4 py-2 rounded-full bg-[#0286FF] text-white text-xs font-JakartaBold"
+                  className="mt-3 px-4 py-2 rounded-xl bg-[#0286FF] text-white text-xs font-JakartaBold shadow-md"
                 >
-                  Create Freight Order
+                  Create Freight Request
                 </button>
               </div>
             )}

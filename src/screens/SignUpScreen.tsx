@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
-import { Phone, Mail, Lock, User, AlertCircle, CheckCircle2, RotateCw } from 'lucide-react';
+import { Phone, Mail, Lock, User, AlertCircle, CheckCircle2, RotateCw, Sparkles, ArrowRight } from 'lucide-react';
+import { soundEngine } from '../services/soundNotification';
 
 export const SignUpScreen: React.FC = () => {
   const setScreen = useBroaderStore((s) => s.setScreen);
@@ -31,6 +32,7 @@ export const SignUpScreen: React.FC = () => {
 
   const onSignUpSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    soundEngine.playClick();
     setError(null);
 
     if (!form.name.trim()) {
@@ -51,6 +53,7 @@ export const SignUpScreen: React.FC = () => {
   };
 
   const handleVerify = () => {
+    soundEngine.playClick();
     if (code.length < 4) {
       setError('Please enter a valid OTP verification code');
       return;
@@ -64,67 +67,75 @@ export const SignUpScreen: React.FC = () => {
       walletBalance: 24500,
     });
 
+    soundEngine.playSuccess();
     setVerificationState('success');
   };
 
   const handleFinishSuccess = () => {
+    soundEngine.playClick();
     setVerificationState('idle');
     setSignedIn(true);
     setScreen('home');
   };
 
   return (
-    <div className="flex flex-col min-h-full bg-white relative select-none">
+    <div className="flex flex-col min-h-full bg-[#020408] text-white relative select-none overflow-hidden">
+      {/* Ambient background glows */}
+      <div className="absolute top-0 left-0 w-80 h-80 bg-[#0286FF]/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+
       {/* Header Banner */}
-      <div className="relative w-full h-[190px] bg-slate-900 overflow-hidden shrink-0">
+      <div className="relative w-full h-[180px] bg-black overflow-hidden shrink-0">
         <img
           src="/assets/images/signup-car.png"
           alt="Sign Up"
-          className="w-full h-full object-cover object-center opacity-90"
+          className="w-full h-full object-cover object-center opacity-85"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <h2 className="text-2xl text-white font-JakartaSemiBold absolute bottom-4 left-5">
-          Join Broader Nigeria
-        </h2>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020408] via-black/40 to-transparent" />
+        <div className="absolute bottom-3 left-5 right-5">
+          <div className="flex items-center gap-1.5 text-xs text-[#0286FF] font-JakartaBold mb-0.5">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>CREATE YOUR ACCOUNT</span>
+          </div>
+          <h2 className="text-xl text-white font-JakartaBold tracking-tight">
+            Join Broader Nigeria
+          </h2>
+        </div>
       </div>
 
-      <div className="p-5 flex-1 flex flex-col justify-between">
+      <div className="p-5 flex-1 flex flex-col justify-between relative z-10">
         {error && (
-          <div className="mb-3 p-2.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-JakartaMedium flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="mb-3 p-3 bg-red-500/10 border border-red-500/30 rounded-2xl text-xs text-red-300 font-JakartaMedium flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={onSignUpSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-JakartaSemiBold text-slate-700 mb-1">
+            <label className="block text-[11px] font-JakartaSemiBold text-neutral-300 mb-1">
               Full Name
             </label>
             <div className="relative flex items-center">
-              <img
-                src="/assets/icons/person.png"
-                alt="person"
-                className="w-4 h-4 absolute left-3.5 opacity-60"
-              />
+              <User className="w-4 h-4 text-neutral-400 absolute left-3.5" />
               <input
                 type="text"
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="e.g. Chris Baker"
-                className="w-full pl-10 pr-4 py-2.5 bg-[#F6F8FA] border border-slate-200 rounded-xl text-xs font-JakartaMedium text-slate-900 focus:outline-none focus:border-[#0286FF] focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-JakartaSemiBold text-slate-700 mb-1">
+            <label className="block text-[11px] font-JakartaSemiBold text-neutral-300 mb-1">
               Phone Number (+234)
             </label>
             <div className="relative flex items-center">
-              <div className="absolute left-3 flex items-center gap-1 border-r border-slate-300 pr-2">
-                <span className="text-xs font-JakartaBold text-slate-700">+234</span>
+              <div className="absolute left-3 flex items-center gap-1 border-r border-white/10 pr-2">
+                <span className="text-xs font-JakartaBold text-cyan-300">+234</span>
               </div>
               <input
                 type="tel"
@@ -133,67 +144,62 @@ export const SignUpScreen: React.FC = () => {
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                 placeholder="803 123 4567"
-                className="w-full pl-18 pr-4 py-2.5 bg-[#F6F8FA] border border-slate-200 rounded-xl text-xs font-JakartaBold text-slate-900 focus:outline-none focus:border-[#0286FF] focus:bg-white transition-all tracking-wide"
+                className="w-full pl-16 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaBold text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all tracking-wide"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-JakartaSemiBold text-slate-700 mb-1">
+            <label className="block text-[11px] font-JakartaSemiBold text-neutral-300 mb-1">
               Email Address
             </label>
             <div className="relative flex items-center">
-              <img
-                src="/assets/icons/email.png"
-                alt="email"
-                className="w-4 h-4 absolute left-3.5 opacity-60"
-              />
+              <Mail className="w-4 h-4 text-neutral-400 absolute left-3.5" />
               <input
                 type="email"
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="name@domain.ng"
-                className="w-full pl-10 pr-4 py-2.5 bg-[#F6F8FA] border border-slate-200 rounded-xl text-xs font-JakartaMedium text-slate-900 focus:outline-none focus:border-[#0286FF] focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-JakartaSemiBold text-slate-700 mb-1">
+            <label className="block text-[11px] font-JakartaSemiBold text-neutral-300 mb-1">
               Password
             </label>
             <div className="relative flex items-center">
-              <img
-                src="/assets/icons/lock.png"
-                alt="lock"
-                className="w-4 h-4 absolute left-3.5 opacity-60"
-              />
+              <Lock className="w-4 h-4 text-neutral-400 absolute left-3.5" />
               <input
                 type="password"
                 required
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Create secure password"
-                className="w-full pl-10 pr-4 py-2.5 bg-[#F6F8FA] border border-slate-200 rounded-xl text-xs font-JakartaMedium text-slate-900 focus:outline-none focus:border-[#0286FF] focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full mt-3 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 active:scale-[0.99] text-white font-JakartaBold text-xs shadow-md shadow-blue-500/25 transition-all"
+            className="w-full mt-3 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 active:scale-[0.98] text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all"
           >
             Create Broader Account
           </button>
         </form>
 
         <div className="text-center mt-4 pb-1">
-          <p className="text-xs text-slate-500 font-JakartaMedium">
+          <p className="text-xs text-neutral-400 font-JakartaMedium">
             Already have an account?{' '}
             <button
-              onClick={() => setScreen('sign-in')}
-              className="text-[#0286FF] font-JakartaBold hover:underline"
+              onClick={() => {
+                soundEngine.playClick();
+                setScreen('sign-in');
+              }}
+              className="text-[#0286FF] font-JakartaBold hover:underline ml-1"
             >
               Log In
             </button>
@@ -203,11 +209,11 @@ export const SignUpScreen: React.FC = () => {
 
       {/* OTP Verification Modal with 60s Resend Timer */}
       {verificationState === 'pending' && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-xs shadow-2xl text-center flex flex-col items-center animate-in zoom-in-95">
-            <h3 className="text-lg font-JakartaBold text-slate-900">OTP Phone Verification</h3>
-            <p className="text-xs text-slate-500 font-JakartaMedium mt-1.5 leading-relaxed">
-              We sent an SMS OTP to <span className="font-bold text-slate-800">+234{form.phone}</span>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="glass-panel rounded-3xl p-6 w-full max-w-sm shadow-2xl text-center flex flex-col items-center border border-white/15 animate-in zoom-in-95">
+            <h3 className="text-base font-JakartaBold text-white">OTP Phone Verification</h3>
+            <p className="text-xs text-neutral-400 font-JakartaMedium mt-1.5 leading-relaxed">
+              We sent a verification code to <span className="font-bold text-cyan-300">+234{form.phone}</span>
             </p>
 
             <div className="my-4 w-full">
@@ -216,18 +222,21 @@ export const SignUpScreen: React.FC = () => {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 maxLength={6}
-                className="w-full text-center tracking-[0.4em] text-2xl font-JakartaBold py-2 bg-slate-100 rounded-xl border border-slate-300 focus:outline-none focus:border-[#0286FF]"
+                className="w-full text-center tracking-[0.35em] text-2xl font-JakartaBold py-2.5 bg-white/[0.06] rounded-2xl border border-white/15 text-white focus:outline-none focus:border-[#0286FF]"
               />
             </div>
 
-            <div className="flex items-center justify-between w-full text-xs text-slate-500 mb-4 px-1">
+            <div className="flex items-center justify-between w-full text-xs text-neutral-400 mb-4 px-1">
               <span>Expires in {resendTimer}s</span>
               <button
                 type="button"
                 disabled={resendTimer > 0}
-                onClick={() => setResendTimer(60)}
+                onClick={() => {
+                  soundEngine.playClick();
+                  setResendTimer(60);
+                }}
                 className={`font-JakartaBold ${
-                  resendTimer === 0 ? 'text-[#0286FF] hover:underline' : 'text-slate-400 cursor-not-allowed'
+                  resendTimer === 0 ? 'text-[#0286FF] hover:underline' : 'text-neutral-600 cursor-not-allowed'
                 }`}
               >
                 Resend OTP
@@ -236,7 +245,7 @@ export const SignUpScreen: React.FC = () => {
 
             <button
               onClick={handleVerify}
-              className="w-full py-3 rounded-full bg-[#0286FF] text-white font-JakartaBold text-xs hover:bg-blue-600 transition-all shadow-md shadow-blue-500/25"
+              className="w-full py-3 rounded-xl bg-[#0286FF] text-white font-JakartaBold text-xs hover:bg-blue-500 transition-all shadow-[0_0_15px_rgba(2,134,255,0.4)]"
             >
               Verify & Complete Registration
             </button>
@@ -246,19 +255,19 @@ export const SignUpScreen: React.FC = () => {
 
       {/* Success Modal */}
       {verificationState === 'success' && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-xs shadow-2xl text-center flex flex-col items-center animate-in zoom-in-95">
-            <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="glass-panel rounded-3xl p-6 w-full max-w-sm shadow-2xl text-center flex flex-col items-center border border-white/15 animate-in zoom-in-95">
+            <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="text-lg font-JakartaBold text-slate-900">Registration Complete!</h3>
-            <p className="text-xs text-slate-500 font-JakartaMedium mt-1">
-              Welcome to Broader Nigeria. Your account and wallet are ready.
+            <h3 className="text-base font-JakartaBold text-white">Registration Complete!</h3>
+            <p className="text-xs text-neutral-400 font-JakartaMedium mt-1">
+              Welcome to Broader Nigeria. Your account and digital wallet are active.
             </p>
 
             <button
               onClick={handleFinishSuccess}
-              className="w-full mt-5 py-3 rounded-full bg-[#0286FF] text-white font-JakartaBold text-xs hover:bg-blue-600 transition-all shadow-md shadow-blue-500/25"
+              className="w-full mt-5 py-3 rounded-xl bg-[#0286FF] text-white font-JakartaBold text-xs hover:bg-blue-500 transition-all shadow-[0_0_15px_rgba(2,134,255,0.4)]"
             >
               Enter Application
             </button>

@@ -115,11 +115,11 @@ export const FindRideScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Map Route Header */}
-      <div className="p-4">
+      {/* Map-First Dominant Route Header */}
+      <div className="w-full relative px-2 pt-2">
         <InteractiveMap
           showRoute={true}
-          height="h-[200px]"
+          height="h-[270px] sm:h-[320px]"
           onSelectLandmark={(name, lat, lng) => {
             setToInput(name);
             setDestinationLocation({ latitude: lat, longitude: lng, address: name });
@@ -127,8 +127,10 @@ export const FindRideScreen: React.FC = () => {
         />
       </div>
 
-      {/* Form Inputs Container */}
-      <div className="px-5 flex-1 flex flex-col justify-between pb-6">
+      {/* Form Inputs & Destinations in Compact Bottom Sheet */}
+      <div className="px-4 flex-1 flex flex-col justify-between pb-6 -mt-3 relative z-20 bg-gradient-to-b from-black/95 via-black/90 to-black rounded-t-3xl border-t border-white/[0.12] pt-3 shadow-[0_-10px_30px_rgba(0,0,0,0.8)] backdrop-blur-2xl">
+        {/* Sheet Grab Handle */}
+        <div className="w-10 h-1 rounded-full bg-white/20 mx-auto mb-2" />
         <div>
           {/* Pickup (From) Location */}
           <div className="my-2">

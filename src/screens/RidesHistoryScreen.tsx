@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
-import { RideCard } from '../components/RideCard';
+import { TripHistoryCard } from '../components/history/TripHistoryCard';
+import { TripDetailsModal } from '../components/history/TripDetailsModal';
 import { Ride, ActivityTab } from '../types';
 import {
   Plus,
@@ -222,13 +223,14 @@ export const RidesHistoryScreen: React.FC = () => {
           <p className="text-xs text-neutral-400 font-JakartaMedium">Retrieving trips from backend...</p>
         </div>
       ) : currentRides.length > 0 ? (
-        /* Completed/Populated Rides List */
+        /* Completed/Populated Rides List with Progressive Glow Polyline */
         <div className="space-y-3 mt-1">
           {currentRides.map((ride, idx) => (
-            <RideCard
+            <TripHistoryCard
               key={ride.ride_id || idx}
               ride={ride}
-              onPress={() => setSelectedRide(ride)}
+              index={idx}
+              onClick={() => setSelectedRide(ride)}
             />
           ))}
         </div>
@@ -259,117 +261,13 @@ export const RidesHistoryScreen: React.FC = () => {
         </div>
       )}
 
-      {/* Trip Details Modal */}
-      {selectedRide && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-          <div className="glass-panel w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-white/15 animate-in zoom-in-95 text-white">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="text-base font-JakartaBold text-white flex items-center gap-1.5">
-                <Receipt className="w-4 h-4 text-[#0286FF]" />
-                <span>Trip Receipt Details</span>
-              </h4>
-              <button
-                onClick={() => setSelectedRide(null)}
-                className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-neutral-400 hover:text-white"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Driver Profile */}
-            <div className="flex items-center gap-3 p-3 bg-white/[0.04] rounded-2xl border border-white/[0.06] mb-3">
-              <img
-                src={selectedRide.driver.profile_image_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&auto=format&fit=crop&q=80'}
-                alt="Driver"
-                className="w-12 h-12 rounded-full object-cover border border-white/20"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <h5 className="font-JakartaBold text-xs text-white">
-                    {selectedRide.driver.first_name} {selectedRide.driver.last_name}
-                  </h5>
-                  <div className="flex items-center gap-0.5 text-[10px] font-bold text-amber-400">
-                    <Star className="w-3 h-3 fill-amber-400" />
-                    <span>{selectedRide.driver.rating || 4.9}</span>
-                  </div>
-                </div>
-                <p className="text-[11px] text-neutral-400 font-JakartaMedium truncate">
-                  {selectedRide.driver.car_model || selectedRide.vehicle_type || 'Toyota Corolla'}
-                </p>
-                <span className="inline-block mt-0.5 px-1.5 py-0.2 rounded bg-white/10 text-neutral-200 text-[10px] font-bold border border-white/10">
-                  {selectedRide.driver.plate_number || 'EKY-428-AB'}
-                </span>
-              </div>
-            </div>
-
-            {/* Route Details */}
-            <div className="space-y-2 p-3 bg-white/[0.03] border border-white/[0.06] rounded-2xl text-xs mb-3">
-              <div className="flex items-start gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#0286FF] mt-1 shrink-0" />
-                <div>
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase">Pickup</span>
-                  <p className="font-JakartaMedium text-white leading-snug">{selectedRide.origin_address}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 mt-1 shrink-0" />
-                <div>
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase">Destination</span>
-                  <p className="font-JakartaMedium text-white leading-snug">{selectedRide.destination_address}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Fare Breakdown */}
-            <div className="space-y-1.5 text-xs border-t border-white/[0.06] pt-3 mb-4">
-              <div className="flex justify-between text-neutral-400 font-JakartaMedium">
-                <span>Base Fare & Distance</span>
-                <span>₦{Math.round(selectedRide.fare_price * 0.93).toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-neutral-400 font-JakartaMedium">
-                <span>VAT (7.5%) & Lagos Levies</span>
-                <span>₦{Math.round(selectedRide.fare_price * 0.07).toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-white font-JakartaBold text-sm pt-1 border-t border-white/[0.06]">
-                <span>Total Paid</span>
-                <span className="text-[#0286FF]">₦{selectedRide.fare_price.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between items-center text-[11px] pt-1">
-                <span className="text-neutral-400">Payment Channel</span>
-                <span className="font-JakartaSemiBold text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                  {selectedRide.payment_method || 'Wallet'} • {selectedRide.payment_status}
-                </span>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowLostItemModal(true)}
-                  className="flex-1 py-2.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-300 font-JakartaBold text-xs flex items-center justify-center gap-1 hover:bg-amber-500/20"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Report Lost Item</span>
-                </button>
-                <button
-                  onClick={() => handleRebook(selectedRide)}
-                  className="flex-1 py-2.5 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] flex items-center justify-center gap-1 transition-all"
-                >
-                  <RotateCw className="w-3.5 h-3.5" />
-                  <span>Re-book Trip</span>
-                </button>
-              </div>
-              <button
-                onClick={() => setSelectedRide(null)}
-                className="w-full py-2.5 rounded-2xl border border-white/10 text-neutral-300 font-JakartaMedium text-xs hover:bg-white/5"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* High Fidelity Glass Trip Details Modal */}
+      <TripDetailsModal
+        ride={selectedRide}
+        isOpen={selectedRide !== null}
+        onClose={() => setSelectedRide(null)}
+        onRebook={handleRebook}
+      />
 
       {/* Report Lost Item Modal */}
       {showLostItemModal && selectedRide && (

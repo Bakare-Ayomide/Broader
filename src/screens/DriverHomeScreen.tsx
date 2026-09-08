@@ -30,6 +30,8 @@ import { DriverEarningsView } from '../components/driver/DriverEarningsView';
 import { DriverTripsView } from '../components/driver/DriverTripsView';
 import { DriverVehiclesView } from '../components/driver/DriverVehiclesView';
 import { DriverSafetyModal } from '../components/driver/DriverSafetyModal';
+import { DriverHUD } from '../components/dashboard/DriverHUD';
+import { useRideSimulation } from '../components/simulation/useRideSimulation';
 import { SAMPLE_INCOMING_DRIVER_REQUESTS } from '../services/backendService';
 
 export const DriverHomeScreen: React.FC = () => {
@@ -52,6 +54,7 @@ export const DriverHomeScreen: React.FC = () => {
   const driverCancellationRate = useBroaderStore((s) => s.driverCancellationRate);
 
   const [safetyModalOpen, setSafetyModalOpen] = useState(false);
+  const [showDriverCockpitHUD, setShowDriverCockpitHUD] = useState(true);
 
   const activeVehicle =
     driverVehicles.find((v) => v.id === activeDriverVehicleId) || driverVehicles[0];
@@ -77,6 +80,11 @@ export const DriverHomeScreen: React.FC = () => {
   };
 
   const isOnTrip = driverStatus === 'on_trip' || (activeTrip !== null && rideStatus !== 'idle');
+
+  const telemetry = useRideSimulation({
+    active: isOnTrip || driverStatus === 'online',
+    initialSpeed: 68,
+  });
 
   return (
     <div className="flex flex-col h-full bg-[#000000] text-white select-none">
@@ -196,15 +204,53 @@ export const DriverHomeScreen: React.FC = () => {
               </div>
             </div>
 
-            {/* ACTIVE TRIP ON-COURSE HUD */}
-            {isOnTrip ? (
-              <DriverActiveTripHUD />
-            ) : incomingDriverRequest ? (
+            {/* ACTIVE TRIP ON-COURSE HUD OR CINEMATIC DRIVER HUD */}
+            {incomingDriverRequest ? (
               /* INCOMING DISPATCH MODAL */
               <DriverIncomingModal />
             ) : (
-              /* ONLINE / OFFLINE AVAILABILITY CONTROLLER */
               <div className="space-y-3">
+                {/* HUD View Mode Switch */}
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="text-[11px] font-JakartaBold text-neutral-300">
+                      {showDriverCockpitHUD ? 'AUTOMOTIVE COCKPIT HUD' : 'DISPATCH CONTROLS'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setShowDriverCockpitHUD((v) => !v)}
+                    className="text-[10px] font-JakartaBold px-2.5 py-1 rounded-full bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 transition-all shadow-xs"
+                  >
+                    {showDriverCockpitHUD ? 'Show Dispatch Panel' : 'Show Speedometer HUD'}
+                  </button>
+                </div>
+
+                {showDriverCockpitHUD ? (
+                  <DriverHUD
+                    speed={telemetry.speed}
+                    speedLimit={80}
+                    tripStatus={isOnTrip ? 'EN ROUTE' : driverStatus === 'online' ? 'SEARCHING' : 'IDLE'}
+                    etaMinutes={telemetry.etaMinutes}
+                    distanceKm={telemetry.distanceRemainingKm}
+                    passengerName="Adewale Adeleke"
+                    pickupAddress="Victoria Island, Lagos"
+                    destinationAddress="Admiralty Way, Lekki Phase 1"
+                    currentInstruction={telemetry.currentInstruction}
+                    isOnline={driverStatus === 'online'}
+                    onToggleOnline={toggleOnlineStatus}
+                    onOpenEarnings={() => setDriverActiveTab('earnings')}
+                    onEmergencySOS={() => setSafetyModalOpen(true)}
+                    onOpenDriverView={() => {
+                      const btn = document.querySelector('[title="Open 3D Street View"]') as HTMLButtonElement;
+                      if (btn) btn.click();
+                    }}
+                  />
+                ) : isOnTrip ? (
+                  <DriverActiveTripHUD />
+                ) : (
+                  /* ONLINE / OFFLINE AVAILABILITY CONTROLLER */
+                  <div className="space-y-3">
                 <div className="glass-panel rounded-3xl border border-white/10 p-4 shadow-xs space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -349,7 +395,9 @@ export const DriverHomeScreen: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
+            </div>
+          )}
+        </div>
         )}
 
         {/* TAB 2: EARNINGS VIEW */}

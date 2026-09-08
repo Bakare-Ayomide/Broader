@@ -187,15 +187,16 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
         {/* 3D Vehicle image thumbnail & fare */}
         <div className="flex flex-col items-end shrink-0">
-          <div className="w-16 h-12 rounded-xl bg-black/70 border border-white/10 overflow-hidden relative mb-1 flex items-center justify-center">
+          <div className="w-16 h-12 relative mb-1 flex items-center justify-center">
+            <div className="absolute bottom-0.5 w-12 h-2 bg-black/80 rounded-full blur-[2px] pointer-events-none" />
             <img
               src={vehicle3DImg}
               alt="Vehicle"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
             />
           </div>
-          <span className="text-sm font-JakartaBold text-white">
+          <span className="text-sm font-JakartaBold text-[#0286FF]">
             ₦{activeTrip.fare.toLocaleString()}
           </span>
           <span className="text-[9px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded uppercase mt-0.5">
