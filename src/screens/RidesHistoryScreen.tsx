@@ -130,7 +130,7 @@ export const RidesHistoryScreen: React.FC = () => {
         </div>
         <button
           onClick={() => setScreen('find-ride')}
-          className="text-xs font-JakartaBold px-3 py-1.5 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white flex items-center gap-1 shadow-[0_0_14px_rgba(2,134,255,0.4)] transition-all"
+          className="text-xs font-JakartaBold px-3 py-1.5 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold flex items-center gap-1 shadow-[0_0_14px_rgba(158,230,181,0.4)] transition-all"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>New Ride</span>
@@ -149,7 +149,7 @@ export const RidesHistoryScreen: React.FC = () => {
         >
           <span>Ongoing</span>
           {ongoingRides.length > 0 && (
-            <span className="w-2 h-2 rounded-full bg-[#0286FF] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#9EE6B5] animate-pulse" />
           )}
         </button>
 
@@ -192,7 +192,7 @@ export const RidesHistoryScreen: React.FC = () => {
         <span>{currentRides.length} {activeTab} Records</span>
         <button
           onClick={handleRefresh}
-          className="text-[#0286FF] font-JakartaSemiBold flex items-center gap-1 hover:underline"
+          className="text-[#9EE6B5] font-JakartaSemiBold flex items-center gap-1 hover:underline"
         >
           <RotateCw className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -211,7 +211,7 @@ export const RidesHistoryScreen: React.FC = () => {
           </p>
           <button
             onClick={handleRefresh}
-            className="px-4 py-2 rounded-full bg-[#0286FF] text-white text-xs font-JakartaBold shadow-[0_0_12px_rgba(2,134,255,0.4)]"
+            className="px-4 py-2 rounded-full bg-[#9EE6B5] text-black font-extrabold text-xs font-JakartaBold shadow-[0_0_12px_rgba(158,230,181,0.4)]"
           >
             Retry Connection
           </button>
@@ -219,7 +219,7 @@ export const RidesHistoryScreen: React.FC = () => {
       ) : isLoading ? (
         /* Loading State */
         <div className="flex-1 flex flex-col items-center justify-center py-16 text-center space-y-3">
-          <div className="w-8 h-8 rounded-full border-2 border-[#0286FF] border-t-transparent animate-spin" />
+          <div className="w-8 h-8 rounded-full border-2 border-[#9EE6B5] border-t-transparent animate-spin" />
           <p className="text-xs text-neutral-400 font-JakartaMedium">Retrieving trips from backend...</p>
         </div>
       ) : currentRides.length > 0 ? (
@@ -254,7 +254,7 @@ export const RidesHistoryScreen: React.FC = () => {
           </p>
           <button
             onClick={() => setScreen('find-ride')}
-            className="mt-4 px-5 py-2.5 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] transition-all"
+            className="mt-4 px-5 py-2.5 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)] transition-all"
           >
             Find a Ride
           </button>
@@ -309,7 +309,7 @@ export const RidesHistoryScreen: React.FC = () => {
                     onChange={(e) => setLostItemDesc(e.target.value)}
                     required
                     placeholder="e.g. Black leather wallet or phone left on the back passenger seat..."
-                    className="w-full text-xs font-JakartaMedium border border-white/15 rounded-2xl p-2.5 bg-black/60 text-white placeholder-neutral-500 focus:outline-none focus:border-[#0286FF]"
+                    className="w-full text-xs font-JakartaMedium border border-white/15 rounded-2xl p-2.5 bg-black/60 text-white placeholder-neutral-500 focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
                 <div className="flex gap-2">

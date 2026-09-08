@@ -27,7 +27,7 @@ export const RideProgress: React.FC<RideProgressProps> = ({
     >
       {/* Upper ETA & Distance Header */}
       <div className="flex items-center justify-between text-xs mb-2.5">
-        <div className="flex items-center gap-1.5 text-blue-400 font-JakartaBold">
+        <div className="flex items-center gap-1.5 text-[#9EE6B5] font-JakartaBold">
           <Navigation className="w-3.5 h-3.5 animate-pulse" />
           <span>{etaMinutes} min away</span>
         </div>
@@ -40,7 +40,7 @@ export const RideProgress: React.FC<RideProgressProps> = ({
       <div className="relative w-full h-2.5 bg-white/[0.08] rounded-full overflow-visible my-3 border border-white/[0.06]">
         {/* Animated Fill Gradient */}
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-[#0286FF] via-cyan-400 to-emerald-400 shadow-[0_0_12px_rgba(2,134,255,0.6)]"
+          className="h-full rounded-full bg-gradient-to-r from-[#9EE6B5] via-emerald-400 to-teal-300 shadow-[0_0_12px_rgba(158,230,181,0.6)]"
           style={{ width: `${clampedProgress}%` }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
         />

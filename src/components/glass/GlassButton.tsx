@@ -28,7 +28,7 @@ const VARIANTS: Record<GlassButtonVariant, string> = {
   default:
     'bg-white/[0.08] hover:bg-white/[0.14] text-white border-white/[0.14] shadow-lg shadow-black/40',
   primary:
-    'bg-gradient-to-r from-[#0286FF] to-[#0066cc] text-white border-blue-400/40 shadow-[0_0_20px_rgba(2,134,255,0.4)] hover:shadow-[0_0_28px_rgba(2,134,255,0.6)]',
+    'bg-gradient-to-r from-[#9EE6B5] to-[#7bd899] text-black font-extrabold border-[#9EE6B5]/60 shadow-[0_0_20px_rgba(158,230,181,0.4)] hover:shadow-[0_0_28px_rgba(158,230,181,0.65)]',
   'neon-green':
     'bg-gradient-to-r from-emerald-500 to-green-600 text-black font-extrabold border-emerald-300/40 shadow-[0_0_20px_rgba(16,185,129,0.45)] hover:shadow-[0_0_28px_rgba(16,185,129,0.7)]',
   violet:

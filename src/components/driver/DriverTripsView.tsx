@@ -47,7 +47,7 @@ export const DriverTripsView: React.FC = () => {
             onClick={() => setFilterTab(tab.id as any)}
             className={`flex-1 py-1.5 rounded-xl text-xs font-JakartaBold transition-all ${
               filterTab === tab.id
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.5)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.5)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -59,11 +59,11 @@ export const DriverTripsView: React.FC = () => {
       {/* SCHEDULED BOOKINGS TAB */}
       {filterTab === 'scheduled' ? (
         <div className="space-y-2.5">
-          <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-between text-xs">
-            <span className="font-JakartaBold text-blue-300 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-[#0286FF]" /> Available Pre-Booked Trips
+          <div className="p-3 bg-[#9EE6B5]/10 border border-[#9EE6B5]/20 rounded-2xl flex items-center justify-between text-xs">
+            <span className="font-JakartaBold text-[#9EE6B5] flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-[#9EE6B5]" /> Available Pre-Booked Trips
             </span>
-            <span className="text-[10px] text-blue-400 font-JakartaMedium">Claim in advance</span>
+            <span className="text-[10px] text-[#9EE6B5]/80 font-JakartaMedium">Claim in advance</span>
           </div>
 
           {scheduledRides.length === 0 ? (
@@ -80,11 +80,11 @@ export const DriverTripsView: React.FC = () => {
               return (
                 <div
                   key={ride.ride_id}
-                  className="glass-panel rounded-2xl p-3.5 border border-white/10 shadow-xl space-y-2.5 hover:border-blue-500/40 transition-colors"
+                  className="glass-panel rounded-2xl p-3.5 border border-white/10 shadow-xl space-y-2.5 hover:border-[#9EE6B5]/40 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-[#0286FF] border border-blue-500/30 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/20 text-[#9EE6B5] border border-[#9EE6B5]/30 flex items-center justify-center">
                         <Car className="w-4 h-4" />
                       </div>
                       <div>
@@ -113,7 +113,7 @@ export const DriverTripsView: React.FC = () => {
 
                   <div className="p-2.5 bg-white/[0.04] rounded-xl border border-white/[0.06] space-y-1 text-xs">
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#0286FF]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#9EE6B5]" />
                       <span className="text-[11px] font-JakartaMedium text-neutral-200 truncate">
                         {ride.origin_address}
                       </span>
@@ -137,7 +137,7 @@ export const DriverTripsView: React.FC = () => {
                     ) : (
                       <button
                         onClick={() => handleClaim(ride.ride_id.toString())}
-                        className="px-3 py-1.5 rounded-xl bg-[#0286FF] hover:bg-blue-500 text-white text-xs font-JakartaBold shadow-[0_0_12px_rgba(2,134,255,0.4)] active:scale-95 transition-all flex items-center gap-1"
+                        className="px-3 py-1.5 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold text-xs font-JakartaBold shadow-[0_0_12px_rgba(158,230,181,0.4)] active:scale-95 transition-all flex items-center gap-1"
                       >
                         <span>Claim Scheduled Ride</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -162,7 +162,7 @@ export const DriverTripsView: React.FC = () => {
             filteredTrips.map((trip) => (
               <div
                 key={trip.id}
-                className="glass-panel rounded-2xl p-3.5 border border-white/10 shadow-xl space-y-2.5 hover:border-blue-500/40 transition-colors"
+                className="glass-panel rounded-2xl p-3.5 border border-white/10 shadow-xl space-y-2.5 hover:border-[#9EE6B5]/40 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export const DriverTripsView: React.FC = () => {
 
                 <div className="p-2.5 bg-white/[0.04] rounded-xl border border-white/[0.06] space-y-1 text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#0286FF]" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#9EE6B5]" />
                     <span className="text-[11px] font-JakartaMedium text-neutral-200 truncate">
                       {trip.pickup}
                     </span>

@@ -47,7 +47,7 @@ export const VehicleMarker: React.FC<VehicleMarkerProps> = ({
 
         {/* Selected Glowing Ambient Aura */}
         {selected && (
-          <div className="absolute inset-0 rounded-full bg-[#0286FF]/30 blur-md animate-pulse pointer-events-none" />
+          <div className="absolute inset-0 rounded-full bg-[#9EE6B5]/35 blur-md animate-pulse pointer-events-none" />
         )}
 
         {/* Realistic Headlight Beams Glow Forward */}
@@ -56,7 +56,7 @@ export const VehicleMarker: React.FC<VehicleMarkerProps> = ({
             className={`absolute -top-6 left-1/2 -translate-x-1/2 ${dimensions.beam} pointer-events-none`}
             style={{
               background:
-                'radial-gradient(ellipse at bottom, rgba(254, 240, 138, 0.45) 0%, rgba(56, 189, 248, 0.15) 50%, transparent 80%)',
+                'radial-gradient(ellipse at bottom, rgba(254, 240, 138, 0.45) 0%, rgba(158, 230, 181, 0.2) 50%, transparent 80%)',
               clipPath: 'polygon(30% 100%, 70% 100%, 100% 0%, 0% 0%)',
             }}
           />
@@ -72,7 +72,7 @@ export const VehicleMarker: React.FC<VehicleMarkerProps> = ({
         {/* Motion Speed Trail Particles if moving */}
         {isMoving && (
           <div className="absolute -bottom-2 flex gap-1">
-            <span className="w-1 h-1 rounded-full bg-cyan-400 animate-ping" />
+            <span className="w-1 h-1 rounded-full bg-[#9EE6B5] animate-ping" />
           </div>
         )}
       </motion.div>

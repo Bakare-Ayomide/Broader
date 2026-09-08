@@ -71,7 +71,7 @@ export const DriverEarningsScreen: React.FC = () => {
 
         <button
           onClick={() => setShowWithdrawModal(true)}
-          className="px-3 py-1.5 rounded-full bg-[#0286FF] text-white text-xs font-JakartaBold hover:bg-blue-600 transition-colors shadow-xs"
+          className="px-3 py-1.5 rounded-full bg-[#9EE6B5] text-black font-extrabold text-xs font-JakartaBold hover:bg-[#8fd8a6] transition-colors shadow-xs"
         >
           Withdraw
         </button>
@@ -88,14 +88,14 @@ export const DriverEarningsScreen: React.FC = () => {
 
         {/* Primary Available Balance Hero Card */}
         <div className="bg-slate-900 text-white rounded-3xl p-5 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#9EE6B5]/10 rounded-full blur-2xl pointer-events-none" />
 
           <span className="text-xs font-JakartaMedium text-slate-400 block">Available Balance (Withdrawable)</span>
           <div className="flex items-baseline justify-between mt-1">
             <span className="text-3xl font-JakartaBold tracking-tight">
               ₦{driverEarnings.availableBalance.toLocaleString()}
             </span>
-            <span className="text-xs font-JakartaBold text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-full">
+            <span className="text-xs font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 px-2.5 py-1 rounded-full">
               Instant Payout Ready
             </span>
           </div>
@@ -170,7 +170,7 @@ export const DriverEarningsScreen: React.FC = () => {
 
           <div className="flex justify-between pt-1 font-JakartaBold text-sm text-slate-900">
             <span>Net Driver Earnings</span>
-            <span className="text-[#0286FF]">₦{driverEarnings.today.toLocaleString()}</span>
+            <span className="text-[#9EE6B5]">₦{driverEarnings.today.toLocaleString()}</span>
           </div>
         </div>
 
@@ -194,7 +194,7 @@ export const DriverEarningsScreen: React.FC = () => {
                 className="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-blue-50 text-[#0286FF] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/10 text-[#9EE6B5] flex items-center justify-center">
                     <Building2 className="w-4 h-4" />
                   </div>
                   <div>
@@ -244,7 +244,7 @@ export const DriverEarningsScreen: React.FC = () => {
                     max={driverEarnings.availableBalance}
                     min={1000}
                     required
-                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-300 font-JakartaBold text-slate-900 focus:outline-none focus:border-[#0286FF]"
+                    className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-300 font-JakartaBold text-slate-900 focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
               </div>
@@ -254,7 +254,7 @@ export const DriverEarningsScreen: React.FC = () => {
                 <select
                   value={selectedBank}
                   onChange={(e) => setSelectedBank(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-JakartaMedium text-slate-900 focus:outline-none focus:border-[#0286FF] bg-white"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-JakartaMedium text-slate-900 focus:outline-none focus:border-[#9EE6B5] bg-white"
                 >
                   {nigerianBanks.map((bank) => (
                     <option key={bank} value={bank}>
@@ -272,7 +272,7 @@ export const DriverEarningsScreen: React.FC = () => {
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
                   required
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-JakartaBold tracking-wider text-slate-900 focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-JakartaBold tracking-wider text-slate-900 focus:outline-none focus:border-[#9EE6B5]"
                 />
               </div>
 
@@ -286,7 +286,7 @@ export const DriverEarningsScreen: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full mt-2 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/20 transition-all"
+                className="w-full mt-2 py-3 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-md shadow-emerald-500/20 transition-all"
               >
                 Confirm Instant Transfer
               </button>

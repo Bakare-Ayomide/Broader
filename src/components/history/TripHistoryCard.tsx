@@ -107,7 +107,7 @@ export const TripHistoryCard: React.FC<TripHistoryCardProps> = ({
               <span className="text-[9px] text-neutral-400 uppercase font-JakartaMedium block">
                 Fare
               </span>
-              <span className="text-xs font-mono font-bold text-[#0286FF]">
+              <span className="text-xs font-mono font-bold text-[#9EE6B5]">
                 ₦{Number(ride.fare_price || 0).toLocaleString()}
               </span>
             </div>

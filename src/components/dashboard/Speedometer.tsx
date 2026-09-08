@@ -114,7 +114,7 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
           <linearGradient id="needleGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={activeColor} stopOpacity="0.95" />
             <stop offset="70%" stopColor="#FACC15" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#0286FF" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#9EE6B5" stopOpacity="0.4" />
           </linearGradient>
         </defs>
 
@@ -337,8 +337,8 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
           );
         })()}
 
-        {/* Central Concentric Neon Blue Pivot (matching Screenshot 1) */}
-        <circle cx={cx} cy={cy} r="14" fill="#0B132B" stroke="#0286FF" strokeWidth="2.5" opacity="0.95" />
+        {/* Central Concentric Neon Mint Pivot */}
+        <circle cx={cx} cy={cy} r="14" fill="#0B132B" stroke="#9EE6B5" strokeWidth="2.5" opacity="0.95" />
         <circle
           cx={cx}
           cy={cy}
@@ -346,9 +346,9 @@ export const Speedometer: React.FC<SpeedometerProps> = ({
           fill="none"
           stroke="#38BDF8"
           strokeWidth="1.5"
-          style={{ filter: 'drop-shadow(0 0 5px #0286FF)' }}
+          style={{ filter: 'drop-shadow(0 0 5px #9EE6B5)' }}
         />
-        <circle cx={cx} cy={cy} r="5" fill="#0286FF" />
+        <circle cx={cx} cy={cy} r="5" fill="#9EE6B5" />
       </svg>
 
       {/* Central Digital Speed Overlay */}

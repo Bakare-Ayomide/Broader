@@ -107,7 +107,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                 rideStatus === 'ride_completed'
                   ? 'bg-emerald-400'
                   : rideStatus === 'ride_started'
-                  ? 'bg-[#0286FF]'
+                  ? 'bg-[#9EE6B5]'
                   : 'bg-amber-400'
               }`}
             />
@@ -143,7 +143,7 @@ export const DriverActiveTripHUD: React.FC = () => {
         {rideStatus !== 'ride_completed' && (
           <div className="p-3 bg-white/[0.06] text-white rounded-2xl flex items-center justify-between border border-white/10 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#0286FF] text-white flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(2,134,255,0.4)]">
+              <div className="w-8 h-8 rounded-xl bg-[#9EE6B5] text-black flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(158,230,181,0.4)]">
                 <Navigation className="w-4 h-4 rotate-45" />
               </div>
               <div className="min-w-0">
@@ -205,7 +205,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setCommModal({ open: true, type: 'chat' })}
-                  className="w-8 h-8 rounded-full bg-blue-500/20 text-[#0286FF] hover:bg-blue-500/30 border border-blue-500/30 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] hover:bg-[#9EE6B5]/30 border border-[#9EE6B5]/30 flex items-center justify-center transition-colors"
                   title="Chat Passenger"
                 >
                   <MessageSquare className="w-4 h-4" />
@@ -224,7 +224,7 @@ export const DriverActiveTripHUD: React.FC = () => {
             {/* Action: I Have Arrived */}
             <button
               onClick={() => setRideStatus('driver_arrived')}
-              className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold text-xs font-JakartaBold shadow-[0_0_16px_rgba(158,230,181,0.4)] active:scale-98 transition-all flex items-center justify-center gap-2"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>I Have Arrived at Pickup</span>
@@ -287,7 +287,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setCommModal({ open: true, type: 'chat' })}
-                  className="w-8 h-8 rounded-full bg-blue-500/20 text-[#0286FF] hover:bg-blue-500/30 border border-blue-500/30 flex items-center justify-center"
+                  className="w-8 h-8 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] hover:bg-[#9EE6B5]/30 border border-[#9EE6B5]/30 flex items-center justify-center"
                 >
                   <MessageSquare className="w-4 h-4" />
                 </button>
@@ -295,9 +295,9 @@ export const DriverActiveTripHUD: React.FC = () => {
             </div>
 
             {/* Safety Ride PIN Verification */}
-            <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl space-y-2">
+            <div className="p-3 bg-[#9EE6B5]/10 border border-[#9EE6B5]/20 rounded-2xl space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-JakartaBold text-blue-300 flex items-center gap-1">
+                <span className="font-JakartaBold text-[#9EE6B5] flex items-center gap-1">
                   <span>Verify Rider PIN</span>
                 </span>
                 <button
@@ -307,7 +307,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                     setIsPinVerified(true);
                     setPinError(null);
                   }}
-                  className="text-[10px] font-JakartaBold text-[#0286FF] hover:underline"
+                  className="text-[10px] font-JakartaBold text-[#9EE6B5] hover:underline"
                 >
                   Auto-fill ({expectedPin})
                 </button>
@@ -326,7 +326,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                     }
                   }}
                   placeholder="Enter 4-digit PIN"
-                  className="flex-1 px-3 py-2 bg-black/60 border border-white/20 rounded-xl text-xs font-mono font-bold tracking-widest text-center text-white focus:outline-none focus:border-[#0286FF]"
+                  className="flex-1 px-3 py-2 bg-black/60 border border-white/20 rounded-xl text-xs font-mono font-bold tracking-widest text-center text-white focus:outline-none focus:border-[#9EE6B5]"
                 />
                 <button
                   type="button"
@@ -338,7 +338,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                       setPinError('Invalid PIN');
                     }
                   }}
-                  className="px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs font-JakartaBold hover:bg-blue-500 transition-colors shadow-[0_0_10px_rgba(2,134,255,0.4)]"
+                  className="px-3.5 py-2 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold text-xs font-JakartaBold transition-colors shadow-[0_0_10px_rgba(158,230,181,0.4)]"
                 >
                   Verify
                 </button>
@@ -377,7 +377,7 @@ export const DriverActiveTripHUD: React.FC = () => {
               </div>
               <div className="p-2.5 bg-white/[0.04] rounded-2xl border border-white/[0.08] text-center">
                 <span className="text-[10px] text-neutral-400 font-JakartaMedium block">Estimated Fare</span>
-                <span className="text-xs font-JakartaBold text-[#0286FF]">₦{grossFare.toLocaleString()}</span>
+                <span className="text-xs font-JakartaBold text-[#9EE6B5]">₦{grossFare.toLocaleString()}</span>
               </div>
               <div className="p-2.5 bg-white/[0.04] rounded-2xl border border-white/[0.08] text-center">
                 <span className="text-[10px] text-neutral-400 font-JakartaMedium block">Net Payout</span>
@@ -386,12 +386,12 @@ export const DriverActiveTripHUD: React.FC = () => {
             </div>
 
             {/* Destination Address */}
-            <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/25 flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-[#0286FF] text-white flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(2,134,255,0.5)]">
+            <div className="p-3 bg-[#9EE6B5]/10 rounded-2xl border border-[#9EE6B5]/25 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#9EE6B5] text-black flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(158,230,181,0.5)]">
                 <MapPin className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] font-JakartaBold text-blue-400 uppercase">Dropoff Destination</span>
+                <span className="text-[10px] font-JakartaBold text-[#9EE6B5] uppercase">Dropoff Destination</span>
                 <p className="text-xs font-JakartaBold text-white truncate">{activeTrip.destination.address}</p>
               </div>
             </div>
@@ -484,7 +484,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                       onClick={() => togglePraise(praise)}
                       className={`px-2.5 py-1 rounded-full text-[10px] font-JakartaBold transition-all ${
                         isSelected
-                          ? 'bg-blue-500/20 text-[#0286FF] border border-blue-500/40'
+                          ? 'bg-[#9EE6B5]/20 text-[#9EE6B5] border border-[#9EE6B5]/40'
                           : 'bg-white/5 text-neutral-300 border border-white/10 hover:bg-white/10'
                       }`}
                     >
@@ -498,7 +498,7 @@ export const DriverActiveTripHUD: React.FC = () => {
             {/* Action: Finish & Return to Online */}
             <button
               onClick={() => driverRatePassenger(starRating, selectedPraises.join(', '))}
-              className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-98 transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold text-xs font-JakartaBold shadow-[0_0_16px_rgba(158,230,181,0.4)] active:scale-98 transition-all flex items-center justify-center gap-1.5"
             >
               <span>Submit Rating & Go Back Online</span>
               <ArrowRight className="w-4 h-4" />

@@ -1,6 +1,7 @@
 import car3d from '../assets/images/car_3d_transparent.png';
 import suv3d from '../assets/images/suv_3d_transparent.png';
 import motorcycle3d from '../assets/images/bike_3d_transparent.png';
+import dispatch3d from '../assets/images/dispatch_3d_transparent.png';
 import bicycle3d from '../assets/images/bicycle_3d_transparent.png';
 import tricycle3d from '../assets/images/keke_3d_transparent.png';
 import van3d from '../assets/images/van_3d_transparent.png';
@@ -15,6 +16,7 @@ export const VEHICLE_3D_ASSETS = {
   suv: suv3d,
   taxi: taxi3d,
   motorcycle: motorcycle3d,
+  dispatch: dispatch3d,
   bicycle: bicycle3d,
   tricycle: tricycle3d,
   van: van3d,
@@ -106,6 +108,19 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     luggage: '1 helmet provided',
   },
   {
+    id: 'dispatch_rider',
+    name: 'Dispatch Rider',
+    category: 'dispatch',
+    tag: 'Package Delivery',
+    seats: 1,
+    etaMinutes: 2,
+    basePriceNaira: 1400,
+    image: dispatch3d,
+    description: 'Dedicated courier delivery bike with sealed secure cargo top-box.',
+    speed: '55 km/h avg',
+    luggage: 'Up to 25kg cargo box',
+  },
+  {
     id: 'bicycle_eco',
     name: 'Eco Commuter Bike',
     category: 'bicycle',
@@ -191,6 +206,9 @@ export function getVehicle3DImage(category?: string, name?: string): string {
 
   if (cat.includes('ambulance') || label.includes('ambulance') || label.includes('medic')) {
     return VEHICLE_3D_ASSETS.ambulance;
+  }
+  if (cat.includes('dispatch') || label.includes('dispatch') || label.includes('courier') || label.includes('package') || label.includes('delivery')) {
+    return VEHICLE_3D_ASSETS.dispatch;
   }
   if (cat.includes('taxi') || cat.includes('cab') || label.includes('taxi') || label.includes('cab')) {
     return VEHICLE_3D_ASSETS.taxi;

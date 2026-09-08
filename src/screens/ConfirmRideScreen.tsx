@@ -166,7 +166,7 @@ export const ConfirmRideScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setScreen('wallet')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-[#0286FF] transition-all"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#9EE6B5]/10 hover:bg-[#9EE6B5]/20 border border-[#9EE6B5]/30 text-[#9EE6B5] transition-all"
           title="Open Broader Wallet"
         >
           <Wallet className="w-3.5 h-3.5" />
@@ -186,7 +186,7 @@ export const ConfirmRideScreen: React.FC = () => {
       {/* Route Addresses Summary Pill - Frosted Glass Floating */}
       <div className="mx-3 -mt-2 mb-2 px-3.5 py-2 glass-panel rounded-2xl border border-white/[0.08] text-[11px] flex items-center justify-between shadow-xl relative z-10">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <div className="w-2 h-2 rounded-full bg-[#0286FF] shrink-0 shadow-[0_0_8px_#0286FF]" />
+          <div className="w-2 h-2 rounded-full bg-[#9EE6B5] shrink-0 shadow-[0_0_8px_#9EE6B5]" />
           <span className="font-JakartaSemiBold text-neutral-200 truncate">
             {userAddress ? userAddress.split(',')[0] : 'Victoria Island'}
           </span>

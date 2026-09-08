@@ -64,7 +64,7 @@ export const DriverEarningsView: React.FC = () => {
       <div className="glass-panel rounded-3xl border border-white/10 p-4 shadow-2xl space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-xs font-JakartaMedium text-neutral-400 flex items-center gap-1.5">
-            <Wallet className="w-3.5 h-3.5 text-[#0286FF]" />
+            <Wallet className="w-3.5 h-3.5 text-[#9EE6B5]" />
             Available Payout Balance
           </span>
           <span className="text-[10px] font-JakartaBold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
@@ -83,7 +83,7 @@ export const DriverEarningsView: React.FC = () => {
           <button
             onClick={() => setWithdrawModalOpen(true)}
             disabled={driverEarnings.availableBalance <= 0}
-            className="px-3.5 py-2 rounded-xl bg-[#0286FF] hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-95 transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] disabled:opacity-50 text-black font-extrabold text-xs font-JakartaBold shadow-[0_0_16px_rgba(158,230,181,0.4)] active:scale-95 transition-all flex items-center gap-1.5"
           >
             <ArrowDownRight className="w-3.5 h-3.5" />
             <span>Withdraw</span>
@@ -110,14 +110,14 @@ export const DriverEarningsView: React.FC = () => {
       {/* Platform Commission & Performance Card */}
       <div className="glass-panel rounded-3xl border border-white/10 p-4 shadow-xl space-y-2.5">
         <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wide flex items-center gap-1.5">
-          <Percent className="w-3.5 h-3.5 text-[#0286FF]" />
+          <Percent className="w-3.5 h-3.5 text-[#9EE6B5]" />
           Platform Settlement & Fees
         </h4>
 
         <div className="space-y-2 text-xs">
           <div className="flex justify-between items-center p-2.5 bg-white/[0.04] border border-white/[0.06] rounded-xl">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-blue-500/20 text-[#0286FF] flex items-center justify-center">
+              <div className="w-6 h-6 rounded-lg bg-[#9EE6B5]/20 text-[#9EE6B5] flex items-center justify-center">
                 <Percent className="w-3 h-3" />
               </div>
               <span className="text-neutral-300 font-JakartaMedium text-[11px]">Broader Platform Service Fee</span>
@@ -162,7 +162,7 @@ export const DriverEarningsView: React.FC = () => {
           {driverTripsHistory.slice(0, 5).map((trip) => (
             <div
               key={trip.id}
-              className="p-3 bg-white/[0.04] rounded-2xl border border-white/[0.08] space-y-1.5 hover:border-blue-500/40 transition-colors"
+              className="p-3 bg-white/[0.04] rounded-2xl border border-white/[0.08] space-y-1.5 hover:border-[#9EE6B5]/40 transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export const DriverEarningsView: React.FC = () => {
           <div className="w-full max-w-sm glass-panel rounded-3xl p-5 shadow-2xl border border-white/15 space-y-3.5 animate-in slide-in-from-bottom-4 duration-200">
             <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-[#0286FF] border border-blue-500/30 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/20 text-[#9EE6B5] border border-[#9EE6B5]/30 flex items-center justify-center">
                   <Building2 className="w-4 h-4" />
                 </div>
                 <div>
@@ -245,7 +245,7 @@ export const DriverEarningsView: React.FC = () => {
                       onChange={(e) => setWithdrawAmount(e.target.value)}
                       max={driverEarnings.availableBalance}
                       min={100}
-                      className="w-full pl-7 pr-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaBold text-white focus:outline-hidden focus:border-[#0286FF]"
+                      className="w-full pl-7 pr-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaBold text-white focus:outline-hidden focus:border-[#9EE6B5]"
                       placeholder="5000"
                       required
                     />
@@ -257,7 +257,7 @@ export const DriverEarningsView: React.FC = () => {
                   <select
                     value={selectedBank}
                     onChange={(e) => setSelectedBank(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/80 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white focus:outline-hidden focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 bg-black/80 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white focus:outline-hidden focus:border-[#9EE6B5]"
                   >
                     {nigerianBanks.map((bank) => (
                       <option key={bank} value={bank}>
@@ -275,7 +275,7 @@ export const DriverEarningsView: React.FC = () => {
                       maxLength={10}
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
-                      className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-mono text-white focus:outline-hidden focus:border-[#0286FF]"
+                      className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-mono text-white focus:outline-hidden focus:border-[#9EE6B5]"
                       placeholder="0123456789"
                       required
                     />
@@ -286,15 +286,15 @@ export const DriverEarningsView: React.FC = () => {
                       type="text"
                       value={accountName}
                       onChange={(e) => setAccountName(e.target.value)}
-                      className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaBold text-white focus:outline-hidden focus:border-[#0286FF]"
+                      className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaBold text-white focus:outline-hidden focus:border-[#9EE6B5]"
                       placeholder="Chris Bakare"
                       required
                     />
                   </div>
                 </div>
 
-                <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 flex items-center gap-2 text-[10px] text-blue-300">
-                  <ShieldCheck className="w-4 h-4 shrink-0 text-[#0286FF]" />
+                <div className="p-2.5 bg-[#9EE6B5]/10 rounded-xl border border-[#9EE6B5]/20 flex items-center gap-2 text-[10px] text-neutral-200">
+                  <ShieldCheck className="w-4 h-4 shrink-0 text-[#9EE6B5]" />
                   <span>Zero transfer fees on Broader driver earnings payouts.</span>
                 </div>
 
@@ -302,7 +302,7 @@ export const DriverEarningsView: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isProcessing || parseFloat(withdrawAmount) > driverEarnings.availableBalance}
-                    className="w-full py-2.5 rounded-xl bg-[#0286FF] hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] disabled:opacity-50 text-black font-extrabold text-xs font-JakartaBold shadow-[0_0_16px_rgba(158,230,181,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
                   >
                     <span>{isProcessing ? 'Processing Transfer...' : 'Confirm Bank Payout'}</span>
                     <ChevronRight className="w-3.5 h-3.5" />

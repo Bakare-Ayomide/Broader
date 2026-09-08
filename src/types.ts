@@ -1,6 +1,7 @@
 export type VehicleCategory =
   | 'bicycle'
   | 'motorcycle'
+  | 'dispatch'
   | 'tricycle'
   | 'car'
   | 'suv'

@@ -192,11 +192,11 @@ export const PassengerHUD: React.FC<PassengerHUDProps> = ({
 
           {/* Navigation Instruction Pill */}
           <div className="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-[#0286FF] flex items-center justify-center shrink-0 border border-blue-500/30">
+            <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/20 text-[#9EE6B5] flex items-center justify-center shrink-0 border border-[#9EE6B5]/30">
               <Navigation className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-[9px] text-blue-400 font-bold uppercase tracking-wider block">
+              <span className="text-[9px] text-[#9EE6B5] font-bold uppercase tracking-wider block">
                 Next Waypoint
               </span>
               <p className="text-xs text-neutral-200 font-JakartaMedium truncate">

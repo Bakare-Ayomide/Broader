@@ -126,10 +126,10 @@ export const ProfileScreen: React.FC = () => {
       {/* Wallet Card */}
       <div
         onClick={() => setScreen('wallet')}
-        className="glass-panel hover:border-blue-500/30 rounded-2xl p-3.5 border border-white/[0.08] mb-3 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99]"
+        className="glass-panel hover:border-[#9EE6B5]/30 rounded-2xl p-3.5 border border-white/[0.08] mb-3 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99]"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/15 text-[#0286FF] flex items-center justify-center border border-blue-500/20">
+          <div className="w-10 h-10 rounded-xl bg-[#9EE6B5]/15 text-[#9EE6B5] flex items-center justify-center border border-[#9EE6B5]/20">
             <Wallet className="w-5 h-5" />
           </div>
           <div>
@@ -139,7 +139,7 @@ export const ProfileScreen: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-xs font-JakartaBold text-[#0286FF]">
+        <div className="flex items-center gap-1 text-xs font-JakartaBold text-[#9EE6B5]">
           <span>Top Up</span>
           <ChevronRight className="w-4 h-4" />
         </div>
@@ -186,14 +186,14 @@ export const ProfileScreen: React.FC = () => {
       <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 shadow-xs mb-3">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-1.5">
-            <MapPin className="w-4 h-4 text-[#0286FF]" />
+            <MapPin className="w-4 h-4 text-[#9EE6B5]" />
             <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
               Saved Locations ({savedLocations.length})
             </h4>
           </div>
           <button
             onClick={() => setShowAddLocationModal(true)}
-            className="text-[11px] font-JakartaBold text-[#0286FF] hover:underline flex items-center gap-0.5"
+            className="text-[11px] font-JakartaBold text-[#9EE6B5] hover:underline flex items-center gap-0.5"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Place</span>
@@ -245,7 +245,7 @@ export const ProfileScreen: React.FC = () => {
           <select
             value={userPreferences.language}
             onChange={(e) => setUserPreferences({ language: e.target.value as any })}
-            className="text-xs font-JakartaSemiBold bg-black/60 border border-white/15 rounded-lg px-2.5 py-1 text-white focus:outline-none focus:border-[#0286FF]"
+            className="text-xs font-JakartaSemiBold bg-black/60 border border-white/15 rounded-lg px-2.5 py-1 text-white focus:outline-none focus:border-[#9EE6B5]"
           >
             <option value="en" className="bg-neutral-900 text-white">English (UK/NG)</option>
             <option value="yo" className="bg-neutral-900 text-white">Yorùbá</option>
@@ -263,7 +263,7 @@ export const ProfileScreen: React.FC = () => {
           <select
             value={userPreferences.currency}
             onChange={(e) => setUserPreferences({ currency: e.target.value as any })}
-            className="text-xs font-JakartaSemiBold bg-black/60 border border-white/15 rounded-lg px-2.5 py-1 text-white focus:outline-none focus:border-[#0286FF]"
+            className="text-xs font-JakartaSemiBold bg-black/60 border border-white/15 rounded-lg px-2.5 py-1 text-white focus:outline-none focus:border-[#9EE6B5]"
           >
             <option value="NGN" className="bg-neutral-900 text-white">Nigerian Naira (₦)</option>
             <option value="USD" className="bg-neutral-900 text-white">US Dollar ($)</option>
@@ -279,11 +279,11 @@ export const ProfileScreen: React.FC = () => {
           <button
             onClick={() => setUserPreferences({ smsUpdates: !userPreferences.smsUpdates })}
             className={`w-10 h-5 rounded-full transition-colors relative ${
-              userPreferences.smsUpdates ? 'bg-[#0286FF]' : 'bg-neutral-700'
+              userPreferences.smsUpdates ? 'bg-[#9EE6B5]' : 'bg-neutral-700'
             }`}
           >
             <span
-              className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
+              className={`w-4 h-4 rounded-full bg-black absolute top-0.5 transition-transform ${
                 userPreferences.smsUpdates ? 'left-5' : 'left-0.5'
               }`}
             />
@@ -308,17 +308,17 @@ export const ProfileScreen: React.FC = () => {
           <ChevronRight className="w-4 h-4 text-neutral-500" />
         </div>
 
-        <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20">
-          <div className="flex items-center gap-2 text-blue-200 font-JakartaMedium">
-            <Headphones className="w-4 h-4 text-[#0286FF]" />
+        <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-[#9EE6B5]/10 border border-[#9EE6B5]/20">
+          <div className="flex items-center gap-2 text-neutral-200 font-JakartaMedium">
+            <Headphones className="w-4 h-4 text-[#9EE6B5]" />
             <div>
               <p className="font-JakartaBold text-white">24/7 Broader Safety Desk</p>
-              <p className="text-[10px] text-blue-300 font-mono">+234 800 BROADER (Toll-Free)</p>
+              <p className="text-[10px] text-[#9EE6B5] font-mono">+234 800 BROADER (Toll-Free)</p>
             </div>
           </div>
           <a
             href="tel:112"
-            className="px-2.5 py-1 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-[10px] shadow-[0_0_10px_rgba(2,134,255,0.4)]"
+            className="px-2.5 py-1 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold text-[10px] shadow-[0_0_10px_rgba(158,230,181,0.4)]"
           >
             Call 112
           </a>
@@ -348,7 +348,7 @@ export const ProfileScreen: React.FC = () => {
                   value={newLocTitle}
                   onChange={(e) => setNewLocTitle(e.target.value)}
                   placeholder="e.g. Gym, Church, Auntie's House"
-                  className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#9EE6B5]"
                 />
               </div>
 
@@ -360,7 +360,7 @@ export const ProfileScreen: React.FC = () => {
                   value={newLocAddress}
                   onChange={(e) => setNewLocAddress(e.target.value)}
                   placeholder="e.g. 10 Lekki Phase 1, Lagos"
-                  className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#9EE6B5]"
                 />
               </div>
 
@@ -374,7 +374,7 @@ export const ProfileScreen: React.FC = () => {
                       onClick={() => setNewLocType(t)}
                       className={`py-1.5 rounded-lg border font-JakartaBold capitalize transition-all ${
                         newLocType === t
-                          ? 'bg-[#0286FF] text-white border-[#0286FF] shadow-[0_0_10px_rgba(2,134,255,0.4)]'
+                          ? 'bg-[#9EE6B5] text-black font-extrabold border-[#9EE6B5] shadow-[0_0_10px_rgba(158,230,181,0.4)]'
                           : 'bg-white/5 text-neutral-300 border-white/10 hover:bg-white/10'
                       }`}
                     >
@@ -394,7 +394,7 @@ export const ProfileScreen: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold shadow-[0_0_12px_rgba(2,134,255,0.4)] transition-all"
+                  className="flex-1 py-2.5 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold shadow-[0_0_12px_rgba(158,230,181,0.4)] transition-all"
                 >
                   Save Location
                 </button>
@@ -430,7 +430,7 @@ export const ProfileScreen: React.FC = () => {
                     type="password"
                     required
                     placeholder="••••••••"
-                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
                 <div>
@@ -439,7 +439,7 @@ export const ProfileScreen: React.FC = () => {
                     type="password"
                     required
                     placeholder="••••••••"
-                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
                 <div className="flex gap-2 pt-2">
@@ -452,7 +452,7 @@ export const ProfileScreen: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2.5 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold shadow-[0_0_12px_rgba(2,134,255,0.4)] transition-all"
+                    className="flex-1 py-2.5 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold shadow-[0_0_12px_rgba(158,230,181,0.4)] transition-all"
                   >
                     Update Password
                   </button>

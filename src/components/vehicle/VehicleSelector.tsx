@@ -53,7 +53,7 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
             onClick={() => setFilter(tab.id as any)}
             className={`flex-1 py-1.5 rounded-xl transition-all text-center ${
               filter === tab.id
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_15px_rgba(158,230,181,0.35)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -67,16 +67,20 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
         {filteredVehicles.map((vehicle) => {
           const spec =
             BROADER_3D_FLEET.find((s) => s.category === vehicle.category) || BROADER_3D_FLEET[0];
+          const vehicleSeats = (vehicle as any).seats ?? spec.seats;
+          const vehicleEta = vehicle.etaMinutes ?? (vehicle as any).eta_minutes ?? spec.etaMinutes;
+          const vehicleFare = vehicle.price ?? (vehicle as any).fare_estimate ?? spec.basePriceNaira;
+
           return (
             <VehicleCard
               key={vehicle.id}
               id={String(vehicle.id)}
               name={vehicle.name}
               category={vehicle.category}
-              tag={vehicle.category === 'car' ? 'Popular' : vehicle.category === 'suv' ? 'Executive' : undefined}
-              seats={vehicle.seats}
-              etaMinutes={vehicle.eta_minutes}
-              farePrice={vehicle.fare_estimate}
+              tag={vehicle.category === 'car' ? 'Popular' : vehicle.category === 'suv' ? 'Executive' : vehicle.category === 'dispatch' ? 'Express' : undefined}
+              seats={vehicleSeats}
+              etaMinutes={vehicleEta}
+              farePrice={vehicleFare}
               selected={selectedCategory === vehicle.category}
               onSelect={() => onSelect(vehicle.category)}
               description={spec.description}

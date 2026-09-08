@@ -56,22 +56,22 @@ export const DriverIncomingModal: React.FC = () => {
   };
 
   return (
-    <div className="glass-panel rounded-3xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] border border-blue-500/50 animate-in zoom-in-95 duration-200 space-y-3 relative overflow-hidden">
-      {/* Top subtle blue laser line */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#0286FF] to-transparent shadow-[0_0_12px_rgba(2,134,255,0.9)]" />
+    <div className="glass-panel rounded-3xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] border border-[#9EE6B5]/50 animate-in zoom-in-95 duration-200 space-y-3 relative overflow-hidden">
+      {/* Top subtle mint laser line */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#9EE6B5] to-transparent shadow-[0_0_12px_rgba(158,230,181,0.9)]" />
 
       {/* Top Header with Pulse & Countdown Timer */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#0286FF] animate-ping" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#9EE6B5] animate-ping" />
           <h4 className="text-xs font-JakartaBold text-white uppercase tracking-wider flex items-center gap-1.5">
             <span>Incoming Ride Dispatch</span>
-            <Volume2 className="w-3 h-3 text-[#0286FF] animate-pulse" />
+            <Volume2 className="w-3 h-3 text-[#9EE6B5] animate-pulse" />
           </h4>
         </div>
 
         {/* Circular Countdown Badge */}
-        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/20 text-[#0286FF] text-xs font-JakartaBold border border-blue-500/30 shadow-xs">
+        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] text-xs font-JakartaBold border border-[#9EE6B5]/30 shadow-xs">
           <Clock className="w-3 h-3 animate-spin" style={{ animationDuration: '4s' }} />
           <span>{timerSeconds}s remaining</span>
         </div>
@@ -80,15 +80,15 @@ export const DriverIncomingModal: React.FC = () => {
       {/* Countdown Progress Bar */}
       <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
         <div
-          className="bg-[#0286FF] h-full transition-all duration-1000 ease-linear rounded-full shadow-[0_0_8px_rgba(2,134,255,0.8)]"
+          className="bg-[#9EE6B5] h-full transition-all duration-1000 ease-linear rounded-full shadow-[0_0_8px_rgba(158,230,181,0.8)]"
           style={{ width: `${(timerSeconds / 15) * 100}%` }}
         />
       </div>
 
       {/* Net Earnings & Trip Specs Card */}
-      <div className="flex items-center justify-between p-3 bg-blue-500/10 rounded-2xl border border-blue-500/25">
+      <div className="flex items-center justify-between p-3 bg-[#9EE6B5]/10 rounded-2xl border border-[#9EE6B5]/25">
         <div>
-          <span className="text-[10px] font-JakartaBold text-blue-400 uppercase tracking-wide">
+          <span className="text-[10px] font-JakartaBold text-[#9EE6B5] uppercase tracking-wide">
             Est. Net Driver Earnings
           </span>
           <div className="flex items-baseline gap-1.5">
@@ -135,7 +135,7 @@ export const DriverIncomingModal: React.FC = () => {
       {/* Pickup & Dropoff Address Route */}
       <div className="space-y-2 p-3 bg-white/[0.04] rounded-2xl text-xs border border-white/[0.08]">
         <div className="flex items-start gap-2.5">
-          <div className="w-2 h-2 rounded-full bg-[#0286FF] mt-1 shrink-0 shadow-[0_0_6px_rgba(2,134,255,0.8)]" />
+          <div className="w-2 h-2 rounded-full bg-[#9EE6B5] mt-1 shrink-0 shadow-[0_0_6px_rgba(158,230,181,0.8)]" />
           <div className="min-w-0 flex-1">
             <span className="text-[10px] text-neutral-400 font-JakartaMedium block">Pickup Location</span>
             <p className="font-JakartaMedium text-neutral-200 text-[11px] truncate">
@@ -176,7 +176,7 @@ export const DriverIncomingModal: React.FC = () => {
         <button
           type="button"
           onClick={handleAccept}
-          className="col-span-2 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
+          className="col-span-2 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold text-xs shadow-[0_0_18px_rgba(158,230,181,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
         >
           <Check className="w-4 h-4" />
           <span>Accept Trip</span>

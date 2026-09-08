@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-100: #F5F8FF;
-  --color-primary-200: #EBF4FF;
-  --color-primary-300: #C3D9FF;
-  --color-primary-400: #9BBFFF;
-  --color-primary-500: #0286FF;
-  --color-primary-600: #6A85E6;
-  --color-primary-700: #475A99;
-  --color-primary-800: #364573;
-  --color-primary-900: #242B4D;
+  --color-mint: #9EE6B5;
+  --color-mint-glow: rgba(158, 230, 181, 0.35);
+  --color-primary-100: #F3FCF6;
+  --color-primary-200: #DCF7E5;
+  --color-primary-300: #BFF0CF;
+  --color-primary-400: #A6EAB9;
+  --color-primary-500: #9EE6B5;
+  --color-primary-600: #78D497;
+  --color-primary-700: #55B576;
+  --color-primary-800: #388D56;
+  --color-primary-900: #205936;
 
   --color-general-100: #CED1DD;
   --color-general-200: #858585;
@@ -78,20 +80,20 @@ html, body {
 }
 
 .glass-panel-selected {
-  background: rgba(2, 134, 255, 0.12);
-  border: 1px solid rgba(2, 134, 255, 0.45);
-  box-shadow: 0 0 25px rgba(2, 134, 255, 0.18);
+  background: rgba(158, 230, 181, 0.12);
+  border: 1px solid rgba(158, 230, 181, 0.45);
+  box-shadow: 0 0 25px rgba(158, 230, 181, 0.22);
 }
 
 .glass-header {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(10, 15, 24, 0.85);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-nav {
-  background: rgba(12, 12, 12, 0.82);
+  background: rgba(10, 16, 26, 0.88);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -107,8 +109,36 @@ html, body {
 }
 
 .glass-input:focus {
-  border-color: #0286FF;
-  box-shadow: 0 0 16px rgba(2, 134, 255, 0.25);
+  border-color: #9EE6B5;
+  box-shadow: 0 0 16px rgba(158, 230, 181, 0.3);
+}
+
+/* Mint Green Ambient Blur Utilities */
+.mint-glow {
+  box-shadow: 0 0 20px rgba(158, 230, 181, 0.35);
+}
+
+.mint-glow-sm {
+  box-shadow: 0 0 12px rgba(158, 230, 181, 0.25);
+}
+
+.mint-blur-bg {
+  background: radial-gradient(circle, rgba(158, 230, 181, 0.2) 0%, rgba(158, 230, 181, 0) 70%);
+}
+
+@keyframes pulseArrows {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-arrows {
+  animation: pulseArrows 1.6s ease-in-out infinite;
 }
 
 /* Custom minimal dark scrollbar */

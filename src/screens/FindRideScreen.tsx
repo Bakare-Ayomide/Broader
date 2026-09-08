@@ -141,7 +141,7 @@ export const FindRideScreen: React.FC = () => {
               <button
                 type="button"
                 onClick={handleUseCurrentLocation}
-                className="flex items-center gap-1 text-[11px] font-JakartaSemiBold text-[#0286FF] hover:underline"
+                className="flex items-center gap-1 text-[11px] font-JakartaSemiBold text-[#9EE6B5] hover:underline"
               >
                 <Crosshair className="w-3 h-3" />
                 <span>Use current location</span>
@@ -149,7 +149,7 @@ export const FindRideScreen: React.FC = () => {
             </div>
             <div
               className={`flex items-center glass-panel border rounded-2xl px-3.5 py-2.5 transition-all ${
-                activeInput === 'from' ? 'border-[#0286FF] ring-2 ring-blue-500/30' : 'border-white/[0.08]'
+                activeInput === 'from' ? 'border-[#9EE6B5] ring-2 ring-[#9EE6B5]/30' : 'border-white/[0.08]'
               }`}
             >
               <img src="/assets/icons/target.png" alt="pickup" className="w-4 h-4 mr-2.5 opacity-80 invert" />
@@ -180,7 +180,7 @@ export const FindRideScreen: React.FC = () => {
             </label>
             <div
               className={`flex items-center glass-panel border rounded-2xl px-3.5 py-2.5 transition-all ${
-                activeInput === 'to' ? 'border-[#0286FF] ring-2 ring-blue-500/30' : 'border-white/[0.08]'
+                activeInput === 'to' ? 'border-[#9EE6B5] ring-2 ring-[#9EE6B5]/30' : 'border-white/[0.08]'
               }`}
             >
               <img src="/assets/icons/point.png" alt="destination" className="w-4 h-4 mr-2.5 opacity-80" />
@@ -209,7 +209,7 @@ export const FindRideScreen: React.FC = () => {
             <label className="block text-[11px] font-JakartaBold text-neutral-300 mb-1 uppercase tracking-wider">
               Pickup Instructions (Optional)
             </label>
-            <div className="flex items-center glass-panel border border-white/[0.08] rounded-2xl px-3.5 py-2 transition-all focus-within:border-[#0286FF] focus-within:ring-2 focus-within:ring-blue-500/30">
+            <div className="flex items-center glass-panel border border-white/[0.08] rounded-2xl px-3.5 py-2 transition-all focus-within:border-[#9EE6B5] focus-within:ring-2 focus-within:ring-[#9EE6B5]/30">
               <input
                 type="text"
                 value={pickupInstructions}
@@ -226,7 +226,7 @@ export const FindRideScreen: React.FC = () => {
               <span className="text-[11px] font-JakartaBold text-neutral-400 uppercase tracking-wider block">
                 Short-Distance / Neighborhood Rides
               </span>
-              <span className="text-[10px] text-[#0286FF] font-JakartaBold bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-[#9EE6B5] font-JakartaBold bg-[#9EE6B5]/10 border border-[#9EE6B5]/20 px-2 py-0.5 rounded-full">
                 Quick Dispatch
               </span>
             </div>
@@ -282,7 +282,7 @@ export const FindRideScreen: React.FC = () => {
                     }
                     className={`p-2.5 rounded-2xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                       isSelected
-                        ? 'bg-blue-500/15 border-[#0286FF] ring-1 ring-[#0286FF]'
+                        ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] ring-1 ring-[#9EE6B5]'
                         : 'glass-panel border-white/[0.08] hover:bg-white/5'
                     }`}
                   >
@@ -290,7 +290,7 @@ export const FindRideScreen: React.FC = () => {
                       className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
                         loc.type === 'home'
                           ? 'bg-amber-500/10 text-amber-400'
-                          : 'bg-blue-500/10 text-[#0286FF]'
+                          : 'bg-[#9EE6B5]/10 text-[#9EE6B5]'
                       }`}
                     >
                       <IconComponent className="w-3.5 h-3.5" />
@@ -328,13 +328,13 @@ export const FindRideScreen: React.FC = () => {
                   }
                   className={`flex items-center justify-between p-2.5 rounded-2xl border text-xs cursor-pointer transition-all ${
                     toInput === dest.name
-                      ? 'bg-blue-500/15 border-[#0286FF] text-white font-JakartaBold'
+                      ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] text-white font-JakartaBold'
                       : 'glass-panel border-white/[0.08] text-neutral-300 hover:bg-white/5'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-neutral-400">
-                      <MapPin className="w-3 h-3 text-[#0286FF]" />
+                      <MapPin className="w-3 h-3 text-[#9EE6B5]" />
                     </div>
                     <div className="truncate">
                       <p className="font-JakartaSemiBold text-white truncate leading-tight">
@@ -354,7 +354,7 @@ export const FindRideScreen: React.FC = () => {
         {/* Find Now Button */}
         <button
           onClick={handleFindNow}
-          className="w-full mt-4 py-3.5 rounded-full bg-[#0286FF] hover:bg-blue-500 active:scale-[0.99] text-white font-JakartaBold text-sm shadow-[0_0_20px_rgba(2,134,255,0.4)] transition-all flex items-center justify-center gap-2"
+          className="w-full mt-4 py-3.5 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-[0.99] text-black font-extrabold font-JakartaBold text-sm shadow-[0_0_20px_rgba(158,230,181,0.4)] transition-all flex items-center justify-center gap-2"
         >
           <span>Find Available Rides</span>
         </button>

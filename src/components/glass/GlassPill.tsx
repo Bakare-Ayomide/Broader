@@ -14,7 +14,7 @@ export interface GlassPillProps {
 
 const PILL_VARIANTS: Record<PillVariant, string> = {
   default: 'bg-white/[0.06] text-neutral-200 border-white/[0.1] hover:bg-white/[0.1]',
-  blue: 'bg-gradient-to-r from-blue-900/40 to-[#0286FF]/30 text-blue-300 border-blue-400/30 shadow-[0_0_12px_rgba(2,134,255,0.2)]',
+  blue: 'bg-gradient-to-r from-emerald-950/40 to-[#9EE6B5]/30 text-[#9EE6B5] border-[#9EE6B5]/40 shadow-[0_0_12px_rgba(158,230,181,0.25)]',
   cyan: 'bg-gradient-to-r from-cyan-950/40 to-cyan-500/30 text-cyan-200 border-cyan-400/30 shadow-[0_0_12px_rgba(6,182,212,0.2)]',
   violet: 'bg-gradient-to-r from-purple-900/40 to-purple-600/30 text-purple-200 border-purple-400/30 shadow-[0_0_12px_rgba(147,51,234,0.25)]',
   magenta: 'bg-gradient-to-r from-pink-900/40 to-pink-600/30 text-pink-200 border-pink-400/30 shadow-[0_0_12px_rgba(236,72,153,0.25)]',

@@ -14,7 +14,7 @@ export interface GlassCardProps extends HTMLMotionProps<'div'> {
 
 const GLOW_CLASSES: Record<GlassGlow, string> = {
   none: '',
-  blue: 'hover:border-[#0286FF]/50 hover:shadow-[0_0_24px_rgba(2,134,255,0.2)]',
+  blue: 'hover:border-[#9EE6B5]/60 hover:shadow-[0_0_24px_rgba(158,230,181,0.25)]',
   cyan: 'hover:border-cyan-400/50 hover:shadow-[0_0_24px_rgba(34,211,238,0.2)]',
   violet: 'hover:border-purple-500/50 hover:shadow-[0_0_24px_rgba(168,85,247,0.22)]',
   magenta: 'hover:border-pink-500/50 hover:shadow-[0_0_24px_rgba(236,72,153,0.22)]',
@@ -25,7 +25,7 @@ const GLOW_CLASSES: Record<GlassGlow, string> = {
 
 const SELECTED_GLOW: Record<GlassGlow, string> = {
   none: 'border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.08)]',
-  blue: 'border-[#0286FF] shadow-[0_0_25px_rgba(2,134,255,0.3)] bg-[#0286FF]/10',
+  blue: 'border-[#9EE6B5] shadow-[0_0_25px_rgba(158,230,181,0.35)] bg-[#9EE6B5]/10',
   cyan: 'border-cyan-400 shadow-[0_0_25px_rgba(34,211,238,0.28)] bg-cyan-500/10',
   violet: 'border-purple-500 shadow-[0_0_25px_rgba(168,85,247,0.3)] bg-purple-500/10',
   magenta: 'border-pink-500 shadow-[0_0_25px_rgba(236,72,153,0.3)] bg-pink-500/10',

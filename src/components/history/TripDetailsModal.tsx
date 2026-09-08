@@ -161,7 +161,7 @@ export const TripDetailsModal: React.FC<TripDetailsModalProps> = ({
           </div>
           <div className="pt-2 border-t border-white/[0.08] flex justify-between text-sm font-JakartaBold text-white">
             <span>Total Fare</span>
-            <span className="text-base text-[#0286FF] font-mono">
+            <span className="text-base text-[#9EE6B5] font-mono">
               ₦{Number(ride.fare_price || 0).toLocaleString()}
             </span>
           </div>

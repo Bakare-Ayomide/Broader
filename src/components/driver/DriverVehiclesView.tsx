@@ -72,7 +72,7 @@ export const DriverVehiclesView: React.FC = () => {
 
         <button
           onClick={() => setAddModalOpen(true)}
-          className="px-3 py-1.5 rounded-xl bg-blue-500/20 text-[#0286FF] hover:bg-blue-500/30 text-xs font-JakartaBold border border-blue-500/40 flex items-center gap-1 transition-colors"
+          className="px-3 py-1.5 rounded-xl bg-[#9EE6B5]/20 text-[#9EE6B5] hover:bg-[#9EE6B5]/30 text-xs font-JakartaBold border border-[#9EE6B5]/40 flex items-center gap-1 transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add Vehicle</span>
@@ -91,7 +91,7 @@ export const DriverVehiclesView: React.FC = () => {
               onClick={() => setActiveDriverVehicleId(vehicle.id)}
               className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                 isActive
-                  ? 'glass-panel border-blue-500/60 ring-2 ring-[#0286FF]/30 shadow-[0_0_20px_rgba(2,134,255,0.25)]'
+                  ? 'glass-panel border-[#9EE6B5]/60 ring-2 ring-[#9EE6B5]/30 shadow-[0_0_20px_rgba(158,230,181,0.25)]'
                   : 'glass-panel border-white/10 hover:border-white/20'
               }`}
             >
@@ -100,7 +100,7 @@ export const DriverVehiclesView: React.FC = () => {
                   {/* 3D Vehicle Render Preview */}
                   <div
                     className={`w-14 h-12 rounded-xl flex items-center justify-center shrink-0 p-1 relative overflow-hidden transition-all ${
-                      isActive ? 'bg-blue-500/20 border border-blue-500/40 shadow-[0_0_12px_rgba(2,134,255,0.3)]' : 'bg-white/5 border border-white/10'
+                      isActive ? 'bg-[#9EE6B5]/20 border border-[#9EE6B5]/40 shadow-[0_0_12px_rgba(158,230,181,0.3)]' : 'bg-white/5 border border-white/10'
                     }`}
                   >
                     <img
@@ -114,7 +114,7 @@ export const DriverVehiclesView: React.FC = () => {
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <h4 className="text-xs font-JakartaBold text-white truncate">{vehicle.name}</h4>
                       {isActive && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#0286FF] text-white text-[9px] font-JakartaBold shadow-[0_0_8px_rgba(2,134,255,0.6)]">
+                        <span className="px-2 py-0.5 rounded-full bg-[#9EE6B5] text-black text-[9px] font-JakartaBold shadow-[0_0_8px_rgba(158,230,181,0.6)]">
                           ACTIVE
                         </span>
                       )}
@@ -127,7 +127,7 @@ export const DriverVehiclesView: React.FC = () => {
                   <div
                     className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
                       isActive
-                        ? 'border-[#0286FF] bg-[#0286FF] text-white shadow-[0_0_8px_rgba(2,134,255,0.6)]'
+                        ? 'border-[#9EE6B5] bg-[#9EE6B5] text-black shadow-[0_0_8px_rgba(158,230,181,0.6)]'
                         : 'border-white/20 bg-black/40'
                     }`}
                   >
@@ -168,7 +168,7 @@ export const DriverVehiclesView: React.FC = () => {
           <div className="w-full max-w-sm glass-panel rounded-3xl p-5 shadow-2xl border border-white/15 space-y-3.5 animate-in slide-in-from-bottom-4 duration-200">
             <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
               <div className="flex items-center gap-2">
-                <Car className="w-4 h-4 text-[#0286FF]" />
+                <Car className="w-4 h-4 text-[#9EE6B5]" />
                 <h3 className="text-sm font-JakartaBold text-white">Add Vehicle to Fleet</h3>
               </div>
               <button
@@ -189,7 +189,7 @@ export const DriverVehiclesView: React.FC = () => {
                   value={newVehName}
                   onChange={(e) => setNewVehName(e.target.value)}
                   placeholder="e.g. Toyota Camry 2022"
-                  className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaBold text-white focus:outline-hidden focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaBold text-white focus:outline-hidden focus:border-[#9EE6B5]"
                   required
                 />
               </div>
@@ -201,7 +201,7 @@ export const DriverVehiclesView: React.FC = () => {
                 <select
                   value={newVehCategory}
                   onChange={(e) => setNewVehCategory(e.target.value as any)}
-                  className="w-full px-3 py-2 bg-black/80 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white focus:outline-hidden focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 bg-black/80 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white focus:outline-hidden focus:border-[#9EE6B5]"
                 >
                   <option value="car">Broader Go (Sedan / Car)</option>
                   <option value="suv">Broader Executive (SUV)</option>
@@ -222,7 +222,7 @@ export const DriverVehiclesView: React.FC = () => {
                     value={newVehPlate}
                     onChange={(e) => setNewVehPlate(e.target.value)}
                     placeholder="e.g. LSR-419-AA"
-                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-mono font-bold text-white focus:outline-hidden focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-mono font-bold text-white focus:outline-hidden focus:border-[#9EE6B5]"
                     required
                   />
                 </div>
@@ -235,7 +235,7 @@ export const DriverVehiclesView: React.FC = () => {
                     value={newVehColor}
                     onChange={(e) => setNewVehColor(e.target.value)}
                     placeholder="e.g. Silver / Black"
-                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white focus:outline-hidden focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white focus:outline-hidden focus:border-[#9EE6B5]"
                   />
                 </div>
               </div>
@@ -243,7 +243,7 @@ export const DriverVehiclesView: React.FC = () => {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl bg-[#0286FF] hover:bg-blue-500 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold text-xs font-JakartaBold shadow-[0_0_16px_rgba(158,230,181,0.4)] active:scale-95 transition-all flex items-center justify-center gap-1.5"
                 >
                   <span>Register & Verify Vehicle</span>
                   <ChevronRight className="w-3.5 h-3.5" />

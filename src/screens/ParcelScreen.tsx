@@ -103,7 +103,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
           </button>
           <div>
             <div className="flex items-center gap-1.5">
-              <Package className="w-3.5 h-3.5 text-[#0286FF]" />
+              <Package className="w-3.5 h-3.5 text-[#9EE6B5]" />
               <h2 className="text-sm font-JakartaBold text-white leading-none">Broader Parcel Delivery</h2>
             </div>
             <p className="text-[11px] text-neutral-400 font-JakartaMedium mt-0.5">
@@ -128,7 +128,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
             }}
             className={`flex-1 py-2 rounded-xl transition-all ${
               activeTab === 'send'
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -141,7 +141,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
             }}
             className={`flex-1 py-2 rounded-xl transition-all ${
               activeTab === 'track'
-                ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                ? 'bg-[#9EE6B5] text-black font-extrabold shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -163,7 +163,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
             {/* Sender Card */}
             <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-2.5 text-xs">
               <div className="flex items-center gap-2 text-white font-JakartaBold text-xs uppercase tracking-wider">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#0286FF] shadow-[0_0_8px_rgba(2,134,255,0.8)]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#9EE6B5] shadow-[0_0_8px_rgba(158,230,181,0.8)]" />
                 <span>Pickup / Sender Information</span>
               </div>
 
@@ -175,7 +175,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                     required
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
                 <div>
@@ -185,7 +185,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                     required
                     value={senderPhone}
                     onChange={(e) => setSenderPhone(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaBold text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaBold text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
               </div>
@@ -197,7 +197,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                   required
                   value={pickupAddress}
                   onChange={(e) => setPickupAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                 />
               </div>
             </div>
@@ -217,7 +217,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                     required
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
                 <div>
@@ -227,7 +227,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                     required
                     value={recipientPhone}
                     onChange={(e) => setRecipientPhone(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaBold text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaBold text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                   />
                 </div>
               </div>
@@ -239,7 +239,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                   required
                   value={deliveryAddress}
                   onChange={(e) => setDeliveryAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                 />
               </div>
             </div>
@@ -247,7 +247,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
             {/* Package Details */}
             <div className="glass-panel rounded-2xl border border-white/[0.08] p-4 space-y-3 text-xs">
               <div className="flex items-center gap-2 text-white font-JakartaBold text-xs uppercase tracking-wider">
-                <Package className="w-3.5 h-3.5 text-[#0286FF]" />
+                <Package className="w-3.5 h-3.5 text-[#9EE6B5]" />
                 <span>Package Specifications</span>
               </div>
 
@@ -257,7 +257,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                   <select
                     value={packageType}
                     onChange={(e) => setPackageType(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.06] focus:outline-none focus:border-[#0286FF]"
+                    className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.06] focus:outline-none focus:border-[#9EE6B5]"
                   >
                     <option value="Documents & Files" className="bg-[#0a0f1d]">Documents & Files</option>
                     <option value="Electronics & Gadgets" className="bg-[#0a0f1d]">Electronics & Gadgets</option>
@@ -280,7 +280,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                         }}
                         className={`flex-1 py-1.5 rounded-lg border text-xs font-bold transition-all ${
                           weightKg === kg
-                            ? 'bg-[#0286FF] text-white border-[#0286FF]'
+                            ? 'bg-[#9EE6B5] text-black font-extrabold border-[#9EE6B5]'
                             : 'bg-white/[0.04] text-neutral-400 border-white/10 hover:bg-white/[0.08]'
                         }`}
                       >
@@ -307,7 +307,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                     setIsExpress(!isExpress);
                   }}
                   className={`w-10 h-6 rounded-full p-0.5 transition-colors ${
-                    isExpress ? 'bg-[#0286FF]' : 'bg-white/20'
+                    isExpress ? 'bg-[#9EE6B5]' : 'bg-white/20'
                   }`}
                 >
                   <div
@@ -327,7 +327,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                   value={deliveryNote}
                   onChange={(e) => setDeliveryNote(e.target.value)}
                   placeholder="Gate code, landmark, calling instructions..."
-                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#0286FF]"
+                  className="w-full px-3 py-2 rounded-xl border border-white/10 text-xs font-JakartaMedium text-white bg-white/[0.04] focus:outline-none focus:border-[#9EE6B5]"
                 />
               </div>
             </div>
@@ -337,7 +337,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
               <div>
                 <span className="text-[10px] font-JakartaBold text-neutral-400 uppercase">Estimated Delivery Fare</span>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-xl font-JakartaBold text-[#0286FF]">
+                  <span className="text-xl font-JakartaBold text-[#9EE6B5]">
                     ₦{estimatedFare.toLocaleString()}
                   </span>
                   <span className="text-[10px] text-neutral-400 font-JakartaMedium">({estimatedKm} km route)</span>
@@ -346,7 +346,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
 
               <button
                 type="submit"
-                className="px-5 py-3 rounded-xl bg-[#0286FF] hover:bg-blue-500 active:scale-95 text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all flex items-center gap-1.5"
+                className="px-5 py-3 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-95 text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_18px_rgba(158,230,181,0.4)] transition-all flex items-center gap-1.5"
               >
                 <Truck className="w-4 h-4" />
                 <span>Dispatch Rider</span>
@@ -374,7 +374,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
 
                 <div className="space-y-2 text-xs">
                   <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#0286FF] mt-1 shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-[#9EE6B5] mt-1 shrink-0" />
                     <div>
                       <span className="text-[10px] text-neutral-400 uppercase block">Pickup</span>
                       <p className="text-white font-JakartaMedium">{parcel.pickupAddress}</p>
@@ -392,7 +392,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                 {parcel.courier && (
                   <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-[#0286FF]/20 text-[#0286FF] flex items-center justify-center font-bold text-xs">
+                      <div className="w-8 h-8 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] flex items-center justify-center font-bold text-xs">
                         SG
                       </div>
                       <div>
@@ -402,7 +402,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                     </div>
                     <a
                       href={`tel:${parcel.courier.phone}`}
-                      className="px-3 py-1.5 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-JakartaBold hover:bg-blue-500/25 transition-all flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-lg bg-[#9EE6B5]/15 border border-[#9EE6B5]/30 text-[#9EE6B5] text-xs font-JakartaBold hover:bg-[#9EE6B5]/25 transition-all flex items-center gap-1"
                     >
                       <Phone className="w-3 h-3" />
                       <span>Call</span>
@@ -421,7 +421,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                 </p>
                 <button
                   onClick={() => setActiveTab('send')}
-                  className="mt-3 px-4 py-2 rounded-xl bg-[#0286FF] text-white text-xs font-JakartaBold shadow-md"
+                  className="mt-3 px-4 py-2 rounded-xl bg-[#9EE6B5] text-black font-extrabold text-xs font-JakartaBold shadow-md"
                 >
                   Send a Package
                 </button>

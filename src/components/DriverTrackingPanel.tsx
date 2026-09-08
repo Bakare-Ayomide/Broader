@@ -140,7 +140,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
         {rideStatus !== 'ride_completed' && (
           <button
             onClick={advanceRideLifecycle}
-            className="px-2.5 py-1 rounded-full bg-blue-500/15 hover:bg-blue-500/25 text-[#0286FF] text-[11px] font-JakartaBold flex items-center gap-1 transition-all border border-blue-500/30"
+            className="px-2.5 py-1 rounded-full bg-[#9EE6B5]/15 hover:bg-[#9EE6B5]/25 text-[#9EE6B5] text-[11px] font-JakartaBold flex items-center gap-1 transition-all border border-[#9EE6B5]/30"
             title="Advance to next trip status"
           >
             <span>
@@ -196,27 +196,27 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
               className="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]"
             />
           </div>
-          <span className="text-sm font-JakartaBold text-[#0286FF]">
+          <span className="text-sm font-JakartaBold text-[#9EE6B5]">
             ₦{activeTrip.fare.toLocaleString()}
           </span>
-          <span className="text-[9px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded uppercase mt-0.5">
+          <span className="text-[9px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 border border-[#9EE6B5]/30 px-1.5 py-0.5 rounded uppercase mt-0.5">
             {activeTrip.paymentMethod.toUpperCase()}
           </span>
         </div>
       </div>
 
       {/* Safety Ride PIN Verification Banner - Frosted Glass */}
-      <div className="py-2.5 px-3 bg-blue-500/10 border border-blue-500/25 rounded-2xl my-2 flex items-center justify-between">
+      <div className="py-2.5 px-3 bg-[#9EE6B5]/10 border border-[#9EE6B5]/25 rounded-2xl my-2 flex items-center justify-between">
         <div>
-          <span className="text-[10px] font-JakartaBold text-blue-400 uppercase tracking-wider block">
+          <span className="text-[10px] font-JakartaBold text-[#9EE6B5] uppercase tracking-wider block">
             Trip Safety PIN
           </span>
           <p className="text-[11px] text-neutral-300 font-JakartaMedium">
             Share with driver to start ride
           </p>
         </div>
-        <div className="flex items-center gap-1.5 bg-black/60 border border-blue-400/40 px-3 py-1 rounded-xl shadow-lg">
-          <span className="text-base font-JakartaExtraBold font-mono text-[#0286FF] tracking-widest">
+        <div className="flex items-center gap-1.5 bg-black/60 border border-[#9EE6B5]/40 px-3 py-1 rounded-xl shadow-lg">
+          <span className="text-base font-JakartaExtraBold font-mono text-[#9EE6B5] tracking-widest">
             {activeTrip.ridePin || '4921'}
           </span>
         </div>
@@ -233,8 +233,8 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
       {/* Pickup & Destination Locations */}
       <div className="py-2.5 space-y-2 border-b border-white/[0.06] text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#0286FF]" />
+          <div className="w-4 h-4 rounded-full bg-[#9EE6B5]/20 border border-[#9EE6B5]/40 flex items-center justify-center shrink-0">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#9EE6B5]" />
           </div>
           <span className="font-JakartaMedium text-neutral-300 truncate">
             {activeTrip.pickup.address}
@@ -260,7 +260,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
             className="flex flex-col items-center justify-center py-2 rounded-2xl glass-panel hover:bg-white/10 active:scale-95 text-neutral-300 hover:text-white transition-all border border-white/[0.08]"
             title="Call driver"
           >
-            <Phone className="w-4 h-4 text-[#0286FF]" />
+            <Phone className="w-4 h-4 text-[#9EE6B5]" />
             <span className="text-[10px] font-JakartaSemiBold mt-1">Call</span>
           </button>
 
@@ -273,7 +273,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
             className="flex flex-col items-center justify-center py-2 rounded-2xl glass-panel hover:bg-white/10 active:scale-95 text-neutral-300 hover:text-white transition-all border border-white/[0.08]"
             title="Chat with driver"
           >
-            <MessageSquare className="w-4 h-4 text-[#0286FF]" />
+            <MessageSquare className="w-4 h-4 text-[#9EE6B5]" />
             <span className="text-[10px] font-JakartaSemiBold mt-1">Chat</span>
           </button>
 
@@ -358,7 +358,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
                     }}
                     className={`px-2.5 py-1 rounded-full text-[10px] font-JakartaSemiBold transition-all ${
                       isSelected
-                        ? 'bg-blue-500/20 text-[#0286FF] border border-blue-500/30'
+                        ? 'bg-[#9EE6B5]/20 text-[#9EE6B5] border border-[#9EE6B5]/40'
                         : 'glass-panel text-neutral-400 hover:text-white border border-white/10'
                     }`}
                   >
@@ -379,7 +379,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
                   onClick={() => setTipAmount(tip)}
                   className={`py-1.5 rounded-xl text-[10px] font-JakartaBold border transition-all ${
                     tipAmount === tip
-                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm'
+                      ? 'bg-[#9EE6B5]/20 text-[#9EE6B5] border-[#9EE6B5]/50 shadow-sm'
                       : 'glass-panel text-neutral-300 border-white/10 hover:bg-white/5'
                   }`}
                 >
@@ -394,7 +394,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
               cancelActiveTrip();
               setScreen('rides');
             }}
-            className="w-full mt-2 py-3 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_16px_rgba(2,134,255,0.4)] transition-all"
+            className="w-full mt-2 py-3 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-JakartaBold text-xs shadow-[0_0_20px_rgba(158,230,181,0.4)] transition-all font-extrabold"
           >
             Submit Review & Done
           </button>

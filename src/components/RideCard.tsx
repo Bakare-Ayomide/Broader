@@ -43,7 +43,7 @@ export const RideCard: React.FC<RideCardProps> = ({ ride, onPress }) => {
             referrerPolicy="no-referrer"
             className="w-full h-full object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]"
           />
-          <div className="absolute bottom-0 right-0 px-1.5 py-0.5 rounded-full bg-black/80 text-[8px] font-JakartaBold text-blue-400 border border-white/10 shadow-xs">
+          <div className="absolute bottom-0 right-0 px-1.5 py-0.5 rounded-full bg-black/80 text-[8px] font-JakartaBold text-[#9EE6B5] border border-white/10 shadow-xs">
             3D
           </div>
         </div>
@@ -51,8 +51,8 @@ export const RideCard: React.FC<RideCardProps> = ({ ride, onPress }) => {
         {/* Origin & Destination route points */}
         <div className="flex flex-col justify-between flex-1 min-w-0 py-0.5 gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#0286FF]" />
+            <div className="w-4 h-4 rounded-full bg-[#9EE6B5]/20 border border-[#9EE6B5]/40 flex items-center justify-center shrink-0">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#9EE6B5]" />
             </div>
             <p className="text-xs font-JakartaSemiBold text-neutral-200 truncate" title={ride.origin_address}>
               {ride.origin_address}
@@ -95,7 +95,7 @@ export const RideCard: React.FC<RideCardProps> = ({ ride, onPress }) => {
 
         <div className="flex items-center justify-between pt-1.5 border-t border-white/[0.06]">
           <span className="text-neutral-400 font-JakartaMedium">Payment</span>
-          <span className="font-JakartaBold text-emerald-400 uppercase tracking-wider text-[11px] bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/30">
+          <span className="font-JakartaBold text-[#9EE6B5] uppercase tracking-wider text-[11px] bg-[#9EE6B5]/10 px-2 py-0.5 rounded-md border border-[#9EE6B5]/30">
             {ride.payment_status} • {formattedPrice}
           </span>
         </div>

@@ -99,7 +99,7 @@ export const DriverSafetyModal: React.FC<DriverSafetyModalProps> = ({
                     <p className="text-[10px] text-neutral-400">Toll-free Police, Fire, LASEMA</p>
                   </div>
                 </div>
-                <span className="text-xs font-JakartaBold text-[#0286FF]">Call</span>
+                <span className="text-xs font-JakartaBold text-[#9EE6B5]">Call</span>
               </a>
 
               <a
@@ -107,7 +107,7 @@ export const DriverSafetyModal: React.FC<DriverSafetyModalProps> = ({
                 className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#0286FF] text-white flex items-center justify-center shadow-[0_0_8px_rgba(2,134,255,0.4)]">
+                  <div className="w-8 h-8 rounded-lg bg-[#9EE6B5] text-black flex items-center justify-center shadow-[0_0_8px_rgba(158,230,181,0.4)]">
                     <ShieldAlert className="w-4 h-4" />
                   </div>
                   <div>
@@ -115,7 +115,7 @@ export const DriverSafetyModal: React.FC<DriverSafetyModalProps> = ({
                     <p className="text-[10px] text-neutral-400">+234 800 BROADER (276 2337)</p>
                   </div>
                 </div>
-                <span className="text-xs font-JakartaBold text-[#0286FF]">Call</span>
+                <span className="text-xs font-JakartaBold text-[#9EE6B5]">Call</span>
               </a>
 
               <button

@@ -82,7 +82,7 @@ export const ChatScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowCallModal(true)}
-            className="w-8 h-8 rounded-full bg-blue-500/15 hover:bg-blue-500/25 flex items-center justify-center text-[#0286FF] transition-colors border border-blue-500/30"
+            className="w-8 h-8 rounded-full bg-[#9EE6B5]/15 hover:bg-[#9EE6B5]/25 flex items-center justify-center text-[#9EE6B5] transition-colors border border-[#9EE6B5]/30"
             title="In-app voice call"
           >
             <Phone className="w-3.5 h-3.5" />
@@ -105,7 +105,7 @@ export const ChatScreen: React.FC = () => {
           if (isSupport) {
             return (
               <div key={msg.id} className="flex justify-center">
-                <div className="bg-blue-500/15 border border-blue-500/30 rounded-2xl p-2.5 text-center max-w-xs text-xs text-blue-300">
+                <div className="bg-[#9EE6B5]/15 border border-[#9EE6B5]/30 rounded-2xl p-2.5 text-center max-w-xs text-xs text-[#9EE6B5]">
                   <p className="font-JakartaMedium">{msg.text}</p>
                 </div>
               </div>
@@ -120,7 +120,7 @@ export const ChatScreen: React.FC = () => {
               <div
                 className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed font-JakartaMedium shadow-xs ${
                   isUser
-                    ? 'bg-[#0286FF] text-white rounded-br-xs shadow-[0_0_12px_rgba(2,134,255,0.3)]'
+                    ? 'bg-[#9EE6B5] text-black font-extrabold rounded-br-xs shadow-[0_0_12px_rgba(158,230,181,0.3)]'
                     : 'glass-panel text-neutral-200 border border-white/10 rounded-bl-xs'
                 }`}
               >
@@ -158,12 +158,12 @@ export const ChatScreen: React.FC = () => {
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Message driver..."
-          className="flex-1 py-2.5 px-4 bg-white/[0.05] border border-white/10 rounded-full text-xs font-JakartaMedium text-white placeholder-neutral-500 focus:outline-none focus:border-[#0286FF] focus:bg-white/[0.08]"
+          className="flex-1 py-2.5 px-4 bg-white/[0.05] border border-white/10 rounded-full text-xs font-JakartaMedium text-white placeholder-neutral-500 focus:outline-none focus:border-[#9EE6B5] focus:bg-white/[0.08]"
         />
         <button
           type="submit"
           disabled={!inputText.trim()}
-          className="w-9 h-9 rounded-full bg-[#0286FF] disabled:opacity-40 text-white flex items-center justify-center hover:bg-blue-500 transition-all shrink-0 shadow-[0_0_12px_rgba(2,134,255,0.4)]"
+          className="w-9 h-9 rounded-full bg-[#9EE6B5] disabled:opacity-40 text-black font-extrabold flex items-center justify-center hover:bg-[#8fd8a6] transition-all shrink-0 shadow-[0_0_12px_rgba(158,230,181,0.4)]"
         >
           <Send className="w-4 h-4 ml-0.5" />
         </button>
@@ -186,15 +186,15 @@ export const ChatScreen: React.FC = () => {
               <img
                 src={driverPhoto}
                 alt={driverName}
-                className="w-20 h-20 rounded-full object-cover border-2 border-[#0286FF] shadow-xl"
+                className="w-20 h-20 rounded-full object-cover border-2 border-[#9EE6B5] shadow-xl"
               />
               <span className="absolute bottom-0 right-1 w-4 h-4 rounded-full bg-emerald-400 ring-2 ring-black animate-pulse" />
             </div>
 
             <h3 className="text-base font-JakartaBold text-white">{driverName}</h3>
             <p className="text-xs text-neutral-400 font-JakartaMedium mt-0.5">{driverVehicle}</p>
-            <div className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-JakartaSemiBold border border-blue-500/30">
-              <ShieldCheck className="w-3 h-3 text-blue-400" />
+            <div className="inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] text-[10px] font-JakartaSemiBold border border-[#9EE6B5]/30">
+              <ShieldCheck className="w-3 h-3 text-[#9EE6B5]" />
               <span>Masked Private VoIP Call</span>
             </div>
 
@@ -222,7 +222,7 @@ export const ChatScreen: React.FC = () => {
               <button
                 onClick={() => setIsSpeaker(!isSpeaker)}
                 className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                  isSpeaker ? 'bg-[#0286FF] text-white shadow-[0_0_12px_rgba(2,134,255,0.4)]' : 'bg-white/10 text-neutral-300 hover:bg-white/20'
+                  isSpeaker ? 'bg-[#9EE6B5] text-black shadow-[0_0_12px_rgba(158,230,181,0.4)]' : 'bg-white/10 text-neutral-300 hover:bg-white/20'
                 }`}
                 title="Speaker"
               >

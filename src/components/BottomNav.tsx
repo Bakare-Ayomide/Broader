@@ -34,7 +34,7 @@ export const BottomNav: React.FC = () => {
               <div
                 className={`rounded-xl w-10 h-10 flex items-center justify-center transition-all ${
                   focused
-                    ? 'bg-[#0286FF] text-white shadow-[0_0_16px_rgba(2,134,255,0.6)]'
+                    ? 'bg-[#9EE6B5] text-[#020408] shadow-[0_0_16px_rgba(158,230,181,0.6)] font-bold'
                     : 'bg-transparent text-neutral-400 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >

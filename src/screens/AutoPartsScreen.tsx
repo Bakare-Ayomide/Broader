@@ -144,7 +144,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
           </button>
           <div>
             <div className="flex items-center gap-1.5">
-              <Wrench className="w-3.5 h-3.5 text-[#0286FF]" />
+              <Wrench className="w-3.5 h-3.5 text-[#9EE6B5]" />
               <h2 className="text-sm font-JakartaBold text-white leading-none">Broader Auto Parts & Spares</h2>
             </div>
             <p className="text-[11px] text-neutral-400 font-JakartaMedium mt-0.5">
@@ -176,7 +176,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search battery, brake pads, oil, shock absorbers..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF]/60 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all"
           />
         </div>
 
@@ -198,7 +198,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-JakartaSemiBold whitespace-nowrap transition-all border ${
                 activeCategory === cat.id
-                  ? 'bg-[#0286FF] text-white border-[#0286FF] shadow-[0_0_12px_rgba(2,134,255,0.4)]'
+                  ? 'bg-[#9EE6B5] text-black font-extrabold border-[#9EE6B5] shadow-[0_0_12px_rgba(158,230,181,0.4)]'
                   : 'bg-white/[0.04] text-neutral-400 border-white/[0.08] hover:bg-white/[0.08]'
               }`}
             >
@@ -208,9 +208,9 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
         </div>
 
         {/* Guarantee Banner */}
-        <div className="p-3 rounded-2xl bg-gradient-to-r from-blue-950/40 via-[#0286FF]/10 to-transparent border border-[#0286FF]/25 flex items-center justify-between">
+        <div className="p-3 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-[#9EE6B5]/10 to-transparent border border-[#9EE6B5]/25 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#0286FF]/20 border border-[#0286FF]/30 flex items-center justify-center text-[#0286FF]">
+            <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/20 border border-[#9EE6B5]/30 flex items-center justify-center text-[#9EE6B5]">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
@@ -272,7 +272,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
                     soundEngine.playClick();
                     setSelectedPart(part);
                   }}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#0286FF] hover:bg-blue-500 active:scale-95 text-white font-JakartaBold text-xs shadow-md transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-95 text-black font-extrabold font-JakartaBold text-xs shadow-md transition-all flex items-center gap-1.5"
                 >
                   <ShoppingCart className="w-3 h-3" />
                   <span>Order Part</span>
@@ -299,7 +299,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
           <div className="glass-panel w-full max-w-md rounded-3xl p-5 border border-white/15 shadow-2xl text-white animate-in zoom-in-95 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div className="flex items-center gap-2">
-                <Wrench className="w-4 h-4 text-[#0286FF]" />
+                <Wrench className="w-4 h-4 text-[#9EE6B5]" />
                 <h3 className="text-sm font-JakartaBold text-white">Confirm Auto Part Order</h3>
               </div>
               <button
@@ -321,7 +321,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
             {/* Delivery Details */}
             <div className="p-3 bg-white/[0.03] rounded-2xl border border-white/[0.08] space-y-2 text-xs">
               <div className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 text-[#0286FF] mt-0.5 shrink-0" />
+                <MapPin className="w-3.5 h-3.5 text-[#9EE6B5] mt-0.5 shrink-0" />
                 <div>
                   <span className="text-[10px] text-neutral-400 font-JakartaBold uppercase">Delivery Location</span>
                   <p className="text-white font-JakartaMedium">{userAddress || 'Victoria Island, Lagos'}</p>
@@ -333,7 +333,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
               </div>
               <div className="flex items-center justify-between pt-1">
                 <span className="text-neutral-400">Total Price</span>
-                <span className="text-sm font-JakartaBold text-[#0286FF]">
+                <span className="text-sm font-JakartaBold text-[#9EE6B5]">
                   ₦{selectedPart.priceNaira.toLocaleString()}
                 </span>
               </div>
@@ -349,7 +349,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
               </button>
               <button
                 onClick={() => handleOrderPart(selectedPart)}
-                className="flex-1 py-2.5 rounded-xl bg-[#0286FF] hover:bg-blue-500 text-xs font-JakartaBold text-white shadow-[0_0_15px_rgba(2,134,255,0.4)] flex items-center justify-center gap-1.5"
+                className="flex-1 py-2.5 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-xs font-JakartaBold text-black font-extrabold shadow-[0_0_15px_rgba(158,230,181,0.4)] flex items-center justify-center gap-1.5"
               >
                 <Truck className="w-3.5 h-3.5" />
                 <span>Confirm & Dispatch</span>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
 import { Phone, Mail, Lock, AlertCircle, CheckCircle2, KeyRound, ArrowLeft, X, Sparkles } from 'lucide-react';
 import { soundEngine } from '../services/soundNotification';
+import { BroaderLogo } from '../components/BroaderLogo';
 
 export const SignInScreen: React.FC = () => {
   const setScreen = useBroaderStore((s) => s.setScreen);
@@ -95,8 +96,8 @@ export const SignInScreen: React.FC = () => {
   return (
     <div className="flex flex-col min-h-full bg-[#020408] text-white select-none relative overflow-hidden">
       {/* Ambient background glows */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-[#0286FF]/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-80 h-80 bg-[#9EE6B5]/15 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#9EE6B5]/10 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header Banner Image */}
       <div className="relative w-full h-[180px] bg-black overflow-hidden shrink-0">
@@ -106,9 +107,12 @@ export const SignInScreen: React.FC = () => {
           className="w-full h-full object-cover object-center opacity-85"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020408] via-black/40 to-transparent" />
+        <div className="absolute top-4 left-5 z-20">
+          <BroaderLogo className="h-6 w-auto" />
+        </div>
         <div className="absolute bottom-3 left-5 right-5 flex items-end justify-between">
           <div>
-            <div className="flex items-center gap-1.5 text-xs text-[#0286FF] font-JakartaBold mb-0.5">
+            <div className="flex items-center gap-1.5 text-xs text-[#9EE6B5] font-JakartaBold mb-0.5">
               <Sparkles className="w-3.5 h-3.5" />
               <span>NIGERIA URBAN MOBILITY</span>
             </div>

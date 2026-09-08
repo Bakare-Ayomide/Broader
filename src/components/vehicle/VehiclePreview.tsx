@@ -28,10 +28,10 @@ export const VehiclePreview: React.FC<VehiclePreviewProps> = ({
       {/* 3D Showcase Stage with Ambient Floor Glow */}
       <div className="relative w-full h-44 flex items-center justify-center overflow-hidden">
         {/* Radial Stage Spotlight */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(2,134,255,0.18)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(158,230,181,0.18)_0%,transparent_70%)] pointer-events-none" />
 
         {/* Ambient Floor Platform Disc */}
-        <div className="absolute bottom-4 w-44 h-8 bg-gradient-to-r from-transparent via-[#0286FF]/25 to-transparent rounded-[100%] blur-[4px] pointer-events-none" />
+        <div className="absolute bottom-4 w-44 h-8 bg-gradient-to-r from-transparent via-[#9EE6B5]/30 to-transparent rounded-[100%] blur-[4px] pointer-events-none" />
 
         {/* Contact Road Shadow */}
         <div className="absolute bottom-6 w-36 h-3.5 bg-black/90 rounded-full blur-[2px] pointer-events-none" />
@@ -59,7 +59,7 @@ export const VehiclePreview: React.FC<VehiclePreviewProps> = ({
         </AnimatePresence>
 
         {/* Floating Specular Sparkle Badges */}
-        <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[9px] font-JakartaBold text-cyan-300">
+        <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[9px] font-JakartaBold text-[#9EE6B5]">
           <Sparkles className="w-2.5 h-2.5" />
           <span>Full 3D Model</span>
         </div>
@@ -88,14 +88,14 @@ export const VehiclePreview: React.FC<VehiclePreviewProps> = ({
             <span className="text-[9px] text-neutral-400 font-JakartaMedium block uppercase">
               Speed Rate
             </span>
-            <span className="text-xs font-mono font-bold text-cyan-400">{spec.speed}</span>
+            <span className="text-xs font-mono font-bold text-[#9EE6B5]">{spec.speed}</span>
           </div>
 
           <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-center">
             <span className="text-[9px] text-neutral-400 font-JakartaMedium block uppercase">
               Luggage
             </span>
-            <span className="text-xs font-mono font-bold text-emerald-400">{spec.luggage}</span>
+            <span className="text-xs font-mono font-bold text-[#9EE6B5]">{spec.luggage}</span>
           </div>
         </div>
       )}

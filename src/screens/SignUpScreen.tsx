@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
 import { Phone, Mail, Lock, User, AlertCircle, CheckCircle2, RotateCw, Sparkles, ArrowRight } from 'lucide-react';
 import { soundEngine } from '../services/soundNotification';
+import { BroaderLogo } from '../components/BroaderLogo';
 
 export const SignUpScreen: React.FC = () => {
   const setScreen = useBroaderStore((s) => s.setScreen);
@@ -81,8 +82,8 @@ export const SignUpScreen: React.FC = () => {
   return (
     <div className="flex flex-col min-h-full bg-[#020408] text-white relative select-none overflow-hidden">
       {/* Ambient background glows */}
-      <div className="absolute top-0 left-0 w-80 h-80 bg-[#0286FF]/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-0 w-80 h-80 bg-[#9EE6B5]/15 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#9EE6B5]/10 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header Banner */}
       <div className="relative w-full h-[180px] bg-black overflow-hidden shrink-0">
@@ -92,8 +93,11 @@ export const SignUpScreen: React.FC = () => {
           className="w-full h-full object-cover object-center opacity-85"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020408] via-black/40 to-transparent" />
+        <div className="absolute top-4 left-5 z-20">
+          <BroaderLogo className="h-6 w-auto" />
+        </div>
         <div className="absolute bottom-3 left-5 right-5">
-          <div className="flex items-center gap-1.5 text-xs text-[#0286FF] font-JakartaBold mb-0.5">
+          <div className="flex items-center gap-1.5 text-xs text-[#9EE6B5] font-JakartaBold mb-0.5">
             <Sparkles className="w-3.5 h-3.5" />
             <span>CREATE YOUR ACCOUNT</span>
           </div>
@@ -124,7 +128,7 @@ export const SignUpScreen: React.FC = () => {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="e.g. Chris Baker"
-                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all"
               />
             </div>
           </div>
@@ -144,7 +148,7 @@ export const SignUpScreen: React.FC = () => {
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                 placeholder="803 123 4567"
-                className="w-full pl-16 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaBold text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all tracking-wide"
+                className="w-full pl-16 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaBold text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all tracking-wide"
               />
             </div>
           </div>
@@ -161,7 +165,7 @@ export const SignUpScreen: React.FC = () => {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="name@domain.ng"
-                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all"
               />
             </div>
           </div>
@@ -178,14 +182,14 @@ export const SignUpScreen: React.FC = () => {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Create secure password"
-                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#0286FF] transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#9EE6B5] transition-all"
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full mt-3 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 active:scale-[0.98] text-white font-JakartaBold text-xs shadow-[0_0_18px_rgba(2,134,255,0.4)] transition-all"
+            className="w-full mt-3 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-[0.98] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_18px_rgba(158,230,181,0.4)] transition-all"
           >
             Create Broader Account
           </button>
@@ -199,7 +203,7 @@ export const SignUpScreen: React.FC = () => {
                 soundEngine.playClick();
                 setScreen('sign-in');
               }}
-              className="text-[#0286FF] font-JakartaBold hover:underline ml-1"
+              className="text-[#9EE6B5] font-JakartaBold hover:underline ml-1"
             >
               Log In
             </button>
@@ -222,7 +226,7 @@ export const SignUpScreen: React.FC = () => {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 maxLength={6}
-                className="w-full text-center tracking-[0.35em] text-2xl font-JakartaBold py-2.5 bg-white/[0.06] rounded-2xl border border-white/15 text-white focus:outline-none focus:border-[#0286FF]"
+                className="w-full text-center tracking-[0.35em] text-2xl font-JakartaBold py-2.5 bg-white/[0.06] rounded-2xl border border-white/15 text-white focus:outline-none focus:border-[#9EE6B5]"
               />
             </div>
 
@@ -236,7 +240,7 @@ export const SignUpScreen: React.FC = () => {
                   setResendTimer(60);
                 }}
                 className={`font-JakartaBold ${
-                  resendTimer === 0 ? 'text-[#0286FF] hover:underline' : 'text-neutral-600 cursor-not-allowed'
+                  resendTimer === 0 ? 'text-[#9EE6B5] hover:underline' : 'text-neutral-600 cursor-not-allowed'
                 }`}
               >
                 Resend OTP
@@ -245,7 +249,7 @@ export const SignUpScreen: React.FC = () => {
 
             <button
               onClick={handleVerify}
-              className="w-full py-3 rounded-xl bg-[#0286FF] text-white font-JakartaBold text-xs hover:bg-blue-500 transition-all shadow-[0_0_15px_rgba(2,134,255,0.4)]"
+              className="w-full py-3 rounded-xl bg-[#9EE6B5] text-black font-extrabold font-JakartaBold text-xs hover:bg-[#8fd8a6] transition-all shadow-[0_0_15px_rgba(158,230,181,0.4)]"
             >
               Verify & Complete Registration
             </button>
@@ -267,7 +271,7 @@ export const SignUpScreen: React.FC = () => {
 
             <button
               onClick={handleFinishSuccess}
-              className="w-full mt-5 py-3 rounded-xl bg-[#0286FF] text-white font-JakartaBold text-xs hover:bg-blue-500 transition-all shadow-[0_0_15px_rgba(2,134,255,0.4)]"
+              className="w-full mt-5 py-3 rounded-xl bg-[#9EE6B5] text-black font-extrabold font-JakartaBold text-xs hover:bg-[#8fd8a6] transition-all shadow-[0_0_15px_rgba(158,230,181,0.4)]"
             >
               Enter Application
             </button>

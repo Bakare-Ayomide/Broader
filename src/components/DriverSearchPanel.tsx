@@ -105,9 +105,9 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
       {/* Header with Radar Icon & Status */}
       <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-3">
-          <div className="relative w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-[#0286FF]">
+          <div className="relative w-10 h-10 rounded-full bg-[#9EE6B5]/10 border border-[#9EE6B5]/30 flex items-center justify-center text-[#9EE6B5]">
             <Radar className="w-5 h-5 animate-spin" style={{ animationDuration: '3s' }} />
-            <span className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-[#0286FF] ring-2 ring-black animate-ping" />
+            <span className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-[#9EE6B5] ring-2 ring-black animate-ping" />
           </div>
           <div>
             <h3 className="text-base font-JakartaBold text-white">Finding your ride</h3>
@@ -139,7 +139,7 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
             />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] font-JakartaBold uppercase tracking-wider text-blue-400">
+            <span className="text-[10px] font-JakartaBold uppercase tracking-wider text-[#9EE6B5]">
               Requested Vehicle
             </span>
             <p className="font-JakartaBold text-white text-sm truncate">{vehicle.name}</p>
@@ -163,7 +163,7 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
             <Clock className="w-3 h-3 text-neutral-400" />
             Searching: 00:{secondsElapsed.toString().padStart(2, '0')}
           </span>
-          <span className="text-[11px] font-JakartaSemiBold text-blue-400">
+          <span className="text-[11px] font-JakartaSemiBold text-[#9EE6B5]">
             Radius: ~3.5 km
           </span>
         </div>
@@ -172,7 +172,7 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
       {/* Progress Bar Animation */}
       <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden mb-4 border border-white/5">
         <div
-          className="h-full bg-gradient-to-r from-[#0286FF] to-sky-400 rounded-full transition-all duration-300 shadow-[0_0_10px_#0286FF]"
+          className="h-full bg-gradient-to-r from-[#9EE6B5] to-emerald-400 rounded-full transition-all duration-300 shadow-[0_0_10px_#9EE6B5]"
           style={{ width: `${Math.min(100, (secondsElapsed / 5) * 100)}%` }}
         />
       </div>
@@ -190,7 +190,7 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
         <button
           type="button"
           onClick={handleInstantMatch}
-          className="flex-1 py-3 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_16px_rgba(2,134,255,0.4)] transition-all text-center flex items-center justify-center gap-1.5"
+          className="flex-1 py-3 rounded-full bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-JakartaBold text-xs font-extrabold shadow-[0_0_18px_rgba(158,230,181,0.4)] transition-all text-center flex items-center justify-center gap-1.5"
         >
           <Zap className="w-3.5 h-3.5" />
           <span>Instant Match</span>

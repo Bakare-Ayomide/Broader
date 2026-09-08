@@ -105,7 +105,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
       {/* 1. HERO 3D VEHICLE SPOTLIGHT VISUAL FOCUS */}
       <div className="relative w-full rounded-2xl bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 p-3.5 mb-3 backdrop-blur-2xl overflow-hidden shadow-2xl">
         {/* Soft radial ambient floor glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-28 bg-[#0286FF]/15 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-28 bg-[#9EE6B5]/15 rounded-full blur-2xl pointer-events-none" />
 
         {/* Animated 3D Vehicle Render Showcase */}
         <div className="relative w-full h-32 flex items-center justify-center">
@@ -139,7 +139,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
               <h3 className="text-sm font-JakartaBold text-white tracking-tight">
                 {currentOption.name}
               </h3>
-              <span className="text-[9px] font-JakartaBold px-1.5 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/30 text-blue-400">
+              <span className="text-[9px] font-JakartaBold px-1.5 py-0.5 rounded-md bg-[#9EE6B5]/15 border border-[#9EE6B5]/30 text-[#9EE6B5]">
                 {currentSpec.tag}
               </span>
             </div>
@@ -149,7 +149,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
                 {currentOption.capacity || `${currentSpec.seats} seats`}
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1 text-emerald-400 font-JakartaBold">
+              <span className="flex items-center gap-1 text-[#9EE6B5] font-JakartaBold">
                 <Clock className="w-3 h-3" />
                 {currentOption.etaMinutes || currentSpec.etaMinutes} min away
               </span>
@@ -159,7 +159,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
           {/* Large Estimated Price */}
           <div className="text-right">
             <span className="text-[10px] text-neutral-400 font-JakartaMedium block">Estimated Fare</span>
-            <span className="text-base font-JakartaExtraBold text-white tracking-tight text-[#0286FF]">
+            <span className="text-base font-JakartaExtraBold tracking-tight text-[#9EE6B5]">
               ₦{currentOption.price.toLocaleString()}
             </span>
           </div>
@@ -218,7 +218,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
       <div className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1">
         {loading && vehicleOptions.length === 0 ? (
           <div className="py-8 flex flex-col items-center justify-center text-neutral-400 gap-2">
-            <div className="w-5 h-5 border-2 border-[#0286FF] border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-[#9EE6B5] border-t-transparent rounded-full animate-spin" />
             <span className="text-xs font-JakartaMedium">Updating live fleet availability...</span>
           </div>
         ) : (
@@ -233,7 +233,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
                 onClick={() => handleSelect(opt)}
                 className={`flex items-center justify-between p-2.5 rounded-2xl transition-all cursor-pointer backdrop-blur-xl group ${
                   isSelected
-                    ? 'bg-[#0286FF]/10 border border-[#0286FF]/60 shadow-[0_0_20px_rgba(2,134,255,0.2)]'
+                    ? 'bg-[#9EE6B5]/10 border border-[#9EE6B5]/60 shadow-[0_0_20px_rgba(158,230,181,0.2)]'
                     : 'glass-panel glass-panel-hover border-white/[0.08]'
                 }`}
               >
@@ -245,7 +245,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
                     alt={opt.name}
                     referrerPolicy="no-referrer"
                     className={`w-full h-full object-contain transition-transform group-hover:scale-110 ${
-                      isSelected ? 'scale-110 drop-shadow-[0_4px_10px_rgba(2,134,255,0.4)]' : ''
+                      isSelected ? 'scale-110 drop-shadow-[0_4px_10px_rgba(158,230,181,0.4)]' : ''
                     }`}
                   />
                 </div>
@@ -257,7 +257,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
                       {opt.name}
                     </span>
                     {isSelected && (
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#0286FF] flex items-center justify-center text-white shrink-0 shadow-[0_0_8px_rgba(2,134,255,0.8)]">
+                      <span className="w-3.5 h-3.5 rounded-full bg-[#9EE6B5] flex items-center justify-center text-black shrink-0 shadow-[0_0_8px_rgba(158,230,181,0.8)]">
                         <Check className="w-2 h-2 stroke-[3]" />
                       </span>
                     )}
@@ -266,7 +266,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
                   <div className="flex items-center gap-1.5 mt-0.5 text-[10px] font-JakartaMedium text-neutral-400 truncate">
                     <span>{opt.capacity || `${spec.seats} seats`}</span>
                     <span>•</span>
-                    <span className="text-emerald-400 font-JakartaSemiBold">
+                    <span className="text-[#9EE6B5] font-JakartaSemiBold">
                       {opt.etaMinutes || spec.etaMinutes} min away
                     </span>
                   </div>
@@ -274,7 +274,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
 
                 {/* Price */}
                 <div className="flex flex-col items-end shrink-0 pl-1">
-                  <span className={`text-xs font-JakartaBold ${isSelected ? 'text-[#0286FF]' : 'text-white'}`}>
+                  <span className={`text-xs font-JakartaBold ${isSelected ? 'text-[#9EE6B5]' : 'text-white'}`}>
                     ₦{opt.price.toLocaleString()}
                   </span>
                   <span className="text-[9px] font-JakartaMedium text-neutral-400">

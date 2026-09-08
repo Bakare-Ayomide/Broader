@@ -108,7 +108,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
             <div>
               <h4 className="text-base font-JakartaBold text-white">{passengerName}</h4>
               <p className="text-xs text-neutral-400 font-mono mt-0.5">{passengerPhone}</p>
-              <span className="inline-block mt-2 px-3 py-0.5 rounded-full bg-blue-500/20 text-[#0286FF] border border-blue-500/30 text-[11px] font-JakartaBold">
+              <span className="inline-block mt-2 px-3 py-0.5 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] border border-[#9EE6B5]/30 text-[11px] font-JakartaBold">
                 {callConnected ? `Connected • 00:${callDuration < 10 ? '0' + callDuration : callDuration}` : 'Ringing passenger...'}
               </span>
             </div>
@@ -118,7 +118,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
               {[40, 70, 95, 60, 85, 100, 50, 80, 45].map((h, i) => (
                 <div
                   key={i}
-                  className="w-1 bg-[#0286FF] rounded-full animate-pulse shadow-[0_0_6px_rgba(2,134,255,0.6)]"
+                  className="w-1 bg-[#9EE6B5] rounded-full animate-pulse shadow-[0_0_6px_rgba(158,230,181,0.6)]"
                   style={{ height: `${h}%`, animationDelay: `${i * 100}ms` }}
                 />
               ))}
@@ -156,7 +156,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
                   <div
                     className={`max-w-[85%] px-3 py-2 rounded-2xl ${
                       m.sender === 'driver'
-                        ? 'bg-[#0286FF] text-white rounded-br-xs shadow-[0_0_8px_rgba(2,134,255,0.4)]'
+                        ? 'bg-[#9EE6B5] text-black font-JakartaSemiBold rounded-br-xs shadow-[0_0_8px_rgba(158,230,181,0.4)]'
                         : 'glass-panel text-neutral-100 border border-white/10 rounded-bl-xs shadow-xs'
                     }`}
                   >
@@ -173,7 +173,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
                 <button
                   key={i}
                   onClick={() => handleSendMessage(qr)}
-                  className="shrink-0 px-2.5 py-1 rounded-full bg-blue-500/20 text-[#0286FF] hover:bg-blue-500/30 text-[10px] font-JakartaBold border border-blue-500/30 transition-colors"
+                  className="shrink-0 px-2.5 py-1 rounded-full bg-[#9EE6B5]/20 text-[#9EE6B5] hover:bg-[#9EE6B5]/30 text-[10px] font-JakartaBold border border-[#9EE6B5]/30 transition-colors"
                 >
                   {qr}
                 </button>
@@ -188,11 +188,11 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
                 onChange={(e) => setChatInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Type a message to passenger..."
-                className="flex-1 px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-hidden focus:border-[#0286FF]"
+                className="flex-1 px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-hidden focus:border-[#9EE6B5]"
               />
               <button
                 onClick={() => handleSendMessage()}
-                className="w-10 h-10 rounded-xl bg-[#0286FF] hover:bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(2,134,255,0.4)] transition-colors"
+                className="w-10 h-10 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(158,230,181,0.4)] transition-colors"
               >
                 <Send className="w-4 h-4" />
               </button>

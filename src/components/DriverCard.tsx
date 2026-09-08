@@ -1,6 +1,7 @@
 import React from 'react';
 import { MarkerData } from '../types';
-import { Star, Users, Clock, DollarSign } from 'lucide-react';
+import { Star, Users, Clock } from 'lucide-react';
+import { getVehicle3DImage } from '../data/vehicleAssets';
 
 interface DriverCardProps {
   item: MarkerData;
@@ -9,46 +10,48 @@ interface DriverCardProps {
 }
 
 export const DriverCard: React.FC<DriverCardProps> = ({ item, selected, onSelect }) => {
+  const vehicleImg = item.car_image_url || getVehicle3DImage(item.vehicle_type || (item as any).category);
+
   return (
     <div
       onClick={onSelect}
       className={`flex items-center justify-between p-3.5 rounded-2xl transition-all cursor-pointer mb-3 border ${
         selected
-          ? 'bg-[#E6F3FF] border-[#0286FF] shadow-sm ring-1 ring-[#0286FF]'
-          : 'bg-white border-neutral-200 hover:border-slate-300'
+          ? 'bg-[#9EE6B5]/10 border-[#9EE6B5] shadow-[0_0_15px_rgba(158,230,181,0.25)] ring-1 ring-[#9EE6B5]'
+          : 'bg-black/50 backdrop-blur-xl border-white/10 hover:border-white/20'
       }`}
     >
       {/* Driver Avatar */}
       <img
         src={item.profile_image_url}
         alt={item.title}
-        className="w-13 h-13 rounded-full object-cover border-2 border-white shadow-xs shrink-0"
+        className="w-12 h-12 rounded-full object-cover border border-white/20 shadow-sm shrink-0"
       />
 
       {/* Info Middle */}
       <div className="flex-1 flex flex-col items-start justify-center mx-3 min-w-0">
         <div className="flex items-center gap-1.5 mb-1">
-          <span className="text-base font-JakartaSemiBold text-slate-900 truncate">
+          <span className="text-sm font-JakartaSemiBold text-white truncate">
             {item.title}
           </span>
-          <div className="flex items-center gap-0.5 bg-amber-50 px-1.5 py-0.5 rounded text-amber-700 text-xs font-semibold">
+          <div className="flex items-center gap-0.5 bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.5 rounded text-amber-300 text-xs font-semibold">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             <span>{item.rating}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-JakartaMedium text-slate-500">
-          <span className="font-JakartaBold text-emerald-600 flex items-center">
-            ${item.price || '22.50'}
+        <div className="flex items-center gap-2 text-xs font-JakartaMedium text-neutral-400">
+          <span className="font-mono font-bold text-[#9EE6B5] flex items-center">
+            {item.price?.startsWith('₦') ? item.price : `₦${Number(item.price || 2500).toLocaleString()}`}
           </span>
           <span>•</span>
-          <span className="flex items-center gap-0.5 text-slate-600">
-            <Clock className="w-3 h-3 text-slate-400" />
+          <span className="flex items-center gap-0.5 text-neutral-300">
+            <Clock className="w-3 h-3 text-neutral-400" />
             {item.time || 4} mins
           </span>
           <span>•</span>
-          <span className="flex items-center gap-0.5 text-slate-600">
-            <Users className="w-3 h-3 text-slate-400" />
+          <span className="flex items-center gap-0.5 text-neutral-300">
+            <Users className="w-3 h-3 text-neutral-400" />
             {item.car_seats} seats
           </span>
         </div>
@@ -57,9 +60,9 @@ export const DriverCard: React.FC<DriverCardProps> = ({ item, selected, onSelect
       {/* Car Vehicle Preview */}
       <div className="w-14 h-12 flex items-center justify-center shrink-0">
         <img
-          src={item.car_image_url}
-          alt="Car"
-          className="w-full h-full object-contain drop-shadow-xs"
+          src={vehicleImg}
+          alt={item.car_model || 'Vehicle'}
+          className="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
         />
       </div>
     </div>

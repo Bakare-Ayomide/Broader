@@ -37,10 +37,10 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
     <GlassCard
       interactive={true}
       selected={selected}
-      glow={selected ? 'blue' : 'none'}
+      glow={selected ? 'green' : 'none'}
       onClick={onSelect}
       className={`p-3.5 transition-all duration-300 ${
-        selected ? 'bg-[#0286FF]/10 border-[#0286FF] shadow-[0_0_20px_rgba(2,134,255,0.25)]' : ''
+        selected ? 'bg-[#9EE6B5]/10 border-[#9EE6B5] shadow-[0_0_20px_rgba(158,230,181,0.25)]' : ''
       }`}
     >
       <div className="flex items-center gap-3.5">
@@ -51,7 +51,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
           {/* Selected Animated Aura */}
           {selected && (
-            <div className="absolute inset-0 rounded-full bg-[#0286FF]/20 blur-md animate-pulse pointer-events-none" />
+            <div className="absolute inset-0 rounded-full bg-[#9EE6B5]/20 blur-md animate-pulse pointer-events-none" />
           )}
 
           <motion.img
@@ -63,7 +63,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           />
 
           {/* 3D Model Badge */}
-          <div className="absolute bottom-0 right-0 px-1 py-0.2 rounded-full bg-black/80 text-[7px] font-mono font-bold text-cyan-400 border border-white/10 shadow-xs">
+          <div className="absolute bottom-0 right-0 px-1 py-0.2 rounded-full bg-black/80 text-[7px] font-mono font-bold text-[#9EE6B5] border border-white/10 shadow-xs">
             3D
           </div>
         </div>
@@ -73,7 +73,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           <div className="flex items-center gap-1.5 flex-wrap">
             <h4 className="text-xs font-JakartaBold text-white truncate">{name}</h4>
             {tag && (
-              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-JakartaBold bg-blue-500/20 text-blue-300 border border-blue-400/30">
+              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-JakartaBold bg-[#9EE6B5]/15 text-[#9EE6B5] border border-[#9EE6B5]/30">
                 {tag}
               </span>
             )}
@@ -84,7 +84,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           </p>
 
           <div className="flex items-center gap-2 mt-1 text-[10px] text-neutral-300 font-mono">
-            <span className="flex items-center gap-1 text-emerald-400">
+            <span className="flex items-center gap-1 text-[#9EE6B5]">
               <Clock className="w-3 h-3" />
               <span>{etaMinutes} min away</span>
             </span>
@@ -98,7 +98,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
         {/* Fare Column */}
         <div className="flex flex-col items-end shrink-0 pl-1">
-          <span className="text-sm font-mono font-extrabold text-[#0286FF]">
+          <span className="text-sm font-mono font-extrabold text-[#9EE6B5]">
             ₦{Number(farePrice).toLocaleString()}
           </span>
           <span className="text-[9px] text-neutral-400 font-JakartaMedium">Estimated</span>

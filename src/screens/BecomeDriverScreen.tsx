@@ -187,7 +187,7 @@ export const BecomeDriverScreen: React.FC = () => {
                   setStep(3);
                   setDriverApplicationStatus('draft');
                 }}
-                className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] transition-all"
+                className="w-full py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)] transition-all"
               >
                 Re-upload Documents & Resubmit
               </button>
@@ -231,10 +231,10 @@ export const BecomeDriverScreen: React.FC = () => {
           {/* 4. Draft State */}
           {driverApplication.status === 'draft' && (
             <div className="w-full max-w-sm glass-panel rounded-3xl p-6 border border-white/15 shadow-xl">
-              <div className="w-14 h-14 rounded-full bg-blue-500/15 text-[#0286FF] flex items-center justify-center mx-auto mb-3 border border-blue-500/25">
+              <div className="w-14 h-14 rounded-full bg-[#9EE6B5]/15 text-[#9EE6B5] flex items-center justify-center mx-auto mb-3 border border-[#9EE6B5]/25">
                 <FileText className="w-8 h-8" />
               </div>
-              <span className="text-[10px] font-JakartaBold text-[#0286FF] bg-blue-500/10 border border-blue-500/25 px-2.5 py-0.5 rounded-full uppercase">
+              <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 border border-[#9EE6B5]/25 px-2.5 py-0.5 rounded-full uppercase">
                 Saved Draft
               </span>
               <h3 className="text-lg font-JakartaBold text-white mt-2">Continue Your Application</h3>
@@ -244,7 +244,7 @@ export const BecomeDriverScreen: React.FC = () => {
 
               <button
                 onClick={() => setStep(step)}
-                className="w-full mt-4 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] transition-all"
+                className="w-full mt-4 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)] transition-all"
               >
                 Resume Application (Step {step} of 3)
               </button>
@@ -270,7 +270,7 @@ export const BecomeDriverScreen: React.FC = () => {
                   setIsDriverMode(true);
                   setScreen('driver-home');
                 }}
-                className="w-full mt-5 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] transition-all"
+                className="w-full mt-5 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)] transition-all"
               >
                 Launch Driver Dashboard
               </button>
@@ -299,7 +299,7 @@ export const BecomeDriverScreen: React.FC = () => {
         </div>
 
         {/* Step Counter Indicator */}
-        <span className="text-xs font-JakartaBold text-[#0286FF] bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/25">
+        <span className="text-xs font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 px-2.5 py-1 rounded-full border border-[#9EE6B5]/25">
           Step {step} of 3
         </span>
       </div>
@@ -322,7 +322,7 @@ export const BecomeDriverScreen: React.FC = () => {
                 required
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#0286FF] bg-black/60 placeholder-neutral-500"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#9EE6B5] bg-black/60 placeholder-neutral-500"
               />
             </div>
 
@@ -334,17 +334,17 @@ export const BecomeDriverScreen: React.FC = () => {
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaBold text-white focus:outline-none focus:border-[#0286FF] bg-black/60 placeholder-neutral-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaBold text-white focus:outline-none focus:border-[#9EE6B5] bg-black/60 placeholder-neutral-500"
                 />
               </div>
-              <div>
+                <div>
                 <label className="block text-xs font-JakartaSemiBold text-neutral-300 mb-1">State</label>
                 <input
                   type="text"
                   required
                   value={formData.state}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#0286FF] bg-black/60 placeholder-neutral-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#9EE6B5] bg-black/60 placeholder-neutral-500"
                 />
               </div>
             </div>
@@ -356,7 +356,7 @@ export const BecomeDriverScreen: React.FC = () => {
                 required
                 value={formData.residentialAddress}
                 onChange={(e) => setFormData({ ...formData, residentialAddress: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#0286FF] bg-black/60 placeholder-neutral-500"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#9EE6B5] bg-black/60 placeholder-neutral-500"
               />
             </div>
 
@@ -370,7 +370,7 @@ export const BecomeDriverScreen: React.FC = () => {
               </button>
               <button
                 onClick={() => setStep(2)}
-                className="flex-2 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] flex items-center justify-center gap-1 transition-all"
+                className="flex-2 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)] flex items-center justify-center gap-1 transition-all"
               >
                 <span>Continue to Vehicle</span>
                 <ChevronRight className="w-4 h-4" />
@@ -399,7 +399,7 @@ export const BecomeDriverScreen: React.FC = () => {
                     onClick={() => setFormData({ ...formData, vehicleType: cat })}
                     className={`py-2 px-1 rounded-xl text-center capitalize text-xs font-JakartaBold border transition-all ${
                       formData.vehicleType === cat
-                        ? 'bg-[#0286FF] border-[#0286FF] text-white shadow-[0_0_10px_rgba(2,134,255,0.4)]'
+                        ? 'bg-[#9EE6B5] border-[#9EE6B5] text-black font-extrabold shadow-[0_0_10px_rgba(158,230,181,0.4)]'
                         : 'border-white/10 text-neutral-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
@@ -418,7 +418,7 @@ export const BecomeDriverScreen: React.FC = () => {
                   value={formData.vehicleMake}
                   onChange={(e) => setFormData({ ...formData, vehicleMake: e.target.value })}
                   placeholder="e.g. Toyota"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#0286FF] bg-black/60 placeholder-neutral-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#9EE6B5] bg-black/60 placeholder-neutral-500"
                 />
               </div>
               <div>
@@ -429,7 +429,7 @@ export const BecomeDriverScreen: React.FC = () => {
                   value={formData.vehicleModel}
                   onChange={(e) => setFormData({ ...formData, vehicleModel: e.target.value })}
                   placeholder="e.g. Corolla 2019"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#0286FF] bg-black/60 placeholder-neutral-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaMedium text-white focus:outline-none focus:border-[#9EE6B5] bg-black/60 placeholder-neutral-500"
                 />
               </div>
             </div>
@@ -442,7 +442,7 @@ export const BecomeDriverScreen: React.FC = () => {
                 value={formData.plateNumber}
                 onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
                 placeholder="e.g. LND-892-BC"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaBold text-white focus:outline-none focus:border-[#0286FF] bg-black/60 uppercase tracking-wider placeholder-neutral-500"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 text-xs font-JakartaBold text-white focus:outline-none focus:border-[#9EE6B5] bg-black/60 uppercase tracking-wider placeholder-neutral-500"
               />
             </div>
 
@@ -456,13 +456,13 @@ export const BecomeDriverScreen: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="flex-1 py-3 rounded-2xl border border-blue-500/25 bg-blue-500/10 text-[#0286FF] font-JakartaBold text-xs hover:bg-blue-500/20"
+                className="flex-1 py-3 rounded-2xl border border-[#9EE6B5]/25 bg-[#9EE6B5]/10 text-[#9EE6B5] font-JakartaBold text-xs hover:bg-[#9EE6B5]/20"
               >
                 Save Draft
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="flex-2 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] flex items-center justify-center gap-1 transition-all"
+                className="flex-2 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)] flex items-center justify-center gap-1 transition-all"
               >
                 <span>Documents</span>
                 <ChevronRight className="w-4 h-4" />
@@ -533,7 +533,7 @@ export const BecomeDriverScreen: React.FC = () => {
               </button>
               <button
                 type="submit"
-                className="flex-2 py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_14px_rgba(2,134,255,0.4)] transition-all"
+                className="flex-2 py-3 rounded-2xl bg-[#9EE6B5] hover:bg-[#8fd8a6] text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_14px_rgba(158,230,181,0.4)] transition-all"
               >
                 Submit Application
               </button>
