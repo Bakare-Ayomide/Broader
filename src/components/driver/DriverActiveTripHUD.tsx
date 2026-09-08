@@ -41,6 +41,21 @@ export const DriverActiveTripHUD: React.FC = () => {
 
   // Waiting timer for 'driver_arrived'
   const [waitSeconds, setWaitSeconds] = useState(300); // 5 minutes free wait
+  const [enteredPin, setEnteredPin] = useState('');
+  const [pinError, setPinError] = useState<string | null>(null);
+  const [isPinVerified, setIsPinVerified] = useState(false);
+
+  const expectedPin = activeTrip?.ridePin || '4921';
+
+  const handleVerifyAndStartTrip = () => {
+    if (enteredPin.trim() === expectedPin || isPinVerified) {
+      setPinError(null);
+      setRideStatus('ride_started');
+    } else {
+      setPinError(`Incorrect PIN. Ask passenger for their 4-digit safety PIN.`);
+    }
+  };
+
   useEffect(() => {
     if (rideStatus !== 'driver_arrived') {
       setWaitSeconds(300);
@@ -83,20 +98,20 @@ export const DriverActiveTripHUD: React.FC = () => {
 
   return (
     <>
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-4 space-y-3.5 animate-in slide-in-from-bottom-3 duration-300">
+      <div className="glass-panel rounded-3xl border border-white/10 shadow-2xl p-4 space-y-3.5 animate-in slide-in-from-bottom-3 duration-300">
         {/* Top Status Bar with Turn-by-Turn Prompt */}
-        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
           <div className="flex items-center gap-2">
             <span
               className={`w-2.5 h-2.5 rounded-full animate-ping ${
                 rideStatus === 'ride_completed'
-                  ? 'bg-emerald-500'
+                  ? 'bg-emerald-400'
                   : rideStatus === 'ride_started'
-                  ? 'bg-blue-600'
-                  : 'bg-amber-500'
+                  ? 'bg-[#0286FF]'
+                  : 'bg-amber-400'
               }`}
             />
-            <span className="text-xs font-JakartaBold text-slate-800 uppercase tracking-wide">
+            <span className="text-xs font-JakartaBold text-white uppercase tracking-wide">
               {rideStatus === 'driver_arriving' && 'Heading to Pickup'}
               {rideStatus === 'driver_arrived' && 'Arrived at Pickup'}
               {rideStatus === 'ride_started' && 'En Route to Destination'}
@@ -107,7 +122,7 @@ export const DriverActiveTripHUD: React.FC = () => {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setSafetyModalOpen(true)}
-              className="p-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+              className="p-1.5 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 transition-colors"
               title="Emergency SOS"
             >
               <ShieldAlert className="w-4 h-4" />
@@ -115,7 +130,7 @@ export const DriverActiveTripHUD: React.FC = () => {
             {rideStatus !== 'ride_completed' && (
               <button
                 onClick={() => setCancelModalOpen(true)}
-                className="p-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                className="p-1.5 rounded-xl bg-white/10 text-neutral-300 hover:bg-white/20 transition-colors"
                 title="Cancel Trip"
               >
                 <X className="w-4 h-4" />
@@ -126,9 +141,9 @@ export const DriverActiveTripHUD: React.FC = () => {
 
         {/* Turn-by-turn Navigation Banner */}
         {rideStatus !== 'ride_completed' && (
-          <div className="p-3 bg-slate-900 text-white rounded-2xl flex items-center justify-between shadow-xs">
+          <div className="p-3 bg-white/[0.06] text-white rounded-2xl flex items-center justify-between border border-white/10 shadow-xs">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#0286FF] text-white flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(2,134,255,0.4)]">
                 <Navigation className="w-4 h-4 rotate-45" />
               </div>
               <div className="min-w-0">
@@ -139,7 +154,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                     ? 'Wait at gate for passenger boarding'
                     : 'In 500m proceed along Ozumba Mbadiwe Ave'}
                 </p>
-                <p className="text-[10px] text-slate-400 font-JakartaMedium truncate">
+                <p className="text-[10px] text-neutral-400 font-JakartaMedium truncate">
                   {rideStatus === 'ride_started'
                     ? activeTrip.destination.address
                     : activeTrip.pickup.address}
@@ -150,7 +165,7 @@ export const DriverActiveTripHUD: React.FC = () => {
               <span className="text-xs font-mono font-bold text-emerald-400 block">
                 {rideStatus === 'ride_started' ? '12 min' : '3 min'}
               </span>
-              <span className="text-[10px] text-slate-400 font-medium">
+              <span className="text-[10px] text-neutral-400 font-medium">
                 {rideStatus === 'ride_started' ? `${activeTrip.distanceKm || 4.8} km` : '0.8 km'}
               </span>
             </div>
@@ -163,19 +178,19 @@ export const DriverActiveTripHUD: React.FC = () => {
         {rideStatus === 'driver_arriving' && (
           <div className="space-y-3">
             {/* Passenger Bar with Call & Chat buttons */}
-            <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-2xl border border-slate-100">
+            <div className="flex items-center justify-between p-2.5 bg-white/[0.04] rounded-2xl border border-white/[0.08]">
               <div className="flex items-center gap-2.5">
                 <img
                   src={passengerImage}
                   alt={passengerName}
-                  className="w-10 h-10 rounded-full object-cover border border-white shadow-xs"
+                  className="w-10 h-10 rounded-full object-cover border border-white/20 shadow-xs"
                 />
                 <div>
-                  <h4 className="text-xs font-JakartaBold text-slate-900">{passengerName}</h4>
-                  <div className="flex items-center gap-1 text-[10px] text-amber-500 font-JakartaBold">
+                  <h4 className="text-xs font-JakartaBold text-white">{passengerName}</h4>
+                  <div className="flex items-center gap-1 text-[10px] text-amber-400 font-JakartaBold">
                     <Star className="w-2.5 h-2.5 fill-amber-400" />
                     <span>{passengerRating}</span>
-                    <span className="text-slate-400 font-normal ml-1">• Broader Rider</span>
+                    <span className="text-neutral-400 font-normal ml-1">• Broader Rider</span>
                   </div>
                 </div>
               </div>
@@ -183,14 +198,14 @@ export const DriverActiveTripHUD: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setCommModal({ open: true, type: 'call' })}
-                  className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 flex items-center justify-center transition-colors"
                   title="Call Passenger"
                 >
                   <Phone className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setCommModal({ open: true, type: 'chat' })}
-                  className="w-8 h-8 rounded-full bg-blue-50 text-[#0286FF] hover:bg-blue-100 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full bg-blue-500/20 text-[#0286FF] hover:bg-blue-500/30 border border-blue-500/30 flex items-center justify-center transition-colors"
                   title="Chat Passenger"
                 >
                   <MessageSquare className="w-4 h-4" />
@@ -198,10 +213,18 @@ export const DriverActiveTripHUD: React.FC = () => {
               </div>
             </div>
 
+            {/* Pickup Note / Instructions if present */}
+            {activeTrip.pickupInstructions && (
+              <div className="px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-[11px] text-amber-200 font-JakartaMedium flex items-start gap-1.5">
+                <span className="font-JakartaBold shrink-0 text-amber-300">Pickup Note:</span>
+                <span className="leading-tight">{activeTrip.pickupInstructions}</span>
+              </div>
+            )}
+
             {/* Action: I Have Arrived */}
             <button
               onClick={() => setRideStatus('driver_arrived')}
-              className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-600 text-white text-xs font-JakartaBold shadow-md shadow-blue-500/20 active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-98 transition-all flex items-center justify-center gap-2"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>I Have Arrived at Pickup</span>
@@ -213,60 +236,129 @@ export const DriverActiveTripHUD: React.FC = () => {
         {rideStatus === 'driver_arrived' && (
           <div className="space-y-3">
             {/* Passenger Notified Alert */}
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs">
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center">
+                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-[0_0_8px_rgba(16,185,129,0.5)]">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="font-JakartaBold text-emerald-900">Passenger Notified of Arrival</p>
-                  <p className="text-[10px] text-emerald-700">Vehicle: {activeTrip.driver.car_model || 'Toyota Corolla'}</p>
+                  <p className="font-JakartaBold text-emerald-300">Passenger Notified of Arrival</p>
+                  <p className="text-[10px] text-emerald-400/80">Vehicle: {activeTrip.driver.car_model || 'Toyota Corolla'}</p>
                 </div>
               </div>
 
               {/* Waiting Timer */}
               <div className="text-right">
-                <span className="text-[10px] text-emerald-800 font-JakartaMedium block">Free Wait Time</span>
-                <span className="text-xs font-mono font-bold text-emerald-900 flex items-center gap-1">
+                <span className="text-[10px] text-emerald-400 font-JakartaMedium block">Free Wait Time</span>
+                <span className="text-xs font-mono font-bold text-emerald-300 flex items-center gap-1">
                   <Clock className="w-3 h-3" /> {formatWaitTime(waitSeconds)}
                 </span>
               </div>
             </div>
 
+            {/* Pickup Note / Instructions if present */}
+            {activeTrip.pickupInstructions && (
+              <div className="px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-[11px] text-amber-200 font-JakartaMedium flex items-start gap-1.5">
+                <span className="font-JakartaBold shrink-0 text-amber-300">Pickup Note:</span>
+                <span className="leading-tight">{activeTrip.pickupInstructions}</span>
+              </div>
+            )}
+
             {/* Passenger Bar */}
-            <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-2xl border border-slate-100">
+            <div className="flex items-center justify-between p-2.5 bg-white/[0.04] rounded-2xl border border-white/[0.08]">
               <div className="flex items-center gap-2.5">
                 <img
                   src={passengerImage}
                   alt={passengerName}
-                  className="w-10 h-10 rounded-full object-cover border border-white shadow-xs"
+                  className="w-10 h-10 rounded-full object-cover border border-white/20 shadow-xs"
                 />
                 <div>
-                  <h4 className="text-xs font-JakartaBold text-slate-900">{passengerName}</h4>
-                  <p className="text-[10px] text-slate-500">Destination: {activeTrip.destination.address.split(',')[0]}</p>
+                  <h4 className="text-xs font-JakartaBold text-white">{passengerName}</h4>
+                  <p className="text-[10px] text-neutral-400">Destination: {activeTrip.destination.address.split(',')[0]}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setCommModal({ open: true, type: 'call' })}
-                  className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center"
+                  className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 flex items-center justify-center"
                 >
                   <Phone className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setCommModal({ open: true, type: 'chat' })}
-                  className="w-8 h-8 rounded-full bg-blue-50 text-[#0286FF] hover:bg-blue-100 flex items-center justify-center"
+                  className="w-8 h-8 rounded-full bg-blue-500/20 text-[#0286FF] hover:bg-blue-500/30 border border-blue-500/30 flex items-center justify-center"
                 >
                   <MessageSquare className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
+            {/* Safety Ride PIN Verification */}
+            <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-JakartaBold text-blue-300 flex items-center gap-1">
+                  <span>Verify Rider PIN</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEnteredPin(expectedPin);
+                    setIsPinVerified(true);
+                    setPinError(null);
+                  }}
+                  className="text-[10px] font-JakartaBold text-[#0286FF] hover:underline"
+                >
+                  Auto-fill ({expectedPin})
+                </button>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  maxLength={4}
+                  value={enteredPin}
+                  onChange={(e) => {
+                    setEnteredPin(e.target.value);
+                    if (e.target.value === expectedPin) {
+                      setIsPinVerified(true);
+                      setPinError(null);
+                    }
+                  }}
+                  placeholder="Enter 4-digit PIN"
+                  className="flex-1 px-3 py-2 bg-black/60 border border-white/20 rounded-xl text-xs font-mono font-bold tracking-widest text-center text-white focus:outline-none focus:border-[#0286FF]"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (enteredPin === expectedPin) {
+                      setIsPinVerified(true);
+                      setPinError(null);
+                    } else {
+                      setPinError('Invalid PIN');
+                    }
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs font-JakartaBold hover:bg-blue-500 transition-colors shadow-[0_0_10px_rgba(2,134,255,0.4)]"
+                >
+                  Verify
+                </button>
+              </div>
+
+              {pinError && (
+                <p className="text-[10px] font-JakartaBold text-red-400">{pinError}</p>
+              )}
+              {isPinVerified && (
+                <p className="text-[10px] font-JakartaBold text-emerald-400 flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span>PIN Verified Successfully</span>
+                </p>
+              )}
+            </div>
+
             {/* Action: Start Trip */}
             <button
-              onClick={() => setRideStatus('ride_started')}
-              className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-JakartaBold shadow-md shadow-emerald-600/20 active:scale-98 transition-all flex items-center justify-center gap-2"
+              onClick={handleVerifyAndStartTrip}
+              className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(16,185,129,0.4)] active:scale-98 transition-all flex items-center justify-center gap-2"
             >
               <Play className="w-4 h-4 fill-white" />
               <span>Passenger Onboard • Start Trip</span>
@@ -279,35 +371,35 @@ export const DriverActiveTripHUD: React.FC = () => {
           <div className="space-y-3">
             {/* Live Trip Telemetry */}
             <div className="grid grid-cols-3 gap-2">
-              <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-                <span className="text-[10px] text-slate-400 font-JakartaMedium block">Speed</span>
-                <span className="text-xs font-JakartaBold text-slate-800">42 km/h</span>
+              <div className="p-2.5 bg-white/[0.04] rounded-2xl border border-white/[0.08] text-center">
+                <span className="text-[10px] text-neutral-400 font-JakartaMedium block">Speed</span>
+                <span className="text-xs font-JakartaBold text-white">42 km/h</span>
               </div>
-              <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-                <span className="text-[10px] text-slate-400 font-JakartaMedium block">Estimated Fare</span>
+              <div className="p-2.5 bg-white/[0.04] rounded-2xl border border-white/[0.08] text-center">
+                <span className="text-[10px] text-neutral-400 font-JakartaMedium block">Estimated Fare</span>
                 <span className="text-xs font-JakartaBold text-[#0286FF]">₦{grossFare.toLocaleString()}</span>
               </div>
-              <div className="p-2.5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-                <span className="text-[10px] text-slate-400 font-JakartaMedium block">Net Payout</span>
-                <span className="text-xs font-JakartaBold text-emerald-600">₦{netEarnings.toLocaleString()}</span>
+              <div className="p-2.5 bg-white/[0.04] rounded-2xl border border-white/[0.08] text-center">
+                <span className="text-[10px] text-neutral-400 font-JakartaMedium block">Net Payout</span>
+                <span className="text-xs font-JakartaBold text-emerald-400">₦{netEarnings.toLocaleString()}</span>
               </div>
             </div>
 
             {/* Destination Address */}
-            <div className="p-3 bg-blue-50/60 rounded-2xl border border-blue-100 flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
+            <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/25 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#0286FF] text-white flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(2,134,255,0.5)]">
                 <MapPin className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] font-JakartaBold text-blue-600 uppercase">Dropoff Destination</span>
-                <p className="text-xs font-JakartaBold text-slate-900 truncate">{activeTrip.destination.address}</p>
+                <span className="text-[10px] font-JakartaBold text-blue-400 uppercase">Dropoff Destination</span>
+                <p className="text-xs font-JakartaBold text-white truncate">{activeTrip.destination.address}</p>
               </div>
             </div>
 
             {/* Action: Complete Trip */}
             <button
               onClick={() => completeActiveTrip()}
-              className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-JakartaBold shadow-md shadow-emerald-600/20 active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(16,185,129,0.4)] active:scale-98 transition-all flex items-center justify-center gap-2"
             >
               <Flag className="w-4 h-4" />
               <span>Destination Reached • Complete Trip</span>
@@ -319,45 +411,45 @@ export const DriverActiveTripHUD: React.FC = () => {
         {rideStatus === 'ride_completed' && (
           <div className="space-y-3.5">
             {/* Earnings Breakdown Statement */}
-            <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2.5">
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-JakartaBold text-emerald-900 flex items-center gap-1">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Trip Completed
+                <span className="text-xs font-JakartaBold text-emerald-300 flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Trip Completed
                 </span>
-                <span className="text-xs font-JakartaBold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-JakartaBold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-full">
                   Settled to Wallet
                 </span>
               </div>
 
-              <div className="space-y-1 text-xs pt-1 border-t border-emerald-100">
-                <div className="flex justify-between text-slate-600">
+              <div className="space-y-1 text-xs pt-1 border-t border-emerald-500/20">
+                <div className="flex justify-between text-neutral-300">
                   <span>Gross Passenger Fare</span>
-                  <span className="font-JakartaBold text-slate-900">₦{grossFare.toLocaleString()}</span>
+                  <span className="font-JakartaBold text-white">₦{grossFare.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-500 text-[11px]">
+                <div className="flex justify-between text-neutral-400 text-[11px]">
                   <span>Broader Platform Commission (15%)</span>
-                  <span className="text-red-500 font-medium">-₦{commission.toLocaleString()}</span>
+                  <span className="text-red-400 font-medium">-₦{commission.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-500 text-[11px]">
+                <div className="flex justify-between text-neutral-400 text-[11px]">
                   <span>Passenger Driver Tip</span>
-                  <span className="text-emerald-600 font-medium">+₦0</span>
+                  <span className="text-emerald-400 font-medium">+₦0</span>
                 </div>
-                <div className="flex justify-between pt-1 border-t border-emerald-200 font-JakartaBold text-xs text-emerald-900">
+                <div className="flex justify-between pt-1 border-t border-emerald-500/20 font-JakartaBold text-xs text-emerald-300">
                   <span>Net Driver Earnings</span>
-                  <span className="text-base text-emerald-700">₦{netEarnings.toLocaleString()}</span>
+                  <span className="text-base text-emerald-400">₦{netEarnings.toLocaleString()}</span>
                 </div>
               </div>
             </div>
 
             {/* Rate Passenger Modal Box */}
-            <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 text-center">
+            <div className="p-3.5 bg-white/[0.04] rounded-2xl border border-white/10 space-y-2.5 text-center">
               <div className="flex items-center justify-center gap-2">
                 <img
                   src={passengerImage}
                   alt={passengerName}
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full object-cover border border-white/20"
                 />
-                <span className="text-xs font-JakartaBold text-slate-900">Rate Passenger: {passengerName}</span>
+                <span className="text-xs font-JakartaBold text-white">Rate Passenger: {passengerName}</span>
               </div>
 
               {/* Star Rating */}
@@ -370,7 +462,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                   >
                     <Star
                       className={`w-5 h-5 ${
-                        star <= starRating ? 'text-amber-400 fill-amber-400' : 'text-slate-300'
+                        star <= starRating ? 'text-amber-400 fill-amber-400' : 'text-neutral-600'
                       }`}
                     />
                   </button>
@@ -392,8 +484,8 @@ export const DriverActiveTripHUD: React.FC = () => {
                       onClick={() => togglePraise(praise)}
                       className={`px-2.5 py-1 rounded-full text-[10px] font-JakartaBold transition-all ${
                         isSelected
-                          ? 'bg-blue-100 text-[#0286FF] border border-blue-300'
-                          : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                          ? 'bg-blue-500/20 text-[#0286FF] border border-blue-500/40'
+                          : 'bg-white/5 text-neutral-300 border border-white/10 hover:bg-white/10'
                       }`}
                     >
                       {praise}
@@ -406,7 +498,7 @@ export const DriverActiveTripHUD: React.FC = () => {
             {/* Action: Finish & Return to Online */}
             <button
               onClick={() => driverRatePassenger(starRating, selectedPraises.join(', '))}
-              className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-600 text-white text-xs font-JakartaBold shadow-md shadow-blue-500/20 active:scale-98 transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-3 rounded-2xl bg-[#0286FF] hover:bg-blue-500 text-white text-xs font-JakartaBold shadow-[0_0_16px_rgba(2,134,255,0.4)] active:scale-98 transition-all flex items-center justify-center gap-1.5"
             >
               <span>Submit Rating & Go Back Online</span>
               <ArrowRight className="w-4 h-4" />
@@ -433,19 +525,19 @@ export const DriverActiveTripHUD: React.FC = () => {
 
       {/* Cancel Trip Confirmation Modal */}
       {cancelModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl border border-slate-200 space-y-3 animate-in slide-in-from-bottom-4 duration-200">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="text-sm font-JakartaBold text-slate-900">Cancel Active Trip</h3>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-sm glass-panel rounded-3xl p-5 shadow-2xl border border-white/15 space-y-3 animate-in slide-in-from-bottom-4 duration-200">
+            <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+              <h3 className="text-sm font-JakartaBold text-white">Cancel Active Trip</h3>
               <button
                 onClick={() => setCancelModalOpen(false)}
-                className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"
+                className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-neutral-300"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 font-JakartaMedium">
+            <p className="text-xs text-neutral-400 font-JakartaMedium">
               Please select a cancellation reason. Frequent unjustified cancellations affect your Driver Acceptance score.
             </p>
 
@@ -461,8 +553,8 @@ export const DriverActiveTripHUD: React.FC = () => {
                   onClick={() => setCancelReason(reason)}
                   className={`w-full text-left p-2.5 rounded-xl border text-xs font-JakartaMedium transition-all ${
                     cancelReason === reason
-                      ? 'bg-red-50 text-red-800 border-red-200 font-bold'
-                      : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-red-500/20 text-red-300 border-red-500/40 font-bold'
+                      : 'border-white/10 text-neutral-300 hover:bg-white/5'
                   }`}
                 >
                   {reason}
@@ -473,7 +565,7 @@ export const DriverActiveTripHUD: React.FC = () => {
             <div className="grid grid-cols-2 gap-2 pt-2">
               <button
                 onClick={() => setCancelModalOpen(false)}
-                className="py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-JakartaBold hover:bg-slate-200"
+                className="py-2.5 rounded-xl glass-panel text-neutral-300 text-xs font-JakartaBold hover:bg-white/10 border border-white/10"
               >
                 Keep Trip
               </button>
@@ -482,7 +574,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                   driverCancelActiveTrip(cancelReason);
                   setCancelModalOpen(false);
                 }}
-                className="py-2.5 rounded-xl bg-red-600 text-white text-xs font-JakartaBold hover:bg-red-700 shadow-xs"
+                className="py-2.5 rounded-xl bg-red-600 text-white text-xs font-JakartaBold hover:bg-red-500 shadow-xs"
               >
                 Confirm Cancel
               </button>

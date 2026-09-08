@@ -66,26 +66,26 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl border border-slate-200 space-y-4 animate-in slide-in-from-bottom-4 duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-sm glass-panel rounded-3xl p-5 shadow-2xl border border-white/15 space-y-4 animate-in slide-in-from-bottom-4 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
           <div className="flex items-center gap-2.5">
             <img
               src={passengerImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'}
               alt={passengerName}
-              className="w-9 h-9 rounded-full object-cover border border-slate-200"
+              className="w-9 h-9 rounded-full object-cover border border-white/20"
             />
             <div>
-              <h3 className="text-sm font-JakartaBold text-slate-900">{passengerName}</h3>
-              <p className="text-[11px] text-slate-400 font-JakartaMedium">
+              <h3 className="text-sm font-JakartaBold text-white">{passengerName}</h3>
+              <p className="text-[11px] text-neutral-400 font-JakartaMedium">
                 {type === 'call' ? 'Broader Masked VoIP Call' : 'Encrypted In-App Chat'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
+            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-neutral-300 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -98,17 +98,17 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
               <img
                 src={passengerImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'}
                 alt={passengerName}
-                className="w-20 h-20 rounded-full object-cover shadow-lg border-2 border-white"
+                className="w-20 h-20 rounded-full object-cover shadow-lg border-2 border-white/30"
               />
-              <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
+              <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-emerald-500 border-2 border-black flex items-center justify-center shadow-xs">
                 <Volume2 className="w-2.5 h-2.5 text-white" />
               </span>
             </div>
 
             <div>
-              <h4 className="text-base font-JakartaBold text-slate-900">{passengerName}</h4>
-              <p className="text-xs text-slate-400 font-mono mt-0.5">{passengerPhone}</p>
-              <span className="inline-block mt-2 px-3 py-0.5 rounded-full bg-blue-50 text-[#0286FF] text-[11px] font-JakartaBold">
+              <h4 className="text-base font-JakartaBold text-white">{passengerName}</h4>
+              <p className="text-xs text-neutral-400 font-mono mt-0.5">{passengerPhone}</p>
+              <span className="inline-block mt-2 px-3 py-0.5 rounded-full bg-blue-500/20 text-[#0286FF] border border-blue-500/30 text-[11px] font-JakartaBold">
                 {callConnected ? `Connected • 00:${callDuration < 10 ? '0' + callDuration : callDuration}` : 'Ringing passenger...'}
               </span>
             </div>
@@ -118,7 +118,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
               {[40, 70, 95, 60, 85, 100, 50, 80, 45].map((h, i) => (
                 <div
                   key={i}
-                  className="w-1 bg-[#0286FF] rounded-full animate-pulse"
+                  className="w-1 bg-[#0286FF] rounded-full animate-pulse shadow-[0_0_6px_rgba(2,134,255,0.6)]"
                   style={{ height: `${h}%`, animationDelay: `${i * 100}ms` }}
                 />
               ))}
@@ -129,7 +129,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
               <button
                 onClick={() => setIsMuted(!isMuted)}
                 className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                  isMuted ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  isMuted ? 'bg-amber-500 text-white' : 'glass-panel text-neutral-300 hover:bg-white/10 border border-white/10'
                 }`}
               >
                 {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
@@ -137,7 +137,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
 
               <button
                 onClick={onClose}
-                className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg shadow-red-600/30 active:scale-95 transition-all"
+                className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-lg shadow-red-600/40 active:scale-95 transition-all"
               >
                 <PhoneOff className="w-6 h-6" />
               </button>
@@ -147,7 +147,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
           /* CHAT VIEW */
           <div className="space-y-3">
             {/* Messages box */}
-            <div className="h-56 overflow-y-auto space-y-2 p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+            <div className="h-56 overflow-y-auto space-y-2 p-3 bg-white/[0.04] rounded-2xl border border-white/[0.08] text-xs">
               {messages.map((m, idx) => (
                 <div
                   key={idx}
@@ -156,13 +156,13 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
                   <div
                     className={`max-w-[85%] px-3 py-2 rounded-2xl ${
                       m.sender === 'driver'
-                        ? 'bg-[#0286FF] text-white rounded-br-xs'
-                        : 'bg-white text-slate-800 border border-slate-200 rounded-bl-xs shadow-xs'
+                        ? 'bg-[#0286FF] text-white rounded-br-xs shadow-[0_0_8px_rgba(2,134,255,0.4)]'
+                        : 'glass-panel text-neutral-100 border border-white/10 rounded-bl-xs shadow-xs'
                     }`}
                   >
                     <p className="font-JakartaMedium leading-relaxed text-[11px]">{m.text}</p>
                   </div>
-                  <span className="text-[9px] text-slate-400 mt-0.5 px-1">{m.time}</span>
+                  <span className="text-[9px] text-neutral-400 mt-0.5 px-1">{m.time}</span>
                 </div>
               ))}
             </div>
@@ -173,7 +173,7 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
                 <button
                   key={i}
                   onClick={() => handleSendMessage(qr)}
-                  className="shrink-0 px-2.5 py-1 rounded-full bg-blue-50 text-[#0286FF] hover:bg-blue-100 text-[10px] font-JakartaBold border border-blue-200 transition-colors"
+                  className="shrink-0 px-2.5 py-1 rounded-full bg-blue-500/20 text-[#0286FF] hover:bg-blue-500/30 text-[10px] font-JakartaBold border border-blue-500/30 transition-colors"
                 >
                   {qr}
                 </button>
@@ -188,11 +188,11 @@ export const DriverCommunicationModal: React.FC<DriverCommunicationModalProps> =
                 onChange={(e) => setChatInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Type a message to passenger..."
-                className="flex-1 px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-JakartaMedium text-slate-800 focus:outline-hidden focus:border-[#0286FF] focus:bg-white"
+                className="flex-1 px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs font-JakartaMedium text-white placeholder:text-neutral-500 focus:outline-hidden focus:border-[#0286FF]"
               />
               <button
                 onClick={() => handleSendMessage()}
-                className="w-10 h-10 rounded-xl bg-[#0286FF] hover:bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs transition-colors"
+                className="w-10 h-10 rounded-xl bg-[#0286FF] hover:bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(2,134,255,0.4)] transition-colors"
               >
                 <Send className="w-4 h-4" />
               </button>

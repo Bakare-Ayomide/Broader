@@ -79,32 +79,32 @@ export const DriverHomeScreen: React.FC = () => {
   const isOnTrip = driverStatus === 'on_trip' || (activeTrip !== null && rideStatus !== 'idle');
 
   return (
-    <div className="flex flex-col h-full bg-[#F6F8FA] select-none">
+    <div className="flex flex-col h-full bg-[#000000] text-white select-none">
       {/* Top Driver Header */}
-      <header className="px-4 pt-3.5 pb-2.5 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between z-20">
+      <header className="px-4 pt-3.5 pb-2.5 glass-nav border-b border-white/[0.08] shrink-0 flex items-center justify-between z-20">
         <div className="flex items-center gap-2.5">
           <div className="relative">
-            <div className="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-JakartaBold text-xs shadow-xs">
+            <div className="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center font-JakartaBold text-xs shadow-xs border border-white/15">
               CB
             </div>
             <div
-              className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
+              className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-black ${
                 isOnTrip
-                  ? 'bg-blue-600'
+                  ? 'bg-blue-500'
                   : driverStatus === 'online'
                   ? 'bg-emerald-500'
-                  : 'bg-slate-400'
+                  : 'bg-neutral-500'
               }`}
             />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h2 className="text-xs font-JakartaBold text-slate-900 leading-none">Chris Bakare</h2>
-              <span className="text-[9px] font-mono font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+              <h2 className="text-xs font-JakartaBold text-white leading-none">Chris Bakare</h2>
+              <span className="text-[9px] font-mono font-bold text-neutral-300 bg-white/10 px-1.5 py-0.5 rounded border border-white/10">
                 {activeVehicle?.plateNumber || 'LND-394-AK'}
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 font-JakartaMedium mt-0.5">
+            <p className="text-[10px] text-neutral-400 font-JakartaMedium mt-0.5">
               {isOnTrip
                 ? 'Active Passenger Trip'
                 : driverStatus === 'online'
@@ -118,7 +118,7 @@ export const DriverHomeScreen: React.FC = () => {
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setSafetyModalOpen(true)}
-            className="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/30 flex items-center justify-center border border-red-500/30 transition-colors"
             title="Emergency SOS"
           >
             <ShieldAlert className="w-4 h-4" />
@@ -129,7 +129,7 @@ export const DriverHomeScreen: React.FC = () => {
               setIsDriverMode(false);
               setScreen('home');
             }}
-            className="px-2.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-JakartaBold flex items-center gap-1 transition-all"
+            className="px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-neutral-200 text-[11px] font-JakartaBold flex items-center gap-1 border border-white/10 transition-all"
             title="Switch back to Passenger Rider App"
           >
             <span>Rider App</span>
@@ -139,7 +139,7 @@ export const DriverHomeScreen: React.FC = () => {
       </header>
 
       {/* Driver Operational Tab Navigation */}
-      <nav className="px-4 py-1.5 bg-white border-b border-slate-200 shrink-0 flex items-center justify-between gap-1 z-10">
+      <nav className="px-4 py-1.5 glass-nav border-b border-white/[0.08] shrink-0 flex items-center justify-between gap-1 z-10">
         {[
           { id: 'hud', label: 'Cockpit', icon: Navigation },
           { id: 'earnings', label: 'Earnings', icon: DollarSign },
@@ -155,8 +155,8 @@ export const DriverHomeScreen: React.FC = () => {
               onClick={() => setDriverActiveTab(tab.id as any)}
               className={`flex-1 py-1.5 px-1 rounded-xl text-[11px] font-JakartaBold flex items-center justify-center gap-1 transition-all ${
                 isActive
-                  ? 'bg-blue-50 text-[#0286FF] border border-blue-200'
-                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                  ? 'bg-blue-500/20 text-[#0286FF] border border-blue-500/30 shadow-[0_0_10px_rgba(2,134,255,0.2)]'
+                  : 'text-neutral-400 hover:text-white hover:bg-white/5'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -172,17 +172,17 @@ export const DriverHomeScreen: React.FC = () => {
         {driverActiveTab === 'hud' && (
           <div className="space-y-3">
             {/* Interactive Map Cockpit */}
-            <div className="relative rounded-3xl overflow-hidden border border-slate-200 shadow-xs bg-slate-100 h-[220px]">
+            <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-xs bg-black h-[220px]">
               <InteractiveMap height="h-[220px]" showRoute={isOnTrip} />
 
               {/* Map Floating Beacon: GPS & Demand Badge */}
               <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                <div className="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-xs text-white text-[10px] font-JakartaBold flex items-center gap-1.5 shadow-sm">
+                <div className="px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md text-white text-[10px] font-JakartaBold flex items-center gap-1.5 shadow-sm border border-white/10">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   <span>Lekki Phase 1, Lagos • GPS 5G</span>
                 </div>
 
-                <div className="px-2.5 py-1 rounded-full bg-[#0286FF]/90 backdrop-blur-xs text-white text-[10px] font-JakartaBold flex items-center gap-1 shadow-sm">
+                <div className="px-2.5 py-1 rounded-full bg-[#0286FF]/90 backdrop-blur-md text-white text-[10px] font-JakartaBold flex items-center gap-1 shadow-sm border border-blue-400/30">
                   <TrendingUp className="w-3 h-3" />
                   <span>Surge 1.3x</span>
                 </div>
@@ -190,7 +190,7 @@ export const DriverHomeScreen: React.FC = () => {
 
               {/* Map Floating Current Vehicle Indicator */}
               <div className="absolute bottom-2.5 left-3 pointer-events-none">
-                <div className="px-2 py-0.5 rounded-lg bg-white/90 backdrop-blur-xs text-slate-800 text-[9px] font-mono font-bold shadow-xs border border-slate-200">
+                <div className="px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-md text-neutral-200 text-[9px] font-mono font-bold shadow-xs border border-white/15">
                   {activeVehicle?.name} ({activeVehicle?.plateNumber})
                 </div>
               </div>
@@ -205,15 +205,15 @@ export const DriverHomeScreen: React.FC = () => {
             ) : (
               /* ONLINE / OFFLINE AVAILABILITY CONTROLLER */
               <div className="space-y-3">
-                <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-3">
+                <div className="glass-panel rounded-3xl border border-white/10 p-4 shadow-xs space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <button
                         onClick={toggleOnlineStatus}
                         className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
                           driverStatus === 'online'
-                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 ring-4 ring-emerald-100'
-                            : 'bg-slate-100 text-slate-400 hover:bg-slate-200 active:scale-95'
+                            ? 'bg-emerald-500 text-white shadow-[0_0_16px_rgba(16,185,129,0.5)] ring-2 ring-emerald-400/50'
+                            : 'bg-white/10 text-neutral-400 hover:bg-white/15 active:scale-95 border border-white/10'
                         }`}
                         title={driverStatus === 'online' ? 'Tap to go Offline' : 'Tap to go Online'}
                       >
@@ -221,16 +221,16 @@ export const DriverHomeScreen: React.FC = () => {
                       </button>
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <h4 className="text-xs font-JakartaBold text-slate-900">
+                          <h4 className="text-xs font-JakartaBold text-white">
                             {driverStatus === 'online' ? 'You are Online' : 'You are Offline'}
                           </h4>
                           <span
                             className={`w-2 h-2 rounded-full ${
-                              driverStatus === 'online' ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'
+                              driverStatus === 'online' ? 'bg-emerald-500 animate-ping' : 'bg-neutral-500'
                             }`}
                           />
                         </div>
-                        <p className="text-[11px] text-slate-400 font-JakartaMedium">
+                        <p className="text-[11px] text-neutral-400 font-JakartaMedium">
                           {driverStatus === 'online'
                             ? 'Actively receiving trip dispatches'
                             : 'Go online to start receiving ride requests'}
@@ -241,8 +241,8 @@ export const DriverHomeScreen: React.FC = () => {
                     <span
                       className={`text-[10px] font-JakartaBold px-2.5 py-1 rounded-full ${
                         driverStatus === 'online'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-slate-100 text-slate-500'
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          : 'bg-white/5 text-neutral-400 border border-white/10'
                       }`}
                     >
                       {driverStatus === 'online' ? 'READY' : 'OFFLINE'}
@@ -251,16 +251,16 @@ export const DriverHomeScreen: React.FC = () => {
 
                   {/* Operational Controls when Online */}
                   {driverStatus === 'online' && (
-                    <div className="p-3 bg-emerald-50/70 rounded-2xl border border-emerald-100 flex items-center justify-between text-xs animate-in fade-in duration-150">
+                    <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 flex items-center justify-between text-xs animate-in fade-in duration-150">
                       <div className="flex items-center gap-2">
-                        <Radio className="w-4 h-4 text-emerald-600 animate-pulse" />
-                        <span className="text-[11px] font-JakartaMedium text-emerald-900">
+                        <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+                        <span className="text-[11px] font-JakartaMedium text-emerald-300">
                           Scanning Lekki & VI for passengers...
                         </span>
                       </div>
                       <button
                         onClick={handleSimulateNewRequest}
-                        className="px-2.5 py-1 rounded-xl bg-white hover:bg-emerald-100 text-emerald-800 text-[10px] font-JakartaBold border border-emerald-200 shadow-xs transition-colors"
+                        className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-emerald-300 text-[10px] font-JakartaBold border border-emerald-500/30 shadow-xs transition-colors"
                         title="Simulate incoming passenger booking"
                       >
                         Test Dispatch
@@ -271,15 +271,15 @@ export const DriverHomeScreen: React.FC = () => {
                   {/* Selected Vehicle Indicator */}
                   <div
                     onClick={() => setDriverActiveTab('vehicles')}
-                    className="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-100 flex items-center justify-between text-xs cursor-pointer transition-colors"
+                    className="p-2.5 bg-white/[0.04] hover:bg-white/[0.08] rounded-2xl border border-white/10 flex items-center justify-between text-xs cursor-pointer transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <Car className="w-4 h-4 text-slate-600" />
+                      <Car className="w-4 h-4 text-neutral-400" />
                       <div>
-                        <span className="text-xs font-JakartaBold text-slate-800 block">
+                        <span className="text-xs font-JakartaBold text-white block">
                           {activeVehicle?.name}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-mono">
+                        <span className="text-[10px] text-neutral-400 font-mono">
                           {activeVehicle?.plateNumber} • {activeVehicle?.categoryName}
                         </span>
                       </div>
@@ -293,9 +293,9 @@ export const DriverHomeScreen: React.FC = () => {
                 {/* Today's Quick Summary Pill */}
                 <div
                   onClick={() => setDriverActiveTab('earnings')}
-                  className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs cursor-pointer hover:border-blue-300 transition-all"
+                  className="glass-panel rounded-3xl border border-white/10 p-4 shadow-xs cursor-pointer hover:border-blue-500/40 transition-all"
                 >
-                  <div className="flex items-center justify-between text-slate-500 mb-1">
+                  <div className="flex items-center justify-between text-neutral-400 mb-1">
                     <span className="text-xs font-JakartaMedium flex items-center gap-1">
                       <DollarSign className="w-3.5 h-3.5 text-[#0286FF]" />
                       Today's Operational Earnings
@@ -306,10 +306,10 @@ export const DriverHomeScreen: React.FC = () => {
                   </div>
 
                   <div className="flex items-baseline justify-between mt-1">
-                    <span className="text-lg font-JakartaBold text-slate-900 tracking-tight">
+                    <span className="text-lg font-JakartaBold text-white tracking-tight">
                       ₦{driverEarnings.today.toLocaleString()}
                     </span>
-                    <span className="text-xs font-JakartaSemiBold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-JakartaSemiBold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full">
                       {driverEarnings.completedTrips} Completed
                     </span>
                   </div>
@@ -317,34 +317,34 @@ export const DriverHomeScreen: React.FC = () => {
 
                 {/* Driver Performance Metrics (3 Columns) */}
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
-                    <div className="flex items-center justify-center text-amber-500 mb-0.5">
+                  <div className="glass-panel p-3 rounded-2xl border border-white/10 text-center shadow-xs">
+                    <div className="flex items-center justify-center text-amber-400 mb-0.5">
                       <Star className="w-3.5 h-3.5 fill-amber-400" />
                     </div>
-                    <span className="text-xs font-JakartaBold text-slate-900 block">
+                    <span className="text-xs font-JakartaBold text-white block">
                       {driverRating}
                     </span>
-                    <span className="text-[10px] font-JakartaMedium text-slate-400">Driver Rating</span>
+                    <span className="text-[10px] font-JakartaMedium text-neutral-400">Driver Rating</span>
                   </div>
 
-                  <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
-                    <div className="flex items-center justify-center text-emerald-500 mb-0.5">
+                  <div className="glass-panel p-3 rounded-2xl border border-white/10 text-center shadow-xs">
+                    <div className="flex items-center justify-center text-emerald-400 mb-0.5">
                       <CheckCircle2 className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-xs font-JakartaBold text-slate-900 block">
+                    <span className="text-xs font-JakartaBold text-white block">
                       {driverAcceptanceRate}%
                     </span>
-                    <span className="text-[10px] font-JakartaMedium text-slate-400">Acceptance</span>
+                    <span className="text-[10px] font-JakartaMedium text-neutral-400">Acceptance</span>
                   </div>
 
-                  <div className="bg-white p-3 rounded-2xl border border-slate-200 text-center shadow-xs">
-                    <div className="flex items-center justify-center text-blue-500 mb-0.5">
+                  <div className="glass-panel p-3 rounded-2xl border border-white/10 text-center shadow-xs">
+                    <div className="flex items-center justify-center text-blue-400 mb-0.5">
                       <TrendingUp className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-xs font-JakartaBold text-slate-900 block">
+                    <span className="text-xs font-JakartaBold text-white block">
                       {driverCancellationRate}%
                     </span>
-                    <span className="text-[10px] font-JakartaMedium text-slate-400">Cancellation</span>
+                    <span className="text-[10px] font-JakartaMedium text-neutral-400">Cancellation</span>
                   </div>
                 </div>
               </div>
@@ -365,81 +365,81 @@ export const DriverHomeScreen: React.FC = () => {
         {driverActiveTab === 'profile' && (
           <div className="space-y-3 pb-6 animate-in fade-in duration-200">
             {/* Driver Identity Card */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-3">
+            <div className="glass-panel rounded-3xl border border-white/10 p-4 shadow-xs space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-JakartaBold text-sm shadow-xs">
+                <div className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center font-JakartaBold text-sm shadow-xs border border-white/15">
                   CB
                 </div>
                 <div>
-                  <h3 className="text-sm font-JakartaBold text-slate-900">Chris Bakare</h3>
-                  <p className="text-[11px] text-slate-400 font-JakartaMedium">
+                  <h3 className="text-sm font-JakartaBold text-white">Chris Bakare</h3>
+                  <p className="text-[11px] text-neutral-400 font-JakartaMedium">
                     Verified Professional Driver • Lagos State
                   </p>
                 </div>
               </div>
 
-              <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between text-xs">
+              <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span className="font-JakartaBold text-emerald-900">Account Approved & Active</span>
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span className="font-JakartaBold text-emerald-300">Account Approved & Active</span>
                 </div>
-                <span className="text-[10px] font-JakartaBold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-JakartaBold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-full">
                   Verified
                 </span>
               </div>
             </div>
 
             {/* Regulatory Credentials */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-2.5 text-xs">
-              <h4 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wide">
+            <div className="glass-panel rounded-3xl border border-white/10 p-4 shadow-xs space-y-2.5 text-xs">
+              <h4 className="text-xs font-JakartaBold text-neutral-300 uppercase tracking-wide">
                 Regulatory Licenses & Documents
               </h4>
 
               <div className="space-y-2">
-                <div className="p-2.5 bg-slate-50 rounded-xl flex items-center justify-between">
+                <div className="p-2.5 bg-white/[0.04] rounded-xl flex items-center justify-between border border-white/[0.06]">
                   <div>
-                    <span className="text-slate-500 font-JakartaMedium block text-[10px]">FRSC Driver's Licence</span>
-                    <span className="font-mono font-bold text-slate-800">FRSC-LA-2022-88190</span>
+                    <span className="text-neutral-400 font-JakartaMedium block text-[10px]">FRSC Driver's Licence</span>
+                    <span className="font-mono font-bold text-white">FRSC-LA-2022-88190</span>
                   </div>
-                  <span className="text-[10px] text-emerald-600 font-JakartaBold">Expires 2027</span>
+                  <span className="text-[10px] text-emerald-400 font-JakartaBold">Expires 2027</span>
                 </div>
 
-                <div className="p-2.5 bg-slate-50 rounded-xl flex items-center justify-between">
+                <div className="p-2.5 bg-white/[0.04] rounded-xl flex items-center justify-between border border-white/[0.06]">
                   <div>
-                    <span className="text-slate-500 font-JakartaMedium block text-[10px]">LASDRI Certification</span>
-                    <span className="font-mono font-bold text-slate-800">LASDRI-VI-44910</span>
+                    <span className="text-neutral-400 font-JakartaMedium block text-[10px]">LASDRI Certification</span>
+                    <span className="font-mono font-bold text-white">LASDRI-VI-44910</span>
                   </div>
-                  <span className="text-[10px] text-emerald-600 font-JakartaBold">Active</span>
+                  <span className="text-[10px] text-emerald-400 font-JakartaBold">Active</span>
                 </div>
 
-                <div className="p-2.5 bg-slate-50 rounded-xl flex items-center justify-between">
+                <div className="p-2.5 bg-white/[0.04] rounded-xl flex items-center justify-between border border-white/[0.06]">
                   <div>
-                    <span className="text-slate-500 font-JakartaMedium block text-[10px]">National Identity (NIN)</span>
-                    <span className="font-mono font-bold text-slate-800">9281-7264-819</span>
+                    <span className="text-neutral-400 font-JakartaMedium block text-[10px]">National Identity (NIN)</span>
+                    <span className="font-mono font-bold text-white">9281-7264-819</span>
                   </div>
-                  <span className="text-[10px] text-emerald-600 font-JakartaBold">NIMC Verified</span>
+                  <span className="text-[10px] text-emerald-400 font-JakartaBold">NIMC Verified</span>
                 </div>
               </div>
             </div>
 
             {/* Support & Safety Dispatch */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-xs space-y-2.5">
-              <h4 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wide">
+            <div className="glass-panel rounded-3xl border border-white/10 p-4 shadow-xs space-y-2.5">
+              <h4 className="text-xs font-JakartaBold text-neutral-300 uppercase tracking-wide">
                 Support & Emergency
               </h4>
 
               <div className="space-y-2">
                 <button
                   onClick={() => setSafetyModalOpen(true)}
-                  className="w-full p-3 rounded-2xl bg-red-50 hover:bg-red-100 border border-red-200 text-left flex items-center justify-between transition-colors"
+                  className="w-full p-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 text-left flex items-center justify-between transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
-                    <ShieldAlert className="w-4 h-4 text-red-600" />
+                    <ShieldAlert className="w-4 h-4 text-red-400" />
                     <div>
-                      <span className="text-xs font-JakartaBold text-red-900 block">
+                      <span className="text-xs font-JakartaBold text-red-300 block">
                         Emergency SOS & Lagos 112
                       </span>
-                      <span className="text-[10px] text-red-700">Immediate police & medical dispatch</span>
+                      <span className="text-[10px] text-red-400/80">Immediate police & medical dispatch</span>
                     </div>
                   </div>
                   <ChevronRight className="w-4 h-4 text-red-400" />
@@ -447,18 +447,18 @@ export const DriverHomeScreen: React.FC = () => {
 
                 <a
                   href="tel:+2348002762337"
-                  className="w-full p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left flex items-center justify-between transition-colors"
+                  className="w-full p-3 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-left flex items-center justify-between transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <Phone className="w-4 h-4 text-[#0286FF]" />
                     <div>
-                      <span className="text-xs font-JakartaBold text-slate-900 block">
+                      <span className="text-xs font-JakartaBold text-white block">
                         Broader Driver Support Helpline
                       </span>
-                      <span className="text-[10px] text-slate-400">+234 800 BROADER (Toll-Free)</span>
+                      <span className="text-[10px] text-neutral-400">+234 800 BROADER (Toll-Free)</span>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                  <ChevronRight className="w-4 h-4 text-neutral-400" />
                 </a>
               </div>
             </div>

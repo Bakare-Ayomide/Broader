@@ -65,9 +65,9 @@ export const ConfirmRideScreen: React.FC = () => {
     const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
     setIncomingDriverRequest({
       id: 'req_' + Date.now().toString().slice(-4),
-      passengerName: 'Chris Baker',
-      passengerRating: 4.92,
-      passengerImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80',
+      customerName: 'Chris Baker',
+      customerRating: 4.92,
+      customerImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80',
       pickup: userAddress || '15 Admiralty Way, Lekki Phase 1',
       destination: destinationAddress || 'Murtala Muhammed Airport (LOS), Ikeja',
       estimatedEarnings: Math.round(activeFare * 0.85),
@@ -125,9 +125,9 @@ export const ConfirmRideScreen: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full bg-[#F6F8FA] select-none">
-      {/* Navigation Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 shrink-0">
+    <div className="flex flex-col min-h-full bg-[#000000] text-white select-none">
+      {/* Navigation Header - Frosted Glass */}
+      <div className="flex items-center justify-between px-4 py-3 glass-nav border-b border-white/[0.08] shrink-0">
         <div className="flex items-center">
           <button
             onClick={() => {
@@ -139,20 +139,20 @@ export const ConfirmRideScreen: React.FC = () => {
                 setScreen('find-ride');
               }
             }}
-            className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors mr-3"
+            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors mr-3 text-neutral-300 hover:text-white"
             title="Back"
           >
-            <ArrowLeft className="w-4 h-4 text-slate-700" />
+            <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h2 className="text-base font-JakartaBold text-slate-900 leading-none">
+            <h2 className="text-base font-JakartaBold text-white leading-none">
               {rideStatus === 'searching'
                 ? 'Finding Driver'
                 : activeTrip
                 ? 'Active Ride'
                 : 'Select Vehicle'}
             </h2>
-            <span className="text-[11px] text-slate-400 font-JakartaMedium">
+            <span className="text-[11px] text-neutral-400 font-JakartaMedium">
               {rideStatus === 'searching'
                 ? 'Scanning nearby drivers...'
                 : activeTrip
@@ -166,7 +166,7 @@ export const ConfirmRideScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setScreen('wallet')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#0286FF] transition-all"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-[#0286FF] transition-all"
           title="Open Broader Wallet"
         >
           <Wallet className="w-3.5 h-3.5" />
@@ -183,16 +183,16 @@ export const ConfirmRideScreen: React.FC = () => {
         />
       </div>
 
-      {/* Route Addresses Summary Pill */}
-      <div className="mx-3 mb-2 px-3 py-2 bg-white rounded-xl border border-slate-200 text-[11px] flex items-center justify-between shadow-xs">
-        <div className="flex items-center gap-1.5 min-w-0 flex-1">
-          <div className="w-2 h-2 rounded-full bg-[#0286FF] shrink-0" />
-          <span className="font-JakartaSemiBold text-slate-700 truncate">
+      {/* Route Addresses Summary Pill - Frosted Glass */}
+      <div className="mx-3 mb-2 px-3.5 py-2.5 glass-panel rounded-2xl border border-white/[0.08] text-[11px] flex items-center justify-between shadow-xl">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="w-2 h-2 rounded-full bg-[#0286FF] shrink-0 shadow-[0_0_8px_#0286FF]" />
+          <span className="font-JakartaSemiBold text-neutral-200 truncate">
             {userAddress ? userAddress.split(',')[0] : 'Victoria Island'}
           </span>
-          <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
-          <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-          <span className="font-JakartaSemiBold text-slate-700 truncate">
+          <ChevronRight className="w-3 h-3 text-neutral-500 shrink-0" />
+          <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_8px_#34d399]" />
+          <span className="font-JakartaSemiBold text-neutral-200 truncate">
             {destinationAddress ? destinationAddress.split(',')[0] : 'Airport LOS'}
           </span>
         </div>
@@ -219,32 +219,32 @@ export const ConfirmRideScreen: React.FC = () => {
 
         {/* State 0: Vehicle Selection & Payment (Idle Booking Flow) */}
         {rideStatus === 'idle' && (
-          <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 space-y-4">
+          <div className="glass-panel rounded-3xl p-4 shadow-2xl border border-white/[0.08] backdrop-blur-2xl space-y-4">
             {/* Schedule success toast */}
             {scheduleSuccessMessage && (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-JakartaSemiBold text-emerald-800 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs font-JakartaSemiBold text-emerald-300 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>{scheduleSuccessMessage}</span>
               </div>
             )}
 
             {/* Error banner if wallet insufficient */}
             {errorMessage && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs font-JakartaSemiBold text-red-700 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs font-JakartaSemiBold text-red-300 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
             {/* Booking Mode Selector: Ride Now vs Schedule */}
-            <div className="flex p-1 bg-slate-100 rounded-2xl">
+            <div className="flex p-1 bg-white/[0.04] border border-white/[0.06] rounded-2xl">
               <button
                 type="button"
                 onClick={() => setBookingType('now')}
                 className={`flex-1 py-2 rounded-xl text-xs font-JakartaBold transition-all flex items-center justify-center gap-1.5 ${
                   bookingType === 'now'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white/10 text-white border border-white/20 shadow-md backdrop-blur-xl'
+                    : 'text-neutral-400 hover:text-white'
                 }`}
               >
                 <Clock className="w-3.5 h-3.5 text-[#0286FF]" />
@@ -255,64 +255,64 @@ export const ConfirmRideScreen: React.FC = () => {
                 onClick={() => setBookingType('schedule')}
                 className={`flex-1 py-2 rounded-xl text-xs font-JakartaBold transition-all flex items-center justify-center gap-1.5 ${
                   bookingType === 'schedule'
-                    ? 'bg-white text-[#0286FF] shadow-xs'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-md backdrop-blur-xl'
+                    : 'text-neutral-400 hover:text-white'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 <span>Schedule for Later</span>
               </button>
             </div>
 
             {/* Scheduled Date & Time Pickers */}
             {bookingType === 'schedule' && (
-              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-2.5">
+              <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-JakartaBold text-amber-900">Choose Pickup Schedule</span>
-                  <span className="text-[10px] font-JakartaMedium text-amber-700">Guaranteed arrival</span>
+                  <span className="text-xs font-JakartaBold text-amber-300">Choose Pickup Schedule</span>
+                  <span className="text-[10px] font-JakartaMedium text-amber-400">Guaranteed arrival</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] font-JakartaBold text-amber-900 block mb-1 uppercase">Date</label>
+                    <label className="text-[10px] font-JakartaBold text-amber-300 block mb-1 uppercase">Date</label>
                     <select
                       value={scheduledDate}
                       onChange={(e) => setScheduledDate(e.target.value)}
-                      className="w-full text-xs font-JakartaSemiBold bg-white border border-amber-200 rounded-xl px-2.5 py-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      className="w-full text-xs font-JakartaSemiBold bg-black/60 border border-white/15 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-amber-400"
                     >
-                      <option value="Tomorrow, Mar 8">Tomorrow, Mar 8</option>
-                      <option value="Sunday, Mar 9">Sunday, Mar 9</option>
-                      <option value="Monday, Mar 10">Monday, Mar 10</option>
-                      <option value="Tuesday, Mar 11">Tuesday, Mar 11</option>
-                      <option value="Wednesday, Mar 12">Wednesday, Mar 12</option>
+                      <option value="Tomorrow, Mar 8" className="bg-neutral-900 text-white">Tomorrow, Mar 8</option>
+                      <option value="Sunday, Mar 9" className="bg-neutral-900 text-white">Sunday, Mar 9</option>
+                      <option value="Monday, Mar 10" className="bg-neutral-900 text-white">Monday, Mar 10</option>
+                      <option value="Tuesday, Mar 11" className="bg-neutral-900 text-white">Tuesday, Mar 11</option>
+                      <option value="Wednesday, Mar 12" className="bg-neutral-900 text-white">Wednesday, Mar 12</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-JakartaBold text-amber-900 block mb-1 uppercase">Time</label>
+                    <label className="text-[10px] font-JakartaBold text-amber-300 block mb-1 uppercase">Time</label>
                     <select
                       value={scheduledTime}
                       onChange={(e) => setScheduledTime(e.target.value)}
-                      className="w-full text-xs font-JakartaSemiBold bg-white border border-amber-200 rounded-xl px-2.5 py-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      className="w-full text-xs font-JakartaSemiBold bg-black/60 border border-white/15 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-amber-400"
                     >
-                      <option value="06:30 AM">06:30 AM (Early flight)</option>
-                      <option value="08:00 AM">08:00 AM (Morning rush)</option>
-                      <option value="10:30 AM">10:30 AM (Off-peak)</option>
-                      <option value="02:00 PM">02:00 PM (Afternoon)</option>
-                      <option value="05:30 PM">05:30 PM (Evening commute)</option>
-                      <option value="08:00 PM">08:00 PM (Night ride)</option>
+                      <option value="06:30 AM" className="bg-neutral-900 text-white">06:30 AM (Early flight)</option>
+                      <option value="08:00 AM" className="bg-neutral-900 text-white">08:00 AM (Morning rush)</option>
+                      <option value="10:30 AM" className="bg-neutral-900 text-white">10:30 AM (Off-peak)</option>
+                      <option value="02:00 PM" className="bg-neutral-900 text-white">02:00 PM (Afternoon)</option>
+                      <option value="05:30 PM" className="bg-neutral-900 text-white">05:30 PM (Evening commute)</option>
+                      <option value="08:00 PM" className="bg-neutral-900 text-white">08:00 PM (Night ride)</option>
                     </select>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Feature 1: Vehicle Selection (All 9 vehicle types) */}
+            {/* Feature 1: Vehicle Selection with Lifelike 3D renders */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-JakartaBold text-slate-900 uppercase tracking-wider">
+                <h3 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
                   Available Broader Vehicles
                 </h3>
-                <span className="text-[10px] font-JakartaSemiBold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                  Real-time Backend Fares
+                <span className="text-[10px] font-JakartaSemiBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                  Real-time Lagos Fares
                 </span>
               </div>
 
@@ -320,9 +320,9 @@ export const ConfirmRideScreen: React.FC = () => {
             </div>
 
             {/* Feature 5: Payment Method Selector */}
-            <div className="pt-2 border-t border-slate-100">
+            <div className="pt-2 border-t border-white/[0.06]">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-JakartaBold text-slate-700 uppercase tracking-wider">
+                <span className="text-xs font-JakartaBold text-neutral-300 uppercase tracking-wider">
                   Payment Method
                 </span>
                 <button
@@ -345,20 +345,20 @@ export const ConfirmRideScreen: React.FC = () => {
                   }}
                   className={`p-2.5 rounded-2xl border text-left transition-all relative ${
                     selectedPaymentMethod === 'wallet'
-                      ? 'bg-[#E6F3FF] border-[#0286FF] ring-1 ring-[#0286FF]'
-                      : 'bg-white border-slate-200 hover:bg-slate-50'
+                      ? 'bg-blue-500/15 border-[#0286FF] ring-1 ring-[#0286FF]'
+                      : 'glass-panel border-white/[0.08] hover:bg-white/5'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <Wallet className="w-4 h-4 text-[#0286FF]" />
-                    <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1 rounded">
+                    <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1 rounded">
                       Instant
                     </span>
                   </div>
-                  <p className="text-xs font-JakartaBold text-slate-900 leading-tight">
+                  <p className="text-xs font-JakartaBold text-white leading-tight">
                     Wallet
                   </p>
-                  <p className="text-[10px] font-JakartaSemiBold text-slate-500 mt-0.5">
+                  <p className="text-[10px] font-JakartaSemiBold text-neutral-400 mt-0.5">
                     ₦{walletBalance.toLocaleString()}
                   </p>
                 </button>
@@ -372,15 +372,15 @@ export const ConfirmRideScreen: React.FC = () => {
                   }}
                   className={`p-2.5 rounded-2xl border text-left transition-all ${
                     selectedPaymentMethod === 'card'
-                      ? 'bg-[#E6F3FF] border-[#0286FF] ring-1 ring-[#0286FF]'
-                      : 'bg-white border-slate-200 hover:bg-slate-50'
+                      ? 'bg-blue-500/15 border-[#0286FF] ring-1 ring-[#0286FF]'
+                      : 'glass-panel border-white/[0.08] hover:bg-white/5'
                   }`}
                 >
-                  <CreditCard className="w-4 h-4 text-slate-700 mb-1" />
-                  <p className="text-xs font-JakartaBold text-slate-900 leading-tight">
+                  <CreditCard className="w-4 h-4 text-neutral-300 mb-1" />
+                  <p className="text-xs font-JakartaBold text-white leading-tight">
                     Card
                   </p>
-                  <p className="text-[10px] font-JakartaSemiBold text-slate-500 mt-0.5">
+                  <p className="text-[10px] font-JakartaSemiBold text-neutral-400 mt-0.5">
                     •••• 4242
                   </p>
                 </button>
@@ -394,16 +394,16 @@ export const ConfirmRideScreen: React.FC = () => {
                   }}
                   className={`p-2.5 rounded-2xl border text-left transition-all ${
                     selectedPaymentMethod === 'cash'
-                      ? 'bg-[#E6F3FF] border-[#0286FF] ring-1 ring-[#0286FF]'
-                      : 'bg-white border-slate-200 hover:bg-slate-50'
+                      ? 'bg-blue-500/15 border-[#0286FF] ring-1 ring-[#0286FF]'
+                      : 'glass-panel border-white/[0.08] hover:bg-white/5'
                   }`}
                 >
-                  <Banknote className="w-4 h-4 text-slate-700 mb-1" />
-                  <p className="text-xs font-JakartaBold text-slate-900 leading-tight">
+                  <Banknote className="w-4 h-4 text-neutral-300 mb-1" />
+                  <p className="text-xs font-JakartaBold text-white leading-tight">
                     Cash
                   </p>
-                  <p className="text-[10px] font-JakartaSemiBold text-slate-500 mt-0.5">
-                    Pay in vehicle
+                  <p className="text-[10px] font-JakartaSemiBold text-neutral-400 mt-0.5">
+                    Pay driver
                   </p>
                 </button>
               </div>
@@ -412,10 +412,10 @@ export const ConfirmRideScreen: React.FC = () => {
             {/* Total Fare & Confirm Booking Button */}
             <div className="pt-2">
               <div className="flex items-center justify-between mb-3 text-xs">
-                <span className="text-slate-500 font-JakartaMedium">
+                <span className="text-neutral-400 font-JakartaMedium">
                   {bookingType === 'schedule' ? 'Estimated Scheduled Fare' : 'Estimated Total Fare'}
                 </span>
-                <span className="text-base font-JakartaBold text-slate-900">
+                <span className="text-base font-JakartaBold text-white">
                   ₦{activeFare.toLocaleString()}
                 </span>
               </div>
@@ -423,7 +423,7 @@ export const ConfirmRideScreen: React.FC = () => {
               {bookingType === 'schedule' ? (
                 <button
                   onClick={handleConfirmSchedule}
-                  className="w-full py-4 rounded-full bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-JakartaBold text-sm shadow-md shadow-amber-500/25 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-full bg-amber-500 hover:bg-amber-400 active:scale-[0.99] text-white font-JakartaBold text-sm shadow-[0_0_20px_rgba(245,158,11,0.35)] transition-all flex items-center justify-center gap-2"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>Confirm Schedule for {scheduledDate.split(',')[0]} ({scheduledTime})</span>
@@ -431,7 +431,7 @@ export const ConfirmRideScreen: React.FC = () => {
               ) : (
                 <button
                   onClick={handleStartBooking}
-                  className="w-full py-4 rounded-full bg-[#0286FF] hover:bg-blue-600 active:scale-[0.99] text-white font-JakartaBold text-sm shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-full bg-[#0286FF] hover:bg-blue-500 active:scale-[0.99] text-white font-JakartaBold text-sm shadow-[0_0_20px_rgba(2,134,255,0.4)] transition-all flex items-center justify-center gap-2"
                 >
                   <span>Request {currentSelectedVehicle ? currentSelectedVehicle.name : 'Broader Ride'}</span>
                   <ChevronRight className="w-4 h-4" />

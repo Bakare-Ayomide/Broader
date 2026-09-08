@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
 import { requestBackendDriverMatch } from '../services/backendService';
 import { VehicleOption } from '../types';
-import { Radar, X, Car, Clock, ShieldCheck, MapPin } from 'lucide-react';
+import { getVehicle3DImage } from '../data/vehicleAssets';
+import { Radar, X, Clock, MapPin, Zap } from 'lucide-react';
 
 interface DriverSearchPanelProps {
   vehicle: VehicleOption;
@@ -97,18 +98,20 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
     }
   };
 
+  const vehicle3DImg = getVehicle3DImage(vehicle.category, vehicle.name);
+
   return (
-    <div className="flex flex-col bg-white rounded-3xl p-5 shadow-xl border border-slate-200 select-none animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="flex flex-col glass-panel rounded-3xl p-5 shadow-2xl border border-white/[0.08] backdrop-blur-2xl text-white select-none animate-in fade-in slide-in-from-bottom-4 duration-300">
       {/* Header with Radar Icon & Status */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-3">
-          <div className="relative w-10 h-10 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-[#0286FF]">
+          <div className="relative w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-[#0286FF]">
             <Radar className="w-5 h-5 animate-spin" style={{ animationDuration: '3s' }} />
-            <span className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-[#0286FF] ring-2 ring-white animate-ping" />
+            <span className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-[#0286FF] ring-2 ring-black animate-ping" />
           </div>
           <div>
-            <h3 className="text-base font-JakartaBold text-slate-900">Finding your ride</h3>
-            <p className="text-xs font-JakartaMedium text-slate-500">
+            <h3 className="text-base font-JakartaBold text-white">Finding your ride</h3>
+            <p className="text-xs font-JakartaMedium text-neutral-400">
               Connecting with nearby Broader drivers...
             </p>
           </div>
@@ -116,54 +119,60 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
 
         <button
           onClick={onCancelSearch}
-          className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
+          className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-neutral-300 hover:text-white transition-colors"
           title="Cancel search"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Search Radar Animation Card */}
-      <div className="my-4 p-4 rounded-2xl bg-[#F6F8FA] border border-slate-200/80 flex flex-col gap-3">
-        {/* Route snippet */}
-        <div className="flex items-start gap-2.5 text-xs">
-          <MapPin className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+      {/* Search Radar Animation Card with 3D Image */}
+      <div className="my-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-16 h-16 rounded-xl bg-black/60 border border-white/10 overflow-hidden relative shrink-0 flex items-center justify-center">
+            <img
+              src={vehicle3DImg}
+              alt={vehicle.name}
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+          </div>
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] uppercase font-bold text-slate-400">Pickup point</span>
-            <p className="font-JakartaMedium text-slate-800 truncate">{userAddress}</p>
+            <span className="text-[10px] font-JakartaBold uppercase tracking-wider text-blue-400">
+              Requested Vehicle
+            </span>
+            <p className="font-JakartaBold text-white text-sm truncate">{vehicle.name}</p>
+            <p className="font-JakartaMedium text-neutral-400 text-xs">
+              ₦{vehicle.price.toLocaleString()} • {selectedPaymentMethod.toUpperCase()}
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 text-xs">
-          <span className="text-slate-500 font-JakartaMedium">Requested Vehicle</span>
-          <span className="font-JakartaBold text-slate-800 flex items-center gap-1.5">
-            <Car className="w-3.5 h-3.5 text-[#0286FF]" />
-            {vehicle.name}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-500 font-JakartaMedium">Fare Estimate</span>
-          <span className="font-JakartaBold text-slate-900">
-            ₦{vehicle.price.toLocaleString()} ({selectedPaymentMethod.toUpperCase()})
-          </span>
+        {/* Route snippet */}
+        <div className="flex items-start gap-2.5 text-xs pt-2 border-t border-white/[0.06]">
+          <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+          <div className="min-w-0 flex-1">
+            <span className="text-[10px] uppercase font-bold text-neutral-500">Pickup point</span>
+            <p className="font-JakartaMedium text-neutral-200 truncate">{userAddress}</p>
+          </div>
         </div>
 
         <div className="flex items-center justify-between text-xs pt-1">
-          <span className="text-slate-400 flex items-center gap-1">
-            <Clock className="w-3 h-3 text-slate-400" />
+          <span className="text-neutral-400 flex items-center gap-1 font-JakartaMedium">
+            <Clock className="w-3 h-3 text-neutral-400" />
             Searching: 00:{secondsElapsed.toString().padStart(2, '0')}
           </span>
-          <span className="text-[11px] font-JakartaSemiBold text-blue-600">
+          <span className="text-[11px] font-JakartaSemiBold text-blue-400">
             Radius: ~3.5 km
           </span>
         </div>
       </div>
 
       {/* Progress Bar Animation */}
-      <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-4">
+      <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden mb-4 border border-white/5">
         <div
-          className="h-full bg-[#0286FF] rounded-full transition-all duration-300"
+          className="h-full bg-gradient-to-r from-[#0286FF] to-sky-400 rounded-full transition-all duration-300 shadow-[0_0_10px_#0286FF]"
           style={{ width: `${Math.min(100, (secondsElapsed / 5) * 100)}%` }}
         />
       </div>
@@ -173,7 +182,7 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
         <button
           type="button"
           onClick={onCancelSearch}
-          className="flex-1 py-3 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-JakartaBold text-xs transition-all text-center"
+          className="flex-1 py-3 rounded-full border border-white/10 glass-panel hover:bg-white/10 text-neutral-300 font-JakartaBold text-xs transition-all text-center"
         >
           Cancel Request
         </button>
@@ -181,9 +190,10 @@ export const DriverSearchPanel: React.FC<DriverSearchPanelProps> = ({
         <button
           type="button"
           onClick={handleInstantMatch}
-          className="flex-1 py-3 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/20 transition-all text-center"
+          className="flex-1 py-3 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_16px_rgba(2,134,255,0.4)] transition-all text-center flex items-center justify-center gap-1.5"
         >
-          Instant Match
+          <Zap className="w-3.5 h-3.5" />
+          <span>Instant Match</span>
         </button>
       </div>
     </div>

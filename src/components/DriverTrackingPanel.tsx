@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
+import { getVehicle3DImage } from '../data/vehicleAssets';
 import {
   Phone,
   MessageSquare,
@@ -39,7 +40,6 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
   const [rating, setRating] = useState(5);
   const [tipAmount, setTipAmount] = useState<number>(500);
   const [selectedCompliments, setSelectedCompliments] = useState<string[]>(['Clean Car', 'Safe Driving']);
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   if (!activeTrip) return null;
 
@@ -78,58 +78,59 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
         return {
           title: 'Driver is arriving',
           eta: `${activeTrip.etaMinutes} mins away • ${activeTrip.distanceKm} km`,
-          color: 'bg-blue-500',
+          color: 'bg-blue-400',
         };
       case 'driver_arrived':
         return {
           title: 'Driver has arrived',
           eta: 'Waiting at pickup point',
-          color: 'bg-amber-500',
+          color: 'bg-amber-400',
         };
       case 'ride_started':
         return {
           title: 'On Trip to Destination',
           eta: `Estimated ${Math.max(5, activeTrip.etaMinutes * 2)} mins to drop-off`,
-          color: 'bg-emerald-500',
+          color: 'bg-emerald-400',
         };
       case 'ride_completed':
         return {
           title: 'Trip Completed',
           eta: 'Arrived at destination',
-          color: 'bg-emerald-600',
+          color: 'bg-emerald-500',
         };
       default:
         return {
           title: 'Driver Assigned',
           eta: 'Connecting...',
-          color: 'bg-blue-500',
+          color: 'bg-blue-400',
         };
     }
   };
 
   const statusInfo = getStatusBadge();
+  const vehicle3DImg = getVehicle3DImage(activeTrip.vehicle?.category || activeTrip.vehicle?.name, activeTrip.driver.car_model);
 
   return (
-    <div className="flex flex-col bg-white rounded-3xl p-4 shadow-xl border border-slate-200 select-none animate-in fade-in slide-in-from-bottom-3 duration-300">
+    <div className="flex flex-col glass-panel rounded-3xl p-4 shadow-2xl border border-white/[0.08] backdrop-blur-2xl text-white select-none animate-in fade-in slide-in-from-bottom-3 duration-300">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="mb-2.5 px-3.5 py-2 bg-slate-900 text-white text-xs font-JakartaSemiBold rounded-xl shadow-lg flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+        <div className="mb-2.5 px-3.5 py-2 bg-neutral-900 border border-white/10 text-white text-xs font-JakartaSemiBold rounded-xl shadow-lg flex items-center justify-between animate-in fade-in slide-in-from-top-2">
           <span>{toastMessage}</span>
-          <button onClick={() => setToastMessage(null)} className="text-slate-400 hover:text-white ml-2">
+          <button onClick={() => setToastMessage(null)} className="text-neutral-400 hover:text-white ml-2">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
       {/* Top Status Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-        <div className="flex items-center gap-2">
-          <span className={`w-2.5 h-2.5 rounded-full ${statusInfo.color} animate-pulse`} />
+      <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+        <div className="flex items-center gap-2.5">
+          <span className={`w-2.5 h-2.5 rounded-full ${statusInfo.color} animate-pulse shadow-[0_0_8px_currentColor]`} />
           <div>
-            <h4 className="text-sm font-JakartaBold text-slate-900 leading-none">
+            <h4 className="text-sm font-JakartaBold text-white leading-none">
               {statusInfo.title}
             </h4>
-            <span className="text-[11px] font-JakartaMedium text-slate-500 mt-1 block">
+            <span className="text-[11px] font-JakartaMedium text-neutral-400 mt-1 block">
               {statusInfo.eta}
             </span>
           </div>
@@ -139,7 +140,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
         {rideStatus !== 'ride_completed' && (
           <button
             onClick={advanceRideLifecycle}
-            className="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-[#0286FF] text-[11px] font-JakartaBold flex items-center gap-1 transition-all border border-blue-200"
+            className="px-2.5 py-1 rounded-full bg-blue-500/15 hover:bg-blue-500/25 text-[#0286FF] text-[11px] font-JakartaBold flex items-center gap-1 transition-all border border-blue-500/30"
             title="Advance to next trip status"
           >
             <span>
@@ -154,57 +155,66 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
         )}
       </div>
 
-      {/* Driver & Vehicle Profile Details Card */}
-      <div className="flex items-center justify-between py-3 border-b border-slate-100">
-        <div className="flex items-center gap-3">
-          <div className="relative">
+      {/* Driver & 3D Vehicle Details Card */}
+      <div className="flex items-center justify-between py-3 border-b border-white/[0.06] gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="relative shrink-0">
             <img
               src={activeTrip.driver.profile_image_url}
               alt={activeTrip.driver.first_name}
-              className="w-13 h-13 rounded-full object-cover border-2 border-white shadow-sm"
+              className="w-12 h-12 rounded-full object-cover border border-white/20 shadow-md"
             />
-            <div className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-900 text-[10px] font-black px-1 rounded-full flex items-center gap-0.5 shadow-xs">
-              <Star className="w-2.5 h-2.5 fill-slate-900" />
+            <div className="absolute -bottom-1 -right-1 bg-amber-400 text-black text-[10px] font-black px-1 rounded-full flex items-center gap-0.5 shadow-xs">
+              <Star className="w-2.5 h-2.5 fill-black" />
               <span>{activeTrip.driver.rating || 4.9}</span>
             </div>
           </div>
 
-          <div>
-            <h4 className="text-sm font-JakartaBold text-slate-900">
+          <div className="min-w-0">
+            <h4 className="text-sm font-JakartaBold text-white truncate">
               {activeTrip.driver.first_name} {activeTrip.driver.last_name}
             </h4>
-            <p className="text-xs font-JakartaMedium text-slate-600 flex items-center gap-1 mt-0.5">
-              <span>{activeTrip.driver.car_model || 'Toyota Corolla'}</span>
+            <p className="text-xs font-JakartaMedium text-neutral-400 flex items-center gap-1 mt-0.5 truncate">
+              <span>{activeTrip.driver.car_model || 'Corolla'}</span>
               <span>•</span>
-              <span className="text-slate-500">{activeTrip.driver.car_color || 'Silver'}</span>
+              <span className="text-neutral-500">{activeTrip.driver.car_color || 'Silver'}</span>
             </p>
-            <div className="mt-1 inline-block px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[11px] font-JakartaBold text-slate-800 tracking-wider">
+            <div className="mt-1 inline-block px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-JakartaBold text-neutral-300 tracking-wider">
               {activeTrip.driver.plate_number || 'EKY-428-AB'}
             </div>
           </div>
         </div>
 
-        <div className="text-right">
-          <span className="text-base font-JakartaBold text-slate-900">
+        {/* 3D Vehicle image thumbnail & fare */}
+        <div className="flex flex-col items-end shrink-0">
+          <div className="w-16 h-12 rounded-xl bg-black/70 border border-white/10 overflow-hidden relative mb-1 flex items-center justify-center">
+            <img
+              src={vehicle3DImg}
+              alt="Vehicle"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <span className="text-sm font-JakartaBold text-white">
             ₦{activeTrip.fare.toLocaleString()}
           </span>
-          <span className="block text-[10px] font-JakartaMedium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded uppercase mt-0.5">
-            {activeTrip.paymentMethod.toUpperCase()} • {activeTrip.paymentStatus}
+          <span className="text-[9px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded uppercase mt-0.5">
+            {activeTrip.paymentMethod.toUpperCase()}
           </span>
         </div>
       </div>
 
-      {/* Safety Ride PIN Verification Banner */}
-      <div className="py-2.5 px-3 bg-blue-50/70 border border-blue-200/80 rounded-2xl my-2 flex items-center justify-between">
+      {/* Safety Ride PIN Verification Banner - Frosted Glass */}
+      <div className="py-2.5 px-3 bg-blue-500/10 border border-blue-500/25 rounded-2xl my-2 flex items-center justify-between">
         <div>
-          <span className="text-[10px] font-JakartaBold text-blue-800 uppercase tracking-wider block">
+          <span className="text-[10px] font-JakartaBold text-blue-400 uppercase tracking-wider block">
             Trip Safety PIN
           </span>
-          <p className="text-[11px] text-blue-700 font-JakartaMedium">
+          <p className="text-[11px] text-neutral-300 font-JakartaMedium">
             Share with driver to start ride
           </p>
         </div>
-        <div className="flex items-center gap-1.5 bg-white border border-blue-300 px-3 py-1 rounded-xl shadow-xs">
+        <div className="flex items-center gap-1.5 bg-black/60 border border-blue-400/40 px-3 py-1 rounded-xl shadow-lg">
           <span className="text-base font-JakartaExtraBold font-mono text-[#0286FF] tracking-widest">
             {activeTrip.ridePin || '4921'}
           </span>
@@ -213,28 +223,28 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
       {/* Pickup Instructions if provided */}
       {activeTrip.pickupInstructions && (
-        <div className="px-3 py-1.5 bg-amber-50/80 border border-amber-200 rounded-xl mb-2 text-[11px] text-amber-900 font-JakartaMedium flex items-start gap-1.5">
-          <span className="font-JakartaBold shrink-0 text-amber-800">Note to Driver:</span>
+        <div className="px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-xl mb-2 text-[11px] text-amber-300 font-JakartaMedium flex items-start gap-1.5">
+          <span className="font-JakartaBold shrink-0 text-amber-400">Note to Driver:</span>
           <span className="truncate">{activeTrip.pickupInstructions}</span>
         </div>
       )}
 
       {/* Pickup & Destination Locations */}
-      <div className="py-2.5 space-y-2 border-b border-slate-100 text-xs">
+      <div className="py-2.5 space-y-2 border-b border-white/[0.06] text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+          <div className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0">
             <div className="w-1.5 h-1.5 rounded-full bg-[#0286FF]" />
           </div>
-          <span className="font-JakartaMedium text-slate-700 truncate">
+          <span className="font-JakartaMedium text-neutral-300 truncate">
             {activeTrip.pickup.address}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <div className="w-4 h-4 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
           </div>
-          <span className="font-JakartaMedium text-slate-700 truncate">
+          <span className="font-JakartaMedium text-neutral-300 truncate">
             {activeTrip.destination.address}
           </span>
         </div>
@@ -246,7 +256,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
           {/* Call Button */}
           <button
             onClick={() => setShowCallModal(true)}
-            className="flex flex-col items-center justify-center py-2 rounded-2xl bg-[#F6F8FA] hover:bg-slate-100 active:scale-95 text-slate-700 transition-all border border-slate-200/70"
+            className="flex flex-col items-center justify-center py-2 rounded-2xl glass-panel hover:bg-white/10 active:scale-95 text-neutral-300 hover:text-white transition-all border border-white/[0.08]"
             title="Call driver"
           >
             <Phone className="w-4 h-4 text-[#0286FF]" />
@@ -259,7 +269,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
               if (onOpenChat) onOpenChat();
               else setScreen('chat');
             }}
-            className="flex flex-col items-center justify-center py-2 rounded-2xl bg-[#F6F8FA] hover:bg-slate-100 active:scale-95 text-slate-700 transition-all border border-slate-200/70"
+            className="flex flex-col items-center justify-center py-2 rounded-2xl glass-panel hover:bg-white/10 active:scale-95 text-neutral-300 hover:text-white transition-all border border-white/[0.08]"
             title="Chat with driver"
           >
             <MessageSquare className="w-4 h-4 text-[#0286FF]" />
@@ -269,27 +279,27 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
           {/* Share Trip */}
           <button
             onClick={handleShareTrip}
-            className="flex flex-col items-center justify-center py-2 rounded-2xl bg-[#F6F8FA] hover:bg-slate-100 active:scale-95 text-slate-700 transition-all border border-slate-200/70"
+            className="flex flex-col items-center justify-center py-2 rounded-2xl glass-panel hover:bg-white/10 active:scale-95 text-neutral-300 hover:text-white transition-all border border-white/[0.08]"
             title="Share live trip"
           >
-            <Share2 className="w-4 h-4 text-slate-600" />
+            <Share2 className="w-4 h-4 text-neutral-400" />
             <span className="text-[10px] font-JakartaSemiBold mt-1">Share</span>
           </button>
 
           {/* Emergency / Safety SOS */}
           <button
             onClick={() => setShowEmergencyModal(true)}
-            className="flex flex-col items-center justify-center py-2 rounded-2xl bg-red-50 hover:bg-red-100 active:scale-95 text-red-600 transition-all border border-red-200"
+            className="flex flex-col items-center justify-center py-2 rounded-2xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 transition-all border border-red-500/30"
             title="Emergency safety"
           >
-            <ShieldAlert className="w-4 h-4 text-red-600" />
+            <ShieldAlert className="w-4 h-4 text-red-400" />
             <span className="text-[10px] font-JakartaBold mt-1">SOS</span>
           </button>
 
           {/* Cancel Ride */}
           <button
             onClick={() => setShowCancelModal(true)}
-            className="flex flex-col items-center justify-center py-2 rounded-2xl bg-[#F6F8FA] hover:bg-red-50 active:scale-95 text-slate-500 hover:text-red-600 transition-all border border-slate-200/70"
+            className="flex flex-col items-center justify-center py-2 rounded-2xl glass-panel hover:bg-red-500/10 active:scale-95 text-neutral-400 hover:text-red-400 transition-all border border-white/[0.08]"
             title="Cancel ride"
           >
             <X className="w-4 h-4" />
@@ -299,17 +309,17 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
       ) : (
         /* Ride Completed Rating & Review Experience */
         <div className="pt-2 flex flex-col items-center text-center">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-1">
+          <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mb-1">
             <CheckCircle2 className="w-6 h-6" />
           </div>
-          <h4 className="text-sm font-JakartaBold text-slate-900">Trip Completed</h4>
-          <p className="text-[11px] font-JakartaMedium text-slate-500">
+          <h4 className="text-sm font-JakartaBold text-white">Trip Completed</h4>
+          <p className="text-[11px] font-JakartaMedium text-neutral-400">
             ₦{activeTrip.fare.toLocaleString()} settled via {activeTrip.paymentMethod.toUpperCase()}
           </p>
 
           {/* Rating Stars */}
           <div className="my-2.5 flex flex-col items-center">
-            <p className="text-[11px] font-JakartaSemiBold text-slate-700 mb-1">
+            <p className="text-[11px] font-JakartaSemiBold text-neutral-300 mb-1">
               How was your trip with {activeTrip.driver.first_name}?
             </p>
             <div className="flex items-center gap-1.5">
@@ -321,7 +331,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
                 >
                   <Star
                     className={`w-6 h-6 ${
-                      star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
+                      star <= rating ? 'fill-amber-400 text-amber-400' : 'text-neutral-600'
                     }`}
                   />
                 </button>
@@ -331,7 +341,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
           {/* Compliments */}
           <div className="w-full my-1 text-left">
-            <p className="text-[10px] font-JakartaSemiBold text-slate-500 mb-1">Add Compliments:</p>
+            <p className="text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Add Compliments:</p>
             <div className="flex flex-wrap gap-1">
               {['Clean Car', 'Smooth Ride', 'Great Music', 'Safe Driver', 'Polite'].map((tag) => {
                 const isSelected = selectedCompliments.includes(tag);
@@ -345,10 +355,10 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
                         setSelectedCompliments([...selectedCompliments, tag]);
                       }
                     }}
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-JakartaSemiBold transition-all ${
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-JakartaSemiBold transition-all ${
                       isSelected
-                        ? 'bg-blue-50 text-[#0286FF] border border-blue-200'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-blue-500/20 text-[#0286FF] border border-blue-500/30'
+                        : 'glass-panel text-neutral-400 hover:text-white border border-white/10'
                     }`}
                   >
                     {tag}
@@ -360,16 +370,16 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
           {/* Tip Options */}
           <div className="w-full my-1.5 text-left">
-            <p className="text-[10px] font-JakartaSemiBold text-slate-500 mb-1">Driver Tip (Optional):</p>
-            <div className="grid grid-cols-4 gap-1">
+            <p className="text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">Driver Tip (Optional):</p>
+            <div className="grid grid-cols-4 gap-1.5">
               {[0, 500, 1000, 2000].map((tip) => (
                 <button
                   key={tip}
                   onClick={() => setTipAmount(tip)}
-                  className={`py-1 rounded-xl text-[10px] font-JakartaBold border transition-all ${
+                  className={`py-1.5 rounded-xl text-[10px] font-JakartaBold border transition-all ${
                     tipAmount === tip
-                      ? 'bg-emerald-500 text-white border-emerald-500'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm'
+                      : 'glass-panel text-neutral-300 border-white/10 hover:bg-white/5'
                   }`}
                 >
                   {tip === 0 ? 'No Tip' : `₦${tip.toLocaleString()}`}
@@ -383,7 +393,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
               cancelActiveTrip();
               setScreen('rides');
             }}
-            className="w-full mt-2 py-2.5 rounded-full bg-[#0286FF] hover:bg-blue-600 text-white font-JakartaBold text-xs shadow-md shadow-blue-500/20 transition-all"
+            className="w-full mt-2 py-3 rounded-full bg-[#0286FF] hover:bg-blue-500 text-white font-JakartaBold text-xs shadow-[0_0_16px_rgba(2,134,255,0.4)] transition-all"
           >
             Submit Review & Done
           </button>
@@ -392,35 +402,35 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
       {/* Call Modal Dialog */}
       {showCallModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-slate-200 animate-in zoom-in-95">
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="glass-panel w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-white/15 animate-in zoom-in-95 text-white">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-base font-JakartaBold text-slate-900">Call Driver</h4>
+              <h4 className="text-base font-JakartaBold text-white">Call Driver</h4>
               <button
                 onClick={() => setShowCallModal(false)}
-                className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"
+                className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-neutral-300 hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl mb-4">
+            <div className="flex items-center gap-3 p-3 bg-white/[0.04] border border-white/[0.06] rounded-2xl mb-4">
               <img
                 src={activeTrip.driver.profile_image_url}
                 alt="Driver"
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div>
-                <p className="font-JakartaBold text-sm text-slate-900">
+                <p className="font-JakartaBold text-sm text-white">
                   {activeTrip.driver.first_name} {activeTrip.driver.last_name}
                 </p>
-                <p className="text-xs text-slate-500 font-JakartaMedium">
+                <p className="text-xs text-neutral-400 font-JakartaMedium">
                   {activeTrip.driver.phone || '+234 803 112 3344'}
                 </p>
               </div>
             </div>
             <a
               href={`tel:${activeTrip.driver.phone || '+2348031123344'}`}
-              className="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-JakartaBold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 transition-all"
+              className="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-JakartaBold text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
             >
               <Phone className="w-4 h-4" />
               <span>Dial Driver Directly</span>
@@ -431,20 +441,20 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
       {/* Emergency / Safety SOS Modal */}
       {showEmergencyModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-red-200 animate-in zoom-in-95">
-            <div className="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-3">
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="glass-panel w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-red-500/30 animate-in zoom-in-95 text-white">
+            <div className="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 flex items-center justify-center mb-3">
               <AlertTriangle className="w-5 h-5" />
             </div>
-            <h4 className="text-base font-JakartaBold text-slate-900">Broader Safety & SOS</h4>
-            <p className="text-xs font-JakartaMedium text-slate-500 mt-1 mb-4 leading-relaxed">
+            <h4 className="text-base font-JakartaBold text-white">Broader Safety & SOS</h4>
+            <p className="text-xs font-JakartaMedium text-neutral-400 mt-1 mb-4 leading-relaxed">
               If you feel unsafe or in danger, immediately contact emergency services or our 24/7 Broader Safety team.
             </p>
 
             <div className="space-y-2">
               <a
                 href="tel:112"
-                className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-JakartaBold text-xs flex items-center justify-center gap-2 shadow-sm"
+                className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-JakartaBold text-xs flex items-center justify-center gap-2 shadow-sm"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Call Emergency (112 / 767)</span>
@@ -452,15 +462,15 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
               <a
                 href="tel:+2348002762337"
-                className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-JakartaBold text-xs flex items-center justify-center gap-2 shadow-sm"
+                className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-JakartaBold text-xs flex items-center justify-center gap-2 shadow-sm border border-white/15"
               >
-                <ShieldAlert className="w-3.5 h-3.5" />
+                <ShieldAlert className="w-3.5 h-3.5 text-blue-400" />
                 <span>Broader 24/7 Safety Desk</span>
               </a>
 
               <button
                 onClick={() => setShowEmergencyModal(false)}
-                className="w-full py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-JakartaSemiBold text-xs"
+                className="w-full py-2 rounded-xl text-neutral-400 hover:text-white font-JakartaSemiBold text-xs"
               >
                 Dismiss
               </button>
@@ -471,17 +481,17 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
 
       {/* Cancel Confirmation Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-slate-200 animate-in zoom-in-95">
-            <h4 className="text-base font-JakartaBold text-slate-900">Cancel Ride?</h4>
-            <p className="text-xs font-JakartaMedium text-slate-500 mt-1 mb-4 leading-relaxed">
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="glass-panel w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-white/15 animate-in zoom-in-95 text-white">
+            <h4 className="text-base font-JakartaBold text-white">Cancel Ride?</h4>
+            <p className="text-xs font-JakartaMedium text-neutral-400 mt-1 mb-4 leading-relaxed">
               Are you sure you want to cancel this trip with {activeTrip.driver.first_name}? No cancellation fee will be charged within 5 minutes.
             </p>
 
             <div className="flex gap-2">
               <button
                 onClick={() => setShowCancelModal(false)}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-JakartaBold text-xs hover:bg-slate-50"
+                className="flex-1 py-2.5 rounded-xl border border-white/15 text-neutral-300 font-JakartaBold text-xs hover:bg-white/10"
               >
                 Keep Ride
               </button>
@@ -492,7 +502,7 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
                   cancelActiveTrip();
                   showToast('Trip cancelled');
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-JakartaBold text-xs shadow-md shadow-red-600/20"
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-JakartaBold text-xs shadow-md shadow-red-600/30"
               >
                 Yes, Cancel
               </button>

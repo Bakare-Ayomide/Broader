@@ -1,5 +1,6 @@
 import React from 'react';
 import { Ride } from '../types';
+import { getVehicle3DImage } from '../data/vehicleAssets';
 
 interface RideCardProps {
   ride: Ride;
@@ -25,71 +26,76 @@ export const RideCard: React.FC<RideCardProps> = ({ ride, onPress }) => {
       ? `₦${Math.round(ride.fare_price).toLocaleString()}`
       : `₦${Math.round(ride.fare_price * 100).toLocaleString()}`;
 
+  const vehicle3DImg = getVehicle3DImage(ride.vehicle_type, ride.driver?.car_model);
+
   return (
     <div
       onClick={onPress}
-      className="flex flex-col bg-white rounded-2xl shadow-sm border border-neutral-100 p-4 mb-3 hover:border-blue-200 transition-all cursor-pointer"
+      className="flex flex-col glass-panel glass-panel-hover rounded-2xl p-4 mb-3 cursor-pointer select-none backdrop-blur-xl transition-all"
     >
-      <div className="flex items-center gap-3">
-        {/* Map Snapshot Thumbnail */}
-        <div className="relative w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-slate-200 opacity-80" />
-          <svg className="w-16 h-16 text-blue-400 opacity-60" viewBox="0 0 100 100">
-            <path d="M 10 90 Q 50 10 90 90" stroke="currentColor" strokeWidth="4" fill="none" />
-            <circle cx="10" cy="90" r="6" fill="#0286FF" />
-            <circle cx="90" cy="90" r="6" fill="#EF4444" />
-          </svg>
-          <div className="absolute bottom-1 right-1 px-1 py-0.5 rounded bg-white/90 text-[9px] font-bold text-slate-700 shadow-xs">
-            LAGOS
+      <div className="flex items-center gap-3.5">
+        {/* Lifelike 3D Vehicle Render Thumbnail */}
+        <div className="relative w-20 h-20 rounded-xl bg-black/60 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+          <img
+            src={vehicle3DImg}
+            alt={ride.vehicle_type || 'Vehicle'}
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+          <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-JakartaBold text-blue-400 border border-white/10 shadow-xs">
+            3D
           </div>
         </div>
 
         {/* Origin & Destination route points */}
-        <div className="flex flex-col justify-between flex-1 min-w-0 py-1 gap-2.5">
+        <div className="flex flex-col justify-between flex-1 min-w-0 py-0.5 gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+            <div className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0">
               <div className="w-1.5 h-1.5 rounded-full bg-[#0286FF]" />
             </div>
-            <p className="text-sm font-JakartaMedium text-slate-800 truncate" title={ride.origin_address}>
+            <p className="text-xs font-JakartaSemiBold text-neutral-200 truncate" title={ride.origin_address}>
               {ride.origin_address}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <div className="w-4 h-4 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
             </div>
-            <p className="text-sm font-JakartaMedium text-slate-800 truncate" title={ride.destination_address}>
+            <p className="text-xs font-JakartaSemiBold text-neutral-200 truncate" title={ride.destination_address}>
               {ride.destination_address}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Ride Details Block */}
-      <div className="flex flex-col w-full mt-3.5 bg-[#F6F8FA] rounded-xl p-3 text-xs gap-2 border border-slate-100">
+      {/* Ride Details Block in Frosted Sub-card */}
+      <div className="flex flex-col w-full mt-3 bg-white/[0.03] rounded-xl p-3 text-xs gap-2 border border-white/[0.06]">
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-JakartaMedium">Date & Time</span>
-          <span className="text-slate-800 font-JakartaBold">
+          <span className="text-neutral-400 font-JakartaMedium">Date & Time</span>
+          <span className="text-neutral-200 font-JakartaBold">
             {formatDate(ride.created_at)} • {ride.ride_time} mins
           </span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-JakartaMedium">Driver</span>
-          <span className="text-slate-800 font-JakartaBold">
+          <span className="text-neutral-400 font-JakartaMedium">Driver</span>
+          <span className="text-neutral-200 font-JakartaBold">
             {ride.driver.first_name} {ride.driver.last_name}
           </span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-JakartaMedium">Vehicle</span>
-          <span className="text-slate-800 font-JakartaBold">{ride.driver.car_seats} seats</span>
+          <span className="text-neutral-400 font-JakartaMedium">Vehicle</span>
+          <span className="text-neutral-200 font-JakartaBold">
+            {ride.driver.car_model || ride.vehicle_type}
+          </span>
         </div>
 
-        <div className="flex items-center justify-between pt-1 border-t border-slate-200/60">
-          <span className="text-slate-500 font-JakartaMedium">Payment Status</span>
-          <span className="font-JakartaBold text-emerald-600 uppercase tracking-wider text-[11px] bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+        <div className="flex items-center justify-between pt-1.5 border-t border-white/[0.06]">
+          <span className="text-neutral-400 font-JakartaMedium">Payment</span>
+          <span className="font-JakartaBold text-emerald-400 uppercase tracking-wider text-[11px] bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/30">
             {ride.payment_status} • {formattedPrice}
           </span>
         </div>

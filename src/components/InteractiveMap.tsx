@@ -191,7 +191,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   return (
     <div
-      className={`relative w-full ${height} bg-[#E9EEF4] rounded-2xl overflow-hidden shadow-inner border border-slate-200 select-none group ${className}`}
+      className={`relative w-full ${height} bg-[#06070a] rounded-2xl overflow-hidden shadow-2xl border border-white/[0.08] select-none group ${className}`}
     >
       {/* Map Graphic SVG */}
       <svg
@@ -203,49 +203,49 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       >
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#D3DDE8" strokeWidth="1" />
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#141824" strokeWidth="1" />
           </pattern>
           <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#0286FF" />
-            <stop offset="100%" stopColor="#00C48C" />
+            <stop offset="100%" stopColor="#38BDF8" />
           </linearGradient>
           <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.25" />
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.4" />
           </filter>
         </defs>
 
         {/* Map Base Texture / Roads */}
-        <rect width="500" height="350" fill="#E8EEF5" />
+        <rect width="500" height="350" fill="#07090e" />
         <rect width="500" height="350" fill="url(#grid)" />
 
         {/* Water bodies (Lagos Lagoon & Atlantic coastline representation) */}
         <path
           d="M 370 0 Q 420 85 435 180 T 500 350 L 500 0 Z"
-          fill="#CCE3F5"
-          opacity="0.85"
+          fill="#0a1220"
+          opacity="0.9"
         />
-        <text x="435" y="65" fill="#6B96B8" fontSize="9.5" fontWeight="600" className="italic">
+        <text x="435" y="65" fill="#3b6282" fontSize="9.5" fontWeight="600" className="italic">
           Lagos Lagoon
         </text>
 
         {/* Atlantic Gulf waters at bottom */}
         <path
           d="M 0 315 Q 250 295 500 325 L 500 350 L 0 350 Z"
-          fill="#CCE3F5"
-          opacity="0.6"
+          fill="#08101c"
+          opacity="0.8"
         />
-        <text x="18" y="338" fill="#6B96B8" fontSize="8" fontWeight="600" className="italic">
+        <text x="18" y="338" fill="#3b6282" fontSize="8" fontWeight="600" className="italic">
           Gulf of Guinea (Atlantic)
         </text>
 
         {/* Green Zones / Parks */}
-        <rect x="30" y="45" width="80" height="85" rx="12" fill="#D3EDD9" opacity="0.85" />
-        <text x="42" y="88" fill="#5B9A68" fontSize="8.5" fontWeight="600">
+        <rect x="30" y="45" width="80" height="85" rx="12" fill="#0d1811" opacity="0.85" stroke="#162e20" strokeWidth="1" />
+        <text x="42" y="88" fill="#48bb78" fontSize="8.5" fontWeight="600">
           Tarkwa Bay
         </text>
 
-        <rect x="260" y="225" width="105" height="65" rx="8" fill="#D3EDD9" opacity="0.85" />
-        <text x="275" y="258" fill="#5B9A68" fontSize="8.5" fontWeight="600">
+        <rect x="260" y="225" width="105" height="65" rx="8" fill="#0d1811" opacity="0.85" stroke="#162e20" strokeWidth="1" />
+        <text x="275" y="258" fill="#48bb78" fontSize="8.5" fontWeight="600">
           Lekki Nature Park
         </text>
 
@@ -253,22 +253,23 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <path
           d="M -10 180 C 120 180 200 160 320 210 S 480 250 510 270"
           fill="none"
-          stroke="#FFFFFF"
+          stroke="#1b2230"
           strokeWidth="14"
         />
         <path
           d="M -10 180 C 120 180 200 160 320 210 S 480 250 510 270"
           fill="none"
-          stroke="#FCD34D"
-          strokeWidth="3"
+          stroke="#0286FF"
+          strokeWidth="2.5"
           strokeDasharray="8 6"
+          strokeOpacity="0.7"
         />
 
         {/* Cross Boulevards (Ozumba Mbadiwe & Adeola Odeku) */}
-        <path d="M 180 -10 L 180 360" fill="none" stroke="#FFFFFF" strokeWidth="12" />
-        <path d="M 320 -10 L 320 360" fill="none" stroke="#FFFFFF" strokeWidth="10" />
-        <path d="M -10 80 L 380 80" fill="none" stroke="#FFFFFF" strokeWidth="10" />
-        <path d="M 80 -10 L 80 360" fill="none" stroke="#FFFFFF" strokeWidth="8" />
+        <path d="M 180 -10 L 180 360" fill="none" stroke="#1a202c" strokeWidth="12" />
+        <path d="M 320 -10 L 320 360" fill="none" stroke="#1a202c" strokeWidth="10" />
+        <path d="M -10 80 L 380 80" fill="none" stroke="#1a202c" strokeWidth="10" />
+        <path d="M 80 -10 L 80 360" fill="none" stroke="#1a202c" strokeWidth="8" />
 
         {/* Route Line if destination set */}
         {showRoute && (destinationLatitude || isTracking) && (
@@ -279,7 +280,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               stroke="#0286FF"
               strokeWidth="6"
               strokeLinecap="round"
-              strokeOpacity="0.2"
+              strokeOpacity="0.3"
             />
             <path
               d="M 180 160 Q 230 140 280 180 T 360 260"
@@ -305,7 +306,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 cx={lm.x}
                 cy={lm.y}
                 r="5.5"
-                fill="#FFFFFF"
+                fill="#000000"
                 stroke={lm.color}
                 strokeWidth="2"
               />
@@ -317,14 +318,14 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 width="88"
                 height="15"
                 rx="4"
-                fill="#FFFFFF"
-                stroke="#E2E8F0"
+                fill="#0e131d"
+                stroke="#2a364f"
                 strokeWidth="1"
               />
               <text
                 x={lm.x}
                 y={lm.y - 9}
-                fill="#334155"
+                fill="#e2e8f0"
                 fontSize="7"
                 fontWeight="700"
                 textAnchor="middle"
@@ -512,18 +513,18 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         )}
       </svg>
 
-      {/* Map Overlay Controls */}
+      {/* Map Overlay Controls - Frosted Glass */}
       <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
         <button
           onClick={() => setZoom((z) => Math.min(z + 0.2, 1.8))}
-          className="w-8 h-8 rounded-lg bg-white/95 text-slate-700 shadow-md flex items-center justify-center hover:bg-white active:scale-95 transition-all text-xs"
+          className="w-8 h-8 rounded-lg bg-black/60 backdrop-blur-xl border border-white/10 text-neutral-300 shadow-lg flex items-center justify-center hover:text-white hover:bg-white/10 active:scale-95 transition-all text-xs"
           title="Zoom In"
         >
           <Plus className="w-4 h-4" />
         </button>
         <button
           onClick={() => setZoom((z) => Math.max(z - 0.2, 0.8))}
-          className="w-8 h-8 rounded-lg bg-white/95 text-slate-700 shadow-md flex items-center justify-center hover:bg-white active:scale-95 transition-all text-xs"
+          className="w-8 h-8 rounded-lg bg-black/60 backdrop-blur-xl border border-white/10 text-neutral-300 shadow-lg flex items-center justify-center hover:text-white hover:bg-white/10 active:scale-95 transition-all text-xs"
           title="Zoom Out"
         >
           <Minus className="w-4 h-4" />
@@ -533,15 +534,17 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             setZoom(1);
             setPan({ x: 0, y: 0 });
           }}
-          className="w-8 h-8 rounded-lg bg-white/95 text-[#0286FF] shadow-md flex items-center justify-center hover:bg-white active:scale-95 transition-all"
+          className="w-8 h-8 rounded-lg bg-black/60 backdrop-blur-xl border border-white/10 text-[#0286FF] shadow-lg flex items-center justify-center hover:bg-white/10 active:scale-95 transition-all"
           title="Re-center Location"
         >
           <Crosshair className="w-4 h-4" />
         </button>
         <button
           onClick={() => setShowLandmarks((prev) => !prev)}
-          className={`w-8 h-8 rounded-lg shadow-md flex items-center justify-center transition-all ${
-            showLandmarks ? 'bg-[#0286FF] text-white' : 'bg-white/95 text-slate-700 hover:bg-white'
+          className={`w-8 h-8 rounded-lg shadow-lg flex items-center justify-center transition-all border ${
+            showLandmarks
+              ? 'bg-[#0286FF] text-white border-[#0286FF]'
+              : 'bg-black/60 backdrop-blur-xl border-white/10 text-neutral-300 hover:text-white hover:bg-white/10'
           }`}
           title={showLandmarks ? 'Hide Landmarks' : 'Show Landmarks'}
         >
@@ -549,17 +552,17 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </button>
       </div>
 
-      {/* Map Footer Info Pill */}
-      <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full text-[11px] font-medium text-slate-700 shadow-sm flex items-center gap-1.5 border border-slate-200">
+      {/* Map Footer Info Pill - Frosted Glass */}
+      <div className="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xl px-3 py-1.5 rounded-full text-[11px] font-JakartaMedium text-neutral-300 shadow-xl flex items-center gap-2 border border-white/10">
         <span
           className={`w-2 h-2 rounded-full ${
             isRadarSearching
-              ? 'bg-blue-500 animate-ping'
+              ? 'bg-blue-400 animate-ping'
               : isTracking
-              ? 'bg-emerald-500 animate-pulse'
+              ? 'bg-emerald-400 animate-pulse'
               : activeService === 'ambulance'
-              ? 'bg-red-500'
-              : 'bg-emerald-500'
+              ? 'bg-red-400'
+              : 'bg-emerald-400'
           }`}
         />
         <span>
