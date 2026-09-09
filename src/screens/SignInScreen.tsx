@@ -100,13 +100,16 @@ export const SignInScreen: React.FC = () => {
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#9EE6B5]/10 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Header Banner Image */}
-      <div className="relative w-full h-[180px] bg-black overflow-hidden shrink-0">
+      <div className="relative w-full h-[180px] bg-gradient-to-b from-[#0a1510] to-[#020408] overflow-hidden shrink-0 flex items-center justify-center pt-5">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(158,230,181,0.18)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute bottom-4 w-48 h-3.5 bg-black/80 rounded-full blur-[3px] pointer-events-none" />
         <img
-          src="/assets/images/signup-car.png"
+          src="https://admin.cashquora.com/vehicle/car.png"
           alt="Sign In"
-          className="w-full h-full object-cover object-center opacity-85"
+          referrerPolicy="no-referrer"
+          className="max-h-28 w-auto object-contain relative z-10 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.95)]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#020408] via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020408] via-transparent to-transparent pointer-events-none" />
         <div className="absolute top-4 left-5 z-20">
           <BroaderLogo className="h-6 w-auto" />
         </div>

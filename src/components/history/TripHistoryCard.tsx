@@ -74,7 +74,17 @@ export const TripHistoryCard: React.FC<TripHistoryCardProps> = ({
             </span>
           </div>
 
-          <span className="text-[11px] font-mono text-neutral-400">{dateStr}</span>
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-7 relative flex items-center justify-center">
+              <img
+                src={vehicle3DImg}
+                alt={ride.vehicle_type || 'Vehicle'}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+              />
+            </div>
+            <span className="text-[11px] font-mono text-neutral-400">{dateStr}</span>
+          </div>
         </div>
 
         {/* Mini Map Polyline (Reference Screenshot 4) */}

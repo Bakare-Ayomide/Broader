@@ -1,30 +1,38 @@
-import car3d from '../assets/images/car_3d_transparent.png';
-import suv3d from '../assets/images/suv_3d_transparent.png';
-import motorcycle3d from '../assets/images/bike_3d_transparent.png';
-import dispatch3d from '../assets/images/dispatch_3d_transparent.png';
-import bicycle3d from '../assets/images/bicycle_3d_transparent.png';
-import tricycle3d from '../assets/images/keke_3d_transparent.png';
-import van3d from '../assets/images/van_3d_transparent.png';
-import bus3d from '../assets/images/bus_3d_transparent.png';
-import pickup3d from '../assets/images/pickup_3d_transparent.png';
-import truck3d from '../assets/images/truck_3d_transparent.png';
-import taxi3d from '../assets/images/taxi_3d_transparent.png';
-import ambulance3d from '../assets/images/ambulance_3d_transparent.png';
+/**
+ * Global Official Transportation Vehicle Assets
+ * EXACT URLs requested by the user. Only these 7 transportation vehicles are permitted.
+ * Ambulance = https://admin.cashquora.com/vehicle/ambulance.png
+ * Van = https://admin.cashquora.com/vehicle/van.png
+ * Delivery Motorcycle = https://admin.cashquora.com/vehicle/Dispatch.png
+ * Bicycle = https://admin.cashquora.com/vehicle/bicycle.png
+ * Tricycle = https://admin.cashquora.com/vehicle/tricycle.png
+ * Lorry/Freight = https://admin.cashquora.com/vehicle/fright.png
+ * Car = https://admin.cashquora.com/vehicle/car.png
+ */
+export const GLOBAL_VEHICLE_ASSETS = {
+  ambulance: 'https://admin.cashquora.com/vehicle/ambulance.png',
+  van: 'https://admin.cashquora.com/vehicle/van.png',
+  deliveryMotorcycle: 'https://admin.cashquora.com/vehicle/Dispatch.png',
+  bicycle: 'https://admin.cashquora.com/vehicle/bicycle.png',
+  tricycle: 'https://admin.cashquora.com/vehicle/tricycle.png',
+  lorryFreight: 'https://admin.cashquora.com/vehicle/fright.png',
+  car: 'https://admin.cashquora.com/vehicle/car.png',
+} as const;
 
 export const VEHICLE_3D_ASSETS = {
-  car: car3d,
-  suv: suv3d,
-  taxi: taxi3d,
-  motorcycle: motorcycle3d,
-  dispatch: dispatch3d,
-  bicycle: bicycle3d,
-  tricycle: tricycle3d,
-  van: van3d,
-  bus: bus3d,
-  pickup: pickup3d,
-  lorry: truck3d,
-  truck: truck3d,
-  ambulance: ambulance3d,
+  car: GLOBAL_VEHICLE_ASSETS.car,
+  suv: GLOBAL_VEHICLE_ASSETS.car,
+  taxi: GLOBAL_VEHICLE_ASSETS.car,
+  motorcycle: GLOBAL_VEHICLE_ASSETS.deliveryMotorcycle,
+  dispatch: GLOBAL_VEHICLE_ASSETS.deliveryMotorcycle,
+  bicycle: GLOBAL_VEHICLE_ASSETS.bicycle,
+  tricycle: GLOBAL_VEHICLE_ASSETS.tricycle,
+  van: GLOBAL_VEHICLE_ASSETS.van,
+  bus: GLOBAL_VEHICLE_ASSETS.van,
+  pickup: GLOBAL_VEHICLE_ASSETS.lorryFreight,
+  lorry: GLOBAL_VEHICLE_ASSETS.lorryFreight,
+  truck: GLOBAL_VEHICLE_ASSETS.lorryFreight,
+  ambulance: GLOBAL_VEHICLE_ASSETS.ambulance,
 };
 
 export interface VehicleSpec {
@@ -50,7 +58,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 4,
     etaMinutes: 3,
     basePriceNaira: 2800,
-    image: car3d,
+    image: GLOBAL_VEHICLE_ASSETS.car,
     description: 'Modern executive comfort sedan for seamless daily travel.',
     speed: '45 km/h avg',
     luggage: '2 bags',
@@ -63,7 +71,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 4,
     etaMinutes: 2,
     basePriceNaira: 2400,
-    image: taxi3d,
+    image: GLOBAL_VEHICLE_ASSETS.car,
     description: 'Licensed city taxi with bus-lane clearance and fixed rate.',
     speed: '50 km/h avg',
     luggage: '2 bags',
@@ -76,7 +84,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 4,
     etaMinutes: 5,
     basePriceNaira: 5200,
-    image: suv3d,
+    image: GLOBAL_VEHICLE_ASSETS.car,
     description: 'High-riding luxury SUV with leather upholstery and climate control.',
     speed: '55 km/h avg',
     luggage: '4 bags',
@@ -89,7 +97,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 3,
     etaMinutes: 2,
     basePriceNaira: 950,
-    image: tricycle3d,
+    image: GLOBAL_VEHICLE_ASSETS.tricycle,
     description: 'Zippy 3-wheeler designed to beat inner-city traffic bottlenecks.',
     speed: '30 km/h avg',
     luggage: '1 backpack',
@@ -102,7 +110,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 1,
     etaMinutes: 1,
     basePriceNaira: 1200,
-    image: motorcycle3d,
+    image: GLOBAL_VEHICLE_ASSETS.deliveryMotorcycle,
     description: 'Rapid point-to-point courier and passenger express bike.',
     speed: '60 km/h avg',
     luggage: '1 helmet provided',
@@ -115,7 +123,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 1,
     etaMinutes: 2,
     basePriceNaira: 1400,
-    image: dispatch3d,
+    image: GLOBAL_VEHICLE_ASSETS.deliveryMotorcycle,
     description: 'Dedicated courier delivery bike with sealed secure cargo top-box.',
     speed: '55 km/h avg',
     luggage: 'Up to 25kg cargo box',
@@ -128,7 +136,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 1,
     etaMinutes: 6,
     basePriceNaira: 650,
-    image: bicycle3d,
+    image: GLOBAL_VEHICLE_ASSETS.bicycle,
     description: 'Silent pedal-assist commuter bike for short eco-friendly hops.',
     speed: '20 km/h avg',
     luggage: 'Front basket',
@@ -141,7 +149,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 7,
     etaMinutes: 6,
     basePriceNaira: 6800,
-    image: van3d,
+    image: GLOBAL_VEHICLE_ASSETS.van,
     description: 'Spacious multi-passenger van for teams, families, and airport runs.',
     speed: '40 km/h avg',
     luggage: '6 bags',
@@ -154,7 +162,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 18,
     etaMinutes: 10,
     basePriceNaira: 16500,
-    image: bus3d,
+    image: GLOBAL_VEHICLE_ASSETS.van,
     description: 'High-capacity shuttle bus for corporate events and excursions.',
     speed: '40 km/h avg',
     luggage: '18 bags',
@@ -167,7 +175,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 5,
     etaMinutes: 7,
     basePriceNaira: 8500,
-    image: pickup3d,
+    image: GLOBAL_VEHICLE_ASSETS.lorryFreight,
     description: 'Heavy duty dual-cab pickup truck with open-bed cargo capacity.',
     speed: '45 km/h avg',
     luggage: '500kg payload',
@@ -180,7 +188,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 2,
     etaMinutes: 12,
     basePriceNaira: 24000,
-    image: truck3d,
+    image: GLOBAL_VEHICLE_ASSETS.lorryFreight,
     description: 'Full commercial container truck for bulky cargo and logistics.',
     speed: '35 km/h avg',
     luggage: '3,000kg payload',
@@ -193,7 +201,7 @@ export const BROADER_3D_FLEET: VehicleSpec[] = [
     seats: 3,
     etaMinutes: 2,
     basePriceNaira: 15000,
-    image: ambulance3d,
+    image: GLOBAL_VEHICLE_ASSETS.ambulance,
     description: 'Equipped emergency response unit with onboard paramedic kit.',
     speed: '70 km/h siren',
     luggage: 'Full stretcher',
@@ -205,38 +213,60 @@ export function getVehicle3DImage(category?: string, name?: string): string {
   const label = (name || '').toLowerCase();
 
   if (cat.includes('ambulance') || label.includes('ambulance') || label.includes('medic')) {
-    return VEHICLE_3D_ASSETS.ambulance;
+    return GLOBAL_VEHICLE_ASSETS.ambulance;
   }
-  if (cat.includes('dispatch') || label.includes('dispatch') || label.includes('courier') || label.includes('package') || label.includes('delivery')) {
-    return VEHICLE_3D_ASSETS.dispatch;
-  }
-  if (cat.includes('taxi') || cat.includes('cab') || label.includes('taxi') || label.includes('cab')) {
-    return VEHICLE_3D_ASSETS.taxi;
-  }
-  if (cat.includes('tricycle') || label.includes('keke') || label.includes('rickshaw')) {
-    return VEHICLE_3D_ASSETS.tricycle;
+  if (
+    cat.includes('dispatch') ||
+    label.includes('dispatch') ||
+    cat.includes('courier') ||
+    label.includes('courier') ||
+    cat.includes('delivery') ||
+    label.includes('delivery') ||
+    cat.includes('package') ||
+    label.includes('package') ||
+    cat.includes('motorcycle') ||
+    cat.includes('bike') ||
+    label.includes('okada') ||
+    label.includes('moto')
+  ) {
+    return GLOBAL_VEHICLE_ASSETS.deliveryMotorcycle;
   }
   if (cat.includes('bicycle') || label.includes('bicycle') || label.includes('pedal')) {
-    return VEHICLE_3D_ASSETS.bicycle;
+    return GLOBAL_VEHICLE_ASSETS.bicycle;
   }
-  if (cat.includes('bike') || cat.includes('motorcycle') || label.includes('okada') || label.includes('moto')) {
-    return VEHICLE_3D_ASSETS.motorcycle;
+  if (cat.includes('tricycle') || label.includes('keke') || label.includes('rickshaw')) {
+    return GLOBAL_VEHICLE_ASSETS.tricycle;
   }
-  if (cat.includes('suv') || label.includes('prado') || label.includes('comfort') || label.includes('executive')) {
-    return VEHICLE_3D_ASSETS.suv;
+  if (
+    cat.includes('lorry') ||
+    cat.includes('truck') ||
+    cat.includes('freight') ||
+    cat.includes('pickup') ||
+    cat.includes('cargo') ||
+    label.includes('truck') ||
+    label.includes('freight') ||
+    label.includes('lorry') ||
+    label.includes('haul') ||
+    label.includes('pickup') ||
+    label.includes('canter') ||
+    label.includes('flatbed') ||
+    label.includes('container')
+  ) {
+    return GLOBAL_VEHICLE_ASSETS.lorryFreight;
   }
-  if (cat.includes('bus') || label.includes('coaster') || label.includes('shuttle')) {
-    return VEHICLE_3D_ASSETS.bus;
-  }
-  if (cat.includes('van') || label.includes('van') || label.includes('hiace') || label.includes('transit')) {
-    return VEHICLE_3D_ASSETS.van;
-  }
-  if (cat.includes('pickup') || label.includes('pickup') || label.includes('hilux')) {
-    return VEHICLE_3D_ASSETS.pickup;
-  }
-  if (cat.includes('lorry') || cat.includes('truck') || label.includes('truck') || label.includes('freight') || label.includes('haul')) {
-    return VEHICLE_3D_ASSETS.truck;
+  if (
+    cat.includes('van') ||
+    cat.includes('bus') ||
+    label.includes('van') ||
+    label.includes('bus') ||
+    label.includes('hiace') ||
+    label.includes('coaster') ||
+    label.includes('shuttle') ||
+    label.includes('transit')
+  ) {
+    return GLOBAL_VEHICLE_ASSETS.van;
   }
 
-  return VEHICLE_3D_ASSETS.car;
+  // Default to Car
+  return GLOBAL_VEHICLE_ASSETS.car;
 }

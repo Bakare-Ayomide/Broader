@@ -14,21 +14,21 @@ export const WelcomeScreen: React.FC = () => {
       title: 'The perfect ride is just a tap away',
       tag: 'LAGOS URBAN MOBILITY',
       description: 'Find premium sedans, executive chauffeurs, tricycles, and express rides effortlessly across Lagos.',
-      image: '/assets/images/onboarding1.png',
+      image: 'https://admin.cashquora.com/vehicle/car.png',
     },
     {
       id: 2,
       title: 'Move people, freight & cargo seamlessly',
       tag: 'ALL-IN-ONE ECOSYSTEM',
       description: 'From interstate logistics and commercial haulage to emergency ambulances and car rentals.',
-      image: '/assets/images/onboarding2.png',
+      image: 'https://admin.cashquora.com/vehicle/fright.png',
     },
     {
       id: 3,
       title: "Your journey, your way. Let's ride.",
       tag: 'REAL-TIME TELEMETRICS',
       description: 'Live 3D navigation, verified background-checked drivers, and transparent cashless pricing.',
-      image: '/assets/images/onboarding3.png',
+      image: 'https://admin.cashquora.com/vehicle/van.png',
     },
   ];
 
