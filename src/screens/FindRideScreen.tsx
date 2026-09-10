@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
 import { InteractiveMap } from '../components/InteractiveMap';
 import {
@@ -12,9 +12,12 @@ import {
   Search,
   X,
   Check,
+  Globe,
+  Compass,
 } from 'lucide-react';
 import { POPULAR_DESTINATIONS, LAGOS_COORDS } from '../data/mockData';
 import { RecentDestination, SavedLocation } from '../types';
+import { searchNominatim, GeocodingResult } from '../services/nominatimService';
 
 export const FindRideScreen: React.FC = () => {
   const setScreen = useBroaderStore((s) => s.setScreen);
@@ -34,6 +37,32 @@ export const FindRideScreen: React.FC = () => {
   const [toInput, setToInput] = useState(destinationAddress || "Murtala Muhammed Int'l Airport (LOS), Ikeja");
   const [fromInput, setFromInput] = useState(userAddress || LAGOS_COORDS.address);
   const [activeInput, setActiveInput] = useState<'from' | 'to'>('to');
+  const [nominatimResults, setNominatimResults] = useState<GeocodingResult[]>([]);
+  const [isSearchingOsm, setIsSearchingOsm] = useState(false);
+
+  // Debounced OpenStreetMap Nominatim search
+  useEffect(() => {
+    const currentQuery = activeInput === 'to' ? toInput : fromInput;
+    if (!currentQuery || currentQuery.trim().length < 2) {
+      setNominatimResults([]);
+      setIsSearchingOsm(false);
+      return;
+    }
+
+    setIsSearchingOsm(true);
+    const timer = setTimeout(async () => {
+      try {
+        const results = await searchNominatim(currentQuery);
+        setNominatimResults(results);
+      } catch (e) {
+        setNominatimResults([]);
+      } finally {
+        setIsSearchingOsm(false);
+      }
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [toInput, fromInput, activeInput]);
 
   // Handle selecting a destination
   const handleSelectLocation = (loc: {
@@ -308,6 +337,51 @@ export const FindRideScreen: React.FC = () => {
               })}
             </div>
           </div>
+
+          {/* OpenStreetMap Nominatim Live Search Results */}
+          {nominatimResults.length > 0 && (
+            <div className="mt-3">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[11px] font-JakartaBold text-neutral-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Globe className="w-3 h-3 text-[#9EE6B5]" />
+                  OpenStreetMap Places
+                </span>
+                <span className="text-[9px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 px-2 py-0.5 rounded-full border border-[#9EE6B5]/20">
+                  Nominatim
+                </span>
+              </div>
+              <div className="space-y-1.5 max-h-[160px] overflow-y-auto">
+                {nominatimResults.map((res, rIdx) => (
+                  <div
+                    key={rIdx}
+                    onClick={() =>
+                      handleSelectLocation({
+                        name: res.name,
+                        address: res.displayName,
+                        latitude: res.lat,
+                        longitude: res.lng,
+                      })
+                    }
+                    className="flex items-center justify-between p-2.5 rounded-2xl border text-xs cursor-pointer transition-all glass-panel border-white/[0.08] hover:border-[#9EE6B5] hover:bg-white/5"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-6 h-6 rounded-full bg-[#9EE6B5]/15 flex items-center justify-center shrink-0 text-[#9EE6B5]">
+                        <Compass className="w-3 h-3" />
+                      </div>
+                      <div className="truncate">
+                        <p className="font-JakartaSemiBold text-white truncate leading-tight">
+                          {res.name}
+                        </p>
+                        <p className="text-[10px] text-neutral-400 font-JakartaMedium truncate">
+                          {res.displayName}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Popular / Recent Destinations */}
           <div className="mt-4">

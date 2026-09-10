@@ -38,9 +38,15 @@ import {
   User,
   ChevronUp,
   ChevronDown,
+  Camera,
 } from 'lucide-react';
 import { SavedLocation, RecentDestination, ScreenType } from '../types';
 import { soundEngine } from '../services/soundNotification';
+import {
+  MapLayerControlModal,
+  MapLayerSettings,
+} from '../components/map/MapLayerControlModal';
+import { MapillaryViewerModal } from '../components/map/MapillaryViewerModal';
 
 type ModalType = 'none' | 'parts' | 'parcel' | 'rental' | 'freight' | 'ambulance';
 type SheetSnap = 'collapsed' | 'expanded';
@@ -66,8 +72,17 @@ export const HomeScreen: React.FC = () => {
   // Map Controls State
   const [bearing, setBearing] = useState(18);
   const [is3D, setIs3D] = useState(true);
-  const [mapMode, setMapMode] = useState<'vector' | 'satellite'>('vector');
   const [recenterKey, setRecenterKey] = useState(0);
+  const [isLayerModalOpen, setIsLayerModalOpen] = useState(false);
+  const [isStreetViewerOpen, setIsStreetViewerOpen] = useState(false);
+  const [layerSettings, setLayerSettings] = useState<MapLayerSettings>({
+    baseStyle: 'dark',
+    showBuildings: true,
+    showRoute: true,
+    showTraffic: true,
+    showPois: true,
+    showStreetImagery: true,
+  });
 
   // Touch & Pointer Draggable Bottom Sheet State
   const [sheetSnap, setSheetSnap] = useState<SheetSnap>('collapsed');
@@ -188,11 +203,13 @@ export const HomeScreen: React.FC = () => {
       {/* ========================================================================= */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-auto">
         <InteractiveMap
-          key={`map-${recenterKey}-${mapMode}`}
           showRoute={true}
           height="h-full"
           className="w-full h-full rounded-none border-0 shadow-none"
           hideControls={true}
+          is3DTiltProp={is3D}
+          layerSettingsProp={layerSettings}
+          recenterTrigger={recenterKey}
           onSelectLandmark={(name, lat, lng) => {
             soundEngine.playClick();
             setDestinationLocation({ latitude: lat, longitude: lng, address: name });
@@ -377,18 +394,26 @@ export const HomeScreen: React.FC = () => {
           3D
         </button>
 
-        {/* Satellite / Vector Layers Toggle */}
+        {/* Street Level 360 Imagery (Mapillary) */}
         <button
           onClick={() => {
             soundEngine.playClick();
-            setMapMode((m) => (m === 'vector' ? 'satellite' : 'vector'));
+            setIsStreetViewerOpen(true);
           }}
-          className={`w-9 h-9 rounded-full backdrop-blur-2xl border flex items-center justify-center shadow-xl active:scale-90 transition-all ${
-            mapMode === 'satellite'
-              ? 'bg-[#9EE6B5] text-black border-[#9EE6B5]'
-              : 'bg-[#0c1420]/85 border-white/15 text-neutral-300 hover:text-white'
-          }`}
-          title="Toggle Map Layers"
+          className="w-9 h-9 rounded-full backdrop-blur-2xl border border-white/15 bg-[#0c1420]/85 text-emerald-400 hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all"
+          title="Open Mapillary Street-Level Imagery"
+        >
+          <Camera className="w-4 h-4" />
+        </button>
+
+        {/* Map Layers & Services Control Modal */}
+        <button
+          onClick={() => {
+            soundEngine.playClick();
+            setIsLayerModalOpen(true);
+          }}
+          className="w-9 h-9 rounded-full backdrop-blur-2xl border border-white/15 bg-[#0c1420]/85 text-[#9EE6B5] hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all"
+          title="Open Map Layers Control (OSM, OSRM, 3D, Traffic)"
         >
           <Layers className="w-4 h-4" />
         </button>
@@ -774,6 +799,24 @@ export const HomeScreen: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Map Layer Control Modal (OSM, OSRM, 3D Buildings, Traffic, Satellite) */}
+      <MapLayerControlModal
+        isOpen={isLayerModalOpen}
+        onClose={() => setIsLayerModalOpen(false)}
+        layers={layerSettings}
+        onChangeLayers={(updated) => setLayerSettings((prev) => ({ ...prev, ...updated }))}
+        onOpenStreetViewer={() => {
+          setIsLayerModalOpen(false);
+          setIsStreetViewerOpen(true);
+        }}
+      />
+
+      {/* Mapillary Street-Level 360 Imagery Viewer */}
+      <MapillaryViewerModal
+        isOpen={isStreetViewerOpen}
+        onClose={() => setIsStreetViewerOpen(false)}
+      />
     </div>
   );
 };
