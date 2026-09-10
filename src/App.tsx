@@ -110,11 +110,6 @@ export default function App() {
         return (
           <div className="relative w-full h-screen overflow-hidden">
             <HomeScreen />
-            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40 pointer-events-none">
-              <div className="pointer-events-auto">
-                <BottomNav />
-              </div>
-            </div>
           </div>
         );
     }

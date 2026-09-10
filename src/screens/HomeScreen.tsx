@@ -439,12 +439,12 @@ export const HomeScreen: React.FC = () => {
         style={{
           transform: `translateY(${
             sheetSnap === 'collapsed'
-              ? `calc(100% - 170px + ${Math.min(0, dragOffset)}px)`
+              ? `calc(100% - 164px + ${Math.min(0, dragOffset)}px)`
               : `${Math.max(0, dragOffset)}px`
           })`,
           transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
-        className="fixed inset-x-0 bottom-0 z-40 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto h-[84vh] max-h-[88vh] flex flex-col rounded-t-[32px] bg-[#0c1420]/92 backdrop-blur-2xl border-t border-x border-white/[0.12] shadow-[0_-16px_48px_rgba(0,0,0,0.95)] overflow-hidden"
+        className="fixed inset-x-0 bottom-[68px] z-40 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto h-[calc(84vh-68px)] max-h-[calc(88vh-68px)] flex flex-col rounded-t-[32px] bg-[#0c1420]/95 backdrop-blur-2xl border-t border-x border-white/[0.12] shadow-[0_-16px_48px_rgba(0,0,0,0.95)] overflow-hidden"
       >
         {/* DRAG HEADER & SWIPE CUES (ALWAYS VISIBLE IN COLLAPSED & EXPANDED) */}
         <div
@@ -735,39 +735,39 @@ export const HomeScreen: React.FC = () => {
             )}
           </div>
         </div>
+      </div>
 
-        {/* ===================================================================== */}
-        {/* DOCKED BOTTOM NAVIGATION BAR (FIXED INSIDE BOTTOM SHEET) */}
-        {/* ===================================================================== */}
-        <div className="w-full px-4 pb-3 pt-1 shrink-0 select-none bg-[#0c1420]/95 border-t border-white/[0.08]">
-          <nav className="w-full h-[56px] rounded-2xl px-3 flex items-center justify-around bg-[#131b26]/90 border border-white/[0.1] shadow-[0_8px_24px_rgba(0,0,0,0.8)]">
-            {navTabs.map((tab) => {
-              const focused = currentScreen === tab.id;
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    soundEngine.playClick();
-                    setScreen(tab.id);
-                  }}
-                  className="flex flex-col items-center justify-center p-1 transition-all group active:scale-95"
-                  aria-label={tab.label}
+      {/* ========================================================================= */}
+      {/* STATIC BOTTOM NAVIGATION DOCK (FIXED AT SCREEN BOTTOM) */}
+      {/* ========================================================================= */}
+      <div className="fixed inset-x-0 bottom-0 z-50 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-4 pb-3 pt-1.5 select-none pointer-events-auto bg-[#0c1420]/95 backdrop-blur-2xl border-t border-white/[0.08] shadow-[0_-8px_32px_rgba(0,0,0,0.9)]">
+        <nav className="w-full h-[56px] rounded-2xl px-3 flex items-center justify-around bg-[#131b26]/90 border border-white/[0.1] shadow-[0_8px_24px_rgba(0,0,0,0.8)]">
+          {navTabs.map((tab) => {
+            const focused = currentScreen === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  soundEngine.playClick();
+                  setScreen(tab.id);
+                }}
+                className="flex flex-col items-center justify-center p-1 transition-all group active:scale-95"
+                aria-label={tab.label}
+              >
+                <div
+                  className={`rounded-xl w-10 h-10 flex items-center justify-center transition-all ${
+                    focused
+                      ? 'bg-[#9EE6B5] text-[#020408] shadow-[0_0_14px_rgba(158,230,181,0.6)] font-bold'
+                      : 'bg-transparent text-neutral-400 hover:text-white hover:bg-white/[0.06]'
+                  }`}
                 >
-                  <div
-                    className={`rounded-xl w-10 h-10 flex items-center justify-center transition-all ${
-                      focused
-                        ? 'bg-[#9EE6B5] text-[#020408] shadow-[0_0_14px_rgba(158,230,181,0.6)] font-bold'
-                        : 'bg-transparent text-neutral-400 hover:text-white hover:bg-white/[0.06]'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4 stroke-[2.2]" />
-                  </div>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
+                  <Icon className="w-4 h-4 stroke-[2.2]" />
+                </div>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* ========================================================================= */}

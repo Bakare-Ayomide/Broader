@@ -16,8 +16,8 @@ export const BottomNav: React.FC = () => {
   ];
 
   return (
-    <div className="w-full px-4 pb-4 pt-1 shrink-0 pointer-events-auto select-none bg-transparent">
-      <nav className="w-full glass-nav h-[60px] rounded-2xl px-3 flex items-center justify-around shadow-[0_12px_40px_rgba(0,0,0,0.95)] border border-white/[0.12] backdrop-blur-2xl">
+    <div className="w-full px-4 pb-3 pt-1.5 shrink-0 pointer-events-auto select-none bg-[#0c1420]/95 backdrop-blur-2xl border-t border-white/[0.08] shadow-[0_-8px_32px_rgba(0,0,0,0.9)]">
+      <nav className="w-full h-[56px] rounded-2xl px-3 flex items-center justify-around bg-[#131b26]/90 border border-white/[0.1] shadow-[0_8px_24px_rgba(0,0,0,0.8)]">
         {tabs.map((tab) => {
           const focused = currentScreen === tab.id;
           const Icon = tab.icon;
@@ -34,7 +34,7 @@ export const BottomNav: React.FC = () => {
               <div
                 className={`rounded-xl w-10 h-10 flex items-center justify-center transition-all ${
                   focused
-                    ? 'bg-[#9EE6B5] text-[#020408] shadow-[0_0_16px_rgba(158,230,181,0.6)] font-bold'
+                    ? 'bg-[#9EE6B5] text-[#020408] shadow-[0_0_14px_rgba(158,230,181,0.6)] font-bold'
                     : 'bg-transparent text-neutral-400 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
