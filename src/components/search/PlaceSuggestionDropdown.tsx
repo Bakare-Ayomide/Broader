@@ -83,7 +83,7 @@ export const PlaceSuggestionDropdown: React.FC<PlaceSuggestionDropdownProps> = (
       {osmResults.length > 0 && (
         <div className="p-1 border-b border-white/[0.06]">
           <span className="text-[10px] font-JakartaBold text-neutral-400 uppercase tracking-wider px-3 py-1 block">
-            OpenStreetMap Verified
+            Verified Address
           </span>
           {osmResults.slice(0, 4).map((res) => (
             <div

@@ -15,7 +15,7 @@ export const BookRideScreen: React.FC = () => {
   const selectedDriver =
     drivers.find((d) => d.id === selectedDriverId) || drivers[0];
 
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'apple' | 'cash'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'apple'>('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -164,7 +164,7 @@ export const BookRideScreen: React.FC = () => {
             <span className="text-xs font-JakartaBold text-neutral-400 uppercase tracking-wider block mb-2">
               Payment Method
             </span>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setPaymentMethod('card')}
@@ -189,19 +189,6 @@ export const BookRideScreen: React.FC = () => {
               >
                 <span className="font-bold"> Pay</span>
                 <span>Apple Pay</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('cash')}
-                className={`py-2 px-2.5 rounded-xl border text-xs font-JakartaSemiBold flex flex-col items-center justify-center gap-1 transition-all ${
-                  paymentMethod === 'cash'
-                    ? 'bg-[#9EE6B5]/15 text-[#9EE6B5] border-[#9EE6B5] shadow-xs'
-                    : 'glass-panel text-neutral-300 border-white/[0.08] hover:bg-white/5'
-                }`}
-              >
-                <span className="font-bold">₦ Cash</span>
-                <span>Pay in Car</span>
               </button>
             </div>
           </div>

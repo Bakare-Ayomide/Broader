@@ -116,7 +116,7 @@ export const HomeScreen: React.FC = () => {
   const [isLayerModalOpen, setIsLayerModalOpen] = useState(false);
   const [isStreetViewerOpen, setIsStreetViewerOpen] = useState(false);
   const [layerSettings, setLayerSettings] = useState<MapLayerSettings>({
-    baseStyle: 'dark',
+    baseStyle: 'standard',
     showBuildings: true,
     showRoute: true,
     showTraffic: true,
@@ -468,7 +468,7 @@ export const HomeScreen: React.FC = () => {
             setIsLayerModalOpen(true);
           }}
           className="w-9 h-9 rounded-full backdrop-blur-2xl border border-white/15 bg-[#0c1420]/85 text-[#9EE6B5] hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all"
-          title="Open Map Layers Control (OSM, OSRM, 3D, Traffic)"
+          title="Open Map Layers Control (3D, Satellite, Traffic)"
         >
           <Layers className="w-4 h-4" />
         </button>

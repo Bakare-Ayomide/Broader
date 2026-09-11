@@ -22,7 +22,7 @@ interface RideConfirmationModalProps {
   vehicle: VehicleOption | null;
   pickupAddress: string;
   destinationAddress: string;
-  paymentMethod: 'wallet' | 'card' | 'cash';
+  paymentMethod: 'wallet' | 'card';
   walletBalance: number;
 }
 

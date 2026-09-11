@@ -73,14 +73,14 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
   };
 
   // Find currently selected vehicle spec
-  const currentOption = vehicleOptions.find((v) => v.category === selectedVehicle) || vehicleOptions[3] || {
+  const currentOption = vehicleOptions.find((v) => v.category === selectedVehicle) || vehicleOptions[0] || {
     id: 'car',
-    name: 'Broader Sedan',
+    name: 'Car',
     category: 'car' as VehicleCategory,
-    capacity: '4 seats',
+    capacity: '4 passengers',
     etaMinutes: 3,
     price: 2800,
-    description: 'Comfortable air-conditioned executive ride',
+    description: 'Standard comfortable air-conditioned ride',
   };
 
   const currentSpec = BROADER_3D_FLEET.find((s) => s.category === currentOption.category) || BROADER_3D_FLEET[0];
@@ -89,13 +89,13 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
   // Filter vehicles
   const filteredOptions = vehicleOptions.filter((v) => {
     if (filterType === 'passenger') {
-      return ['car', 'suv', 'van', 'bus', 'taxi'].includes(v.category);
+      return ['car', 'van', 'bus'].includes(v.category);
     }
     if (filterType === 'rapid') {
-      return ['motorcycle', 'bicycle', 'tricycle'].includes(v.category);
+      return ['deliveryBike', 'bicycle', 'tricycle', 'motorcycle', 'dispatch'].includes(v.category);
     }
     if (filterType === 'cargo') {
-      return ['pickup', 'lorry', 'ambulance', 'van'].includes(v.category);
+      return ['lorry', 'ambulance', 'pickup', 'freight'].includes(v.category);
     }
     return true;
   });
@@ -177,7 +177,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
               : 'text-neutral-400 hover:text-white'
           }`}
         >
-          All (11)
+          All Fleet (8)
         </button>
         <button
           type="button"
@@ -188,7 +188,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
               : 'text-neutral-400 hover:text-white'
           }`}
         >
-          Sedan & SUV
+          Rides
         </button>
         <button
           type="button"
@@ -199,7 +199,7 @@ export const VehicleSelection: React.FC<VehicleSelectionProps> = ({ onSelectVehi
               : 'text-neutral-400 hover:text-white'
           }`}
         >
-          Bike & Keke
+          Bikes & Keke
         </button>
         <button
           type="button"

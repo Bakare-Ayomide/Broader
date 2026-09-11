@@ -46,7 +46,7 @@ export const ConfirmRideScreen: React.FC = () => {
   // Sync selected vehicle option
   useEffect(() => {
     if (vehicleOptions.length > 0) {
-      const match = vehicleOptions.find((v) => v.category === selectedVehicle) || vehicleOptions[3];
+      const match = vehicleOptions.find((v) => v.category === selectedVehicle) || vehicleOptions[0];
       setCurrentSelectedVehicle(match);
     }
   }, [vehicleOptions, selectedVehicle]);
@@ -311,9 +311,6 @@ export const ConfirmRideScreen: React.FC = () => {
                 <h3 className="text-xs font-JakartaBold text-white uppercase tracking-wider">
                   Available Broader Vehicles
                 </h3>
-                <span className="text-[10px] font-JakartaSemiBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                  Real-time Lagos Fares
-                </span>
               </div>
 
               <VehicleSelection onSelectVehicle={(v) => setCurrentSelectedVehicle(v)} />
@@ -335,7 +332,7 @@ export const ConfirmRideScreen: React.FC = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2.5">
                 {/* Wallet Option */}
                 <button
                   type="button"
@@ -382,28 +379,6 @@ export const ConfirmRideScreen: React.FC = () => {
                   </p>
                   <p className="text-[10px] font-JakartaSemiBold text-neutral-400 mt-0.5">
                     •••• 4242
-                  </p>
-                </button>
-
-                {/* Cash Option */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedPaymentMethod('cash');
-                    setErrorMessage(null);
-                  }}
-                  className={`p-2.5 rounded-2xl border text-left transition-all ${
-                    selectedPaymentMethod === 'cash'
-                      ? 'bg-[#9EE6B5]/15 border-[#9EE6B5] ring-1 ring-[#9EE6B5]'
-                      : 'glass-panel border-white/[0.08] hover:bg-white/5'
-                  }`}
-                >
-                  <Banknote className="w-4 h-4 text-neutral-300 mb-1" />
-                  <p className="text-xs font-JakartaBold text-white leading-tight">
-                    Cash
-                  </p>
-                  <p className="text-[10px] font-JakartaSemiBold text-neutral-400 mt-0.5">
-                    Pay driver
                   </p>
                 </button>
               </div>

@@ -64,12 +64,28 @@ export interface BroaderStoreState {
   userLatitude: number;
   userLongitude: number;
   userAddress: string;
+  userHeading: number | null;
+  userSpeed: number | null;
+  isGpsActive: boolean;
+  gpsAccuracy: number | null;
+  gpsLastUpdated: number | null;
+  hasInitialGpsFix: boolean;
+  setIsGpsActive: (active: boolean) => void;
+  setGpsAccuracy: (accuracy: number | null) => void;
+  setHasInitialGpsFix: (hasFix: boolean) => void;
   destinationLatitude: number | null;
   destinationLongitude: number | null;
   destinationAddress: string | null;
   pickupInstructions: string;
   setPickupInstructions: (instructions: string) => void;
-  setUserLocation: (loc: { latitude: number; longitude: number; address: string }) => void;
+  setUserLocation: (loc: {
+    latitude: number;
+    longitude: number;
+    address: string;
+    heading?: number | null;
+    speed?: number | null;
+    accuracy?: number | null;
+  }) => void;
   setDestinationLocation: (loc: { latitude: number; longitude: number; address: string }) => void;
   resetToCurrentLocation: () => void;
 
@@ -110,8 +126,8 @@ export interface BroaderStoreState {
   clearSelectedDriver: () => void;
 
   // Payment Selection
-  selectedPaymentMethod: 'wallet' | 'card' | 'cash';
-  setSelectedPaymentMethod: (method: 'wallet' | 'card' | 'cash') => void;
+  selectedPaymentMethod: 'wallet' | 'card';
+  setSelectedPaymentMethod: (method: 'wallet' | 'card') => void;
 
   // Wallet Management
   walletBalance: number; // in Naira (₦)
@@ -243,14 +259,27 @@ let state: BroaderStoreState = {
   userLatitude: initialUserLat,
   userLongitude: initialUserLng,
   userAddress: LAGOS_COORDS.address,
+  userHeading: null,
+  userSpeed: null,
+  isGpsActive: false,
+  gpsAccuracy: null,
+  gpsLastUpdated: null,
+  hasInitialGpsFix: false,
+  setIsGpsActive: (active) => setState({ isGpsActive: active }),
+  setGpsAccuracy: (accuracy) => setState({ gpsAccuracy: accuracy }),
+  setHasInitialGpsFix: (hasFix) => setState({ hasInitialGpsFix: hasFix }),
   destinationLatitude: 6.5774,
   destinationLongitude: 3.3212,
   destinationAddress: "Murtala Muhammed Int'l Airport (LOS), Ikeja",
-  setUserLocation: ({ latitude, longitude, address }) => {
+  setUserLocation: ({ latitude, longitude, address, heading, speed, accuracy }) => {
     setState({
       userLatitude: latitude,
       userLongitude: longitude,
       userAddress: address,
+      userHeading: heading !== undefined ? heading : state.userHeading,
+      userSpeed: speed !== undefined ? speed : state.userSpeed,
+      gpsAccuracy: accuracy !== undefined ? accuracy : state.gpsAccuracy,
+      gpsLastUpdated: Date.now(),
       selectedDriver: null,
     });
   },

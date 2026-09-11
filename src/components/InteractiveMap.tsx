@@ -71,9 +71,14 @@ interface InteractiveMapProps {
 }
 
 /**
- * Return MapLibre style JSON specification for requested base map
+ * Return MapLibre style specification or style URL for requested base map.
+ * All providers are 100% free and require NO API key.
  */
-function getMapLibreStyleSpec(style: BaseMapStyle): maplibregl.StyleSpecification {
+function getMapLibreStyleSpec(style: BaseMapStyle): maplibregl.StyleSpecification | string {
+  if (style === 'dark') {
+    return 'https://tiles.openfreemap.org/styles/dark';
+  }
+
   if (style === 'satellite') {
     return {
       version: 8,
@@ -99,52 +104,24 @@ function getMapLibreStyleSpec(style: BaseMapStyle): maplibregl.StyleSpecificatio
     };
   }
 
-  if (style === 'standard') {
-    return {
-      version: 8,
-      sources: {
-        'osm-standard': {
-          type: 'raster',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-          tileSize: 256,
-          attribution: '© OpenStreetMap contributors',
-        },
-      },
-      layers: [
-        {
-          id: 'osm-standard-layer',
-          type: 'raster',
-          source: 'osm-standard',
-          minzoom: 0,
-          maxzoom: 19,
-        },
-      ],
-    };
-  }
-
-  // Default: Dark Obsidian using Carto Dark Matter (OpenStreetMap data)
+  // Default: Standard OSM (OpenStreetMap standard raster tiles)
   return {
     version: 8,
     sources: {
-      'carto-dark': {
+      'osm-standard': {
         type: 'raster',
-        tiles: [
-          'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-          'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-          'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-          'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-        ],
+        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
         tileSize: 256,
-        attribution: '© OpenStreetMap contributors, © CARTO',
+        attribution: '',
       },
     },
     layers: [
       {
-        id: 'carto-dark-layer',
+        id: 'osm-standard-layer',
         type: 'raster',
-        source: 'carto-dark',
+        source: 'osm-standard',
         minzoom: 0,
-        maxzoom: 20,
+        maxzoom: 19,
       },
     ],
   };
@@ -289,7 +266,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   // Layer settings (prefer external prop if supplied)
   const [internalLayerSettings, setInternalLayerSettings] = useState<MapLayerSettings>({
-    baseStyle: 'dark',
+    baseStyle: 'standard',
     showBuildings: true,
     showRoute: showRoute,
     showTraffic: true,
@@ -578,6 +555,43 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
       map.on('load', () => {
         updateMapLayers(map);
+      });
+
+      // Graceful fallback if vector dark style cannot be fetched (e.g. offline/network firewall)
+      map.on('error', (e) => {
+        const errorMsg = e?.error?.message || '';
+        if (typeof errorMsg === 'string' && (errorMsg.includes('openfreemap') || errorMsg.includes('styles/dark'))) {
+          console.warn('OpenFreeMap style fetch issue, activating Esri Dark Gray raster fallback:', errorMsg);
+          try {
+            map.setStyle({
+              version: 8,
+              sources: {
+                'esri-dark-fallback': {
+                  type: 'raster',
+                  tiles: [
+                    'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                  ],
+                  tileSize: 256,
+                  attribution: '',
+                },
+              },
+              layers: [
+                {
+                  id: 'esri-dark-fallback-layer',
+                  type: 'raster',
+                  source: 'esri-dark-fallback',
+                  minzoom: 0,
+                  maxzoom: 16,
+                },
+              ],
+            });
+            map.once('style.load', () => {
+              updateMapLayers(map);
+            });
+          } catch (fallbackErr) {
+            console.warn('Fallback style failed:', fallbackErr);
+          }
+        }
       });
 
       map.on('rotate', () => {
@@ -916,10 +930,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 : isTracking
                 ? `Live • ${activeTrip?.driver.first_name || 'Driver'}`
                 : layerSettings.baseStyle === 'satellite'
-                ? 'Satellite Aerial • Esri'
+                ? 'Satellite Aerial'
                 : layerSettings.baseStyle === 'standard'
-                ? 'OpenStreetMap Standard'
-                : 'MapLibre GL • OpenStreetMap'}
+                ? 'Standard Map'
+                : 'Dark Map'}
             </span>
           </div>
 
@@ -1079,7 +1093,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   {osrmRoute.durationMinutes} mins
                 </span>
                 <span className="text-[9px] bg-cyan-400/20 text-cyan-300 px-1.5 py-0.2 rounded-full font-bold">
-                  OSRM
+                  Live Route
                 </span>
               </div>
               <p className="text-[10px] text-neutral-400 truncate max-w-[180px]">

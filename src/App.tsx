@@ -20,8 +20,12 @@ import { AutoPartsScreen } from './screens/AutoPartsScreen';
 import { BecomeDriverScreen } from './screens/BecomeDriverScreen';
 import { DriverHomeScreen } from './screens/DriverHomeScreen';
 import { DriverEarningsScreen } from './screens/DriverEarningsScreen';
+import { useDeviceGps } from './hooks/useDeviceGps';
 
 export default function App() {
+  // Continuously track real device GPS and keep map pin synchronized
+  useDeviceGps(true);
+
   const currentScreen = useBroaderStore((s) => s.currentScreen);
   const setScreen = useBroaderStore((s) => s.setScreen);
 

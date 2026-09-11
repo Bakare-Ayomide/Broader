@@ -60,11 +60,11 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
               <h3 className="text-sm font-JakartaBold text-white flex items-center gap-1.5 leading-tight">
                 Map Layers & Services
                 <span className="text-[10px] font-JakartaBold text-[#9EE6B5] bg-[#9EE6B5]/10 px-1.5 py-0.5 rounded-full border border-[#9EE6B5]/20">
-                  OSM • OSRM
+                  Live Navigation
                 </span>
               </h3>
               <p className="text-[11px] font-JakartaMedium text-neutral-400">
-                MapLibre GL multi-source data
+                High Precision Vector & Satellite Layers
               </p>
             </div>
           </div>
@@ -83,7 +83,7 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
             Base Map Renderer
           </label>
           <div className="grid grid-cols-3 gap-2">
-            {/* Cinematic Dark (OSM Carto Dark) */}
+            {/* Cinematic Dark (OpenFreeMap Dark - No API Key) */}
             <button
               onClick={() => onChangeLayers({ baseStyle: 'dark' })}
               className={`p-2.5 rounded-2xl border text-left flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 ${
@@ -117,11 +117,11 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
                 />
               </div>
               <span className="text-[11px] font-JakartaBold text-center leading-tight">
-                Satellite Aerial
+                Satellite View
               </span>
             </button>
 
-            {/* Standard OSM (OpenStreetMap) */}
+            {/* Standard Map */}
             <button
               onClick={() => onChangeLayers({ baseStyle: 'standard' })}
               className={`p-2.5 rounded-2xl border text-left flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 ${
@@ -134,7 +134,7 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
                 <MapIcon className="w-4 h-4 text-slate-800" />
               </div>
               <span className="text-[11px] font-JakartaBold text-center leading-tight">
-                Standard OSM
+                Standard Map
               </span>
             </button>
           </div>
@@ -154,7 +154,7 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
               </div>
               <div>
                 <p className="text-xs font-JakartaBold text-white">3D Buildings & Extrusions</p>
-                <p className="text-[10px] text-neutral-400">MapLibre GL vector heights & skylines</p>
+                <p className="text-[10px] text-neutral-400">Realistic 3D heights & landmarks</p>
               </div>
             </div>
             <button
@@ -172,7 +172,7 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
             </button>
           </div>
 
-          {/* Fastest Route (OSRM) */}
+          {/* Fastest Route */}
           <div className="flex items-center justify-between p-2.5 rounded-2xl bg-black/40 border border-white/10 hover:border-white/20 transition-all">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-lg bg-[#9EE6B5]/20 text-[#9EE6B5] flex items-center justify-center">
@@ -180,7 +180,7 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
               </div>
               <div>
                 <p className="text-xs font-JakartaBold text-white flex items-center gap-1.5">
-                  Fastest Route (OSRM)
+                  Fastest Route
                   <span className="text-[9px] bg-cyan-400/20 text-cyan-300 px-1.5 py-0.2 rounded-full font-bold">
                     Turn Guidance
                   </span>
@@ -255,7 +255,7 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
             </button>
           </div>
 
-          {/* Street Imagery (Mapillary) */}
+          {/* 360° Street View */}
           <div className="flex items-center justify-between p-2.5 rounded-2xl bg-black/40 border border-white/10 hover:border-white/20 transition-all">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
@@ -263,7 +263,7 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
               </div>
               <div>
                 <p className="text-xs font-JakartaBold text-white flex items-center gap-1.5">
-                  Street Imagery (Mapillary)
+                  360° Street View
                   <span className="text-[9px] bg-emerald-400/20 text-emerald-300 px-1.5 py-0.2 rounded-full font-bold">
                     360°
                   </span>
@@ -299,16 +299,16 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
           </div>
         </div>
 
-        {/* Footer with Open Data Attributions */}
+        {/* Footer */}
         <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[9px] font-JakartaMedium text-neutral-400">
           <span className="flex items-center gap-1">
             <ShieldCheck className="w-3 h-3 text-[#9EE6B5]" />
-            OpenStreetMap • OSRM • Nominatim • Mapillary
+            Live Satellite & Navigation Network
           </span>
           <button
             onClick={() => {
               onChangeLayers({
-                baseStyle: 'dark',
+                baseStyle: 'standard',
                 showBuildings: true,
                 showRoute: true,
                 showTraffic: true,

@@ -1,16 +1,17 @@
 export type VehicleCategory =
-  | 'bicycle'
-  | 'motorcycle'
-  | 'dispatch'
-  | 'tricycle'
   | 'car'
-  | 'suv'
   | 'van'
   | 'bus'
-  | 'pickup'
+  | 'bicycle'
+  | 'deliveryBike'
+  | 'tricycle'
   | 'lorry'
-  | 'freight'
-  | 'ambulance';
+  | 'ambulance'
+  | 'motorcycle'
+  | 'dispatch'
+  | 'suv'
+  | 'pickup'
+  | 'freight';
 
 export interface VehicleOption {
   id: string;

@@ -23,11 +23,11 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
 
   const filteredVehicles = vehicles.filter((v) => {
     if (filter === 'passenger')
-      return ['car', 'suv', 'taxi', 'van'].includes(v.category);
+      return ['car', 'van', 'bus'].includes(v.category);
     if (filter === 'rapid')
-      return ['motorcycle', 'bicycle', 'tricycle'].includes(v.category);
+      return ['deliveryBike', 'bicycle', 'tricycle', 'motorcycle', 'dispatch'].includes(v.category);
     if (filter === 'cargo')
-      return ['pickup', 'truck', 'van'].includes(v.category);
+      return ['lorry', 'ambulance', 'pickup', 'freight'].includes(v.category);
     return true;
   });
 
@@ -77,7 +77,7 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
               id={String(vehicle.id)}
               name={vehicle.name}
               category={vehicle.category}
-              tag={vehicle.category === 'car' ? 'Popular' : vehicle.category === 'suv' ? 'Executive' : vehicle.category === 'dispatch' ? 'Express' : undefined}
+              tag={spec.tag}
               seats={vehicleSeats}
               etaMinutes={vehicleEta}
               farePrice={vehicleFare}
