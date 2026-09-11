@@ -1,0 +1,116 @@
+name: Build Native Android APK
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Android Build Type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Build Web Production Assets
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: |
+          npx cap sync android
+
+      - name: Verify Android Permissions in AndroidManifest.xml
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          echo "Checking required Android permissions in $MANIFEST..."
+          
+          # Check Location Permissions
+          grep -q "android.permission.ACCESS_FINE_LOCATION" $MANIFEST || (echo "Missing ACCESS_FINE_LOCATION" && exit 1)
+          grep -q "android.permission.ACCESS_COARSE_LOCATION" $MANIFEST || (echo "Missing ACCESS_COARSE_LOCATION" && exit 1)
+          
+          # Check Contact Permissions
+          grep -q "android.permission.READ_CONTACTS" $MANIFEST || (echo "Missing READ_CONTACTS" && exit 1)
+          
+          # Check Phone Permissions
+          grep -q "android.permission.CALL_PHONE" $MANIFEST || (echo "Missing CALL_PHONE" && exit 1)
+          grep -q "android.permission.READ_PHONE_STATE" $MANIFEST || (echo "Missing READ_PHONE_STATE" && exit 1)
+          
+          echo "All required permissions (Location, Contacts, Phone, Network) are present!"
+
+      - name: Make Gradlew Executable
+        run: chmod +x android/gradlew
+
+      - name: Build Debug APK
+        if: ${{ github.event.inputs.build_type != 'release' }}
+        run: |
+          cd android
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Build Release APK (Unsigned)
+        if: ${{ github.event.inputs.build_type == 'release' }}
+        run: |
+          cd android
+          ./gradlew assembleRelease --stacktrace
+
+      - name: Prepare APK Output
+        run: |
+          mkdir -p artifacts
+          if [ -f "android/app/build/outputs/apk/debug/app-debug.apk" ]; then
+            cp android/app/build/outputs/apk/debug/app-debug.apk artifacts/broader-debug.apk
+            echo "Debug APK prepared at artifacts/broader-debug.apk"
+          fi
+          if [ -f "android/app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            cp android/app/build/outputs/apk/release/app-release-unsigned.apk artifacts/broader-release-unsigned.apk
+            echo "Release APK prepared at artifacts/broader-release-unsigned.apk"
+          fi
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: broader-android-apk
+          path: artifacts/*.apk
+          retention-days: 30
+
+      - name: Add Step Summary
+        run: |
+          echo "### Broader Native Android APK Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Permissions Configured:**" >> $GITHUB_STEP_SUMMARY
+          echo "- **Location:** \`ACCESS_FINE_LOCATION\`, \`ACCESS_COARSE_LOCATION\`, \`ACCESS_BACKGROUND_LOCATION\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Contacts:** \`READ_CONTACTS\`, \`WRITE_CONTACTS\`, \`GET_ACCOUNTS\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Phone:** \`CALL_PHONE\`, \`READ_PHONE_STATE\`, \`READ_PHONE_NUMBERS\`, \`READ_CALL_LOG\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Connectivity & Push:** \`INTERNET\`, \`ACCESS_NETWORK_STATE\`, \`ACCESS_WIFI_STATE\`, \`POST_NOTIFICATIONS\`, \`VIBRATE\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Download the generated APK from the **Artifacts** section of this workflow run." >> $GITHUB_STEP_SUMMARY
