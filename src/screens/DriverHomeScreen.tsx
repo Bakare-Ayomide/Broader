@@ -38,11 +38,11 @@ import { useRideSimulation } from '../components/simulation/useRideSimulation';
 import { SAMPLE_INCOMING_DRIVER_REQUESTS } from '../services/backendService';
 import { getVehicle3DImage } from '../data/vehicleAssets';
 import { soundEngine } from '../services/soundNotification';
-import {
-  MapLayerControlModal,
-  MapLayerSettings,
-} from '../components/map/MapLayerControlModal';
+import { MapLayerControlModal, MapLayerSettings } from '../components/map/MapLayerControlModal';
 import { MapillaryViewerModal } from '../components/map/MapillaryViewerModal';
+import { NavigationDrawer } from '../components/NavigationDrawer';
+import { ModeSwitchSplash } from '../components/ModeSwitchSplash';
+import { useLiveRideTracking } from '../services/useLiveRideTracking';
 
 type SheetSnap = 'collapsed' | 'expanded';
 
@@ -64,6 +64,8 @@ export const DriverHomeScreen: React.FC = () => {
   const driverAcceptanceRate = useBroaderStore((s) => s.driverAcceptanceRate);
   const driverCancellationRate = useBroaderStore((s) => s.driverCancellationRate);
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [modeSwitchTarget, setModeSwitchTarget] = useState<'none' | 'passenger' | 'driver'>('none');
   const [safetyModalOpen, setSafetyModalOpen] = useState(false);
   const [showDriverCockpitHUD, setShowDriverCockpitHUD] = useState(false);
 
@@ -94,6 +96,7 @@ export const DriverHomeScreen: React.FC = () => {
     driverVehicles.find((v) => v.id === activeDriverVehicleId) || driverVehicles[0];
 
   const isOnTrip = driverStatus === 'on_trip' || (activeTrip !== null && rideStatus !== 'idle');
+  const liveTripTelemetry = useLiveRideTracking(isOnTrip);
 
   const telemetry = useRideSimulation({
     active: showDriverCockpitHUD || isOnTrip,
@@ -189,6 +192,17 @@ export const DriverHomeScreen: React.FC = () => {
           is3DTiltProp={is3D}
           layerSettingsProp={layerSettings}
           recenterTrigger={recenterKey}
+          liveVehiclePosition={
+            isOnTrip
+              ? {
+                  latitude: liveTripTelemetry.latitude,
+                  longitude: liveTripTelemetry.longitude,
+                  heading: liveTripTelemetry.heading,
+                  speed: liveTripTelemetry.speed,
+                  isMoving: !liveTripTelemetry.isStopped,
+                }
+              : undefined
+          }
         />
       </div>
 
@@ -200,13 +214,17 @@ export const DriverHomeScreen: React.FC = () => {
         <div
           onClick={() => {
             soundEngine.playClick();
-            setDriverActiveTab('profile');
-            setSheetSnap('expanded');
+            setIsDrawerOpen(true);
           }}
           className="pointer-events-auto bg-[#0c1420]/85 backdrop-blur-2xl border border-white/10 rounded-2xl px-3.5 py-2 flex items-center gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.8)] cursor-pointer hover:border-white/20 active:scale-[0.98] transition-all"
         >
           <button
             type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              soundEngine.playClick();
+              setIsDrawerOpen(true);
+            }}
             className="text-neutral-300 hover:text-white p-0.5 active:scale-90 transition-transform"
             aria-label="Driver Menu"
           >
@@ -266,8 +284,7 @@ export const DriverHomeScreen: React.FC = () => {
           <button
             onClick={() => {
               soundEngine.playClick();
-              setIsDriverMode(false);
-              setScreen('home');
+              setModeSwitchTarget('passenger');
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-[#9EE6B5] text-[#9EE6B5] shadow-[0_0_14px_rgba(158,230,181,0.35)] hover:bg-[#9EE6B5]/10 active:scale-95 transition-all text-xs font-JakartaBold"
             title="Switch to Passenger Rider App"
@@ -661,13 +678,6 @@ export const DriverHomeScreen: React.FC = () => {
         {/* EXPANDED CONTENT SCROLL AREA (REVEALED WHEN SWIPED UP) */}
         {/* ===================================================================== */}
         <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-4 no-scrollbar pointer-events-auto">
-          {/* INCOMING DISPATCH MODAL / ALERT (IF ANY) */}
-          {incomingDriverRequest && (
-            <div className="pt-1">
-              <DriverIncomingModal />
-            </div>
-          )}
-
           {/* TAB 1: COCKPIT VIEW */}
           {driverActiveTab === 'hud' && (
             <div className="space-y-4 pt-1">
@@ -1006,6 +1016,47 @@ export const DriverHomeScreen: React.FC = () => {
         isOpen={isStreetViewerOpen}
         onClose={() => setIsStreetViewerOpen(false)}
       />
+
+      {/* ========================================================================= */}
+      {/* 7. INCOMING DISPATCH MODAL DIALOG (HIGH PRIORITY DRIVER ALERT) */}
+      {/* ========================================================================= */}
+      {incomingDriverRequest && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md">
+            <DriverIncomingModal />
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 8. DRIVER SECONDARY NAVIGATION & SETTINGS DRAWER */}
+      {/* ========================================================================= */}
+      <NavigationDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onSwitchMode={() => {
+          setModeSwitchTarget('passenger');
+        }}
+      />
+
+      {/* ========================================================================= */}
+      {/* 9. PASSENGER ↔ DRIVER POLISHED MODE SWITCH SPLASH OVERLAY */}
+      {/* ========================================================================= */}
+      {modeSwitchTarget !== 'none' && (
+        <ModeSwitchSplash
+          targetMode={modeSwitchTarget}
+          onComplete={() => {
+            if (modeSwitchTarget === 'passenger') {
+              setIsDriverMode(false);
+              setScreen('home');
+            } else {
+              setIsDriverMode(true);
+              setScreen('driver-home');
+            }
+            setModeSwitchTarget('none');
+          }}
+        />
+      )}
     </div>
   );
 };

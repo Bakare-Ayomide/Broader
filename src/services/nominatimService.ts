@@ -157,7 +157,7 @@ export async function searchNominatim(query: string): Promise<GeocodingResult[]>
       signal: controller.signal,
       headers: {
         Accept: 'application/json',
-        'User-Agent': 'BroaderTaxidoApp/1.0 (RideHailingNavigationMap)',
+        'User-Agent': 'BroaderApp/1.0 (RideHailingNavigationMap)',
       },
     });
 
@@ -222,7 +222,7 @@ export async function reverseGeocodeNominatim(
       signal: controller.signal,
       headers: {
         Accept: 'application/json',
-        'User-Agent': 'BroaderTaxidoApp/1.0 (RideHailingNavigationMap)',
+        'User-Agent': 'BroaderApp/1.0 (RideHailingNavigationMap)',
       },
     });
 

@@ -47,6 +47,12 @@ import {
   MapLayerSettings,
 } from '../components/map/MapLayerControlModal';
 import { MapillaryViewerModal } from '../components/map/MapillaryViewerModal';
+import { NavigationDrawer } from '../components/NavigationDrawer';
+import { ModeSwitchSplash } from '../components/ModeSwitchSplash';
+import { PlaceSuggestionDropdown } from '../components/search/PlaceSuggestionDropdown';
+import { LiveRideNavigationHUD } from '../components/hud/LiveRideNavigationHUD';
+import { useLiveRideTracking } from '../services/useLiveRideTracking';
+import { searchNominatim, GeocodingResult } from '../services/nominatimService';
 
 type ModalType = 'none' | 'parts' | 'parcel' | 'rental' | 'freight' | 'ambulance';
 type SheetSnap = 'collapsed' | 'expanded';
@@ -64,8 +70,42 @@ export const HomeScreen: React.FC = () => {
   const walletBalance = useBroaderStore((s) => s.walletBalance);
   const setIsDriverMode = useBroaderStore((s) => s.setIsDriverMode);
   const setSelectedVehicle = useBroaderStore((s) => s.setSelectedVehicle);
+  const activeTrip = useBroaderStore((s) => s.activeTrip);
+  const rideStatus = useBroaderStore((s) => s.rideStatus);
+  const cancelActiveTrip = useBroaderStore((s) => s.cancelActiveTrip);
 
   const [activeModal, setActiveModal] = useState<ModalType>('none');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [modeSwitchTarget, setModeSwitchTarget] = useState<'none' | 'passenger' | 'driver'>('none');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [nominatimResults, setNominatimResults] = useState<GeocodingResult[]>([]);
+  const [isSearchingOsm, setIsSearchingOsm] = useState(false);
+
+  // Live GPS tracking when trip is active
+  const isLiveRideActive = Boolean(activeTrip && rideStatus !== 'idle' && rideStatus !== 'searching');
+  const liveTelemetry = useLiveRideTracking(isLiveRideActive);
+
+  // Debounced OpenStreetMap Nominatim search for dropdown overlay
+  useEffect(() => {
+    if (!searchQuery || searchQuery.trim().length < 2) {
+      setNominatimResults([]);
+      setIsSearchingOsm(false);
+      return;
+    }
+    setIsSearchingOsm(true);
+    const timer = setTimeout(async () => {
+      try {
+        const results = await searchNominatim(searchQuery);
+        setNominatimResults(results);
+      } catch (e) {
+        setNominatimResults([]);
+      } finally {
+        setIsSearchingOsm(false);
+      }
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
   const [showTelemetryHUD, setShowTelemetryHUD] = useState(false);
   const telemetry = useRideSimulation({ active: showTelemetryHUD });
 
@@ -210,6 +250,17 @@ export const HomeScreen: React.FC = () => {
           is3DTiltProp={is3D}
           layerSettingsProp={layerSettings}
           recenterTrigger={recenterKey}
+          liveVehiclePosition={
+            isLiveRideActive
+              ? {
+                  latitude: liveTelemetry.latitude,
+                  longitude: liveTelemetry.longitude,
+                  heading: liveTelemetry.heading,
+                  speed: liveTelemetry.speed,
+                  isMoving: !liveTelemetry.isStopped,
+                }
+              : undefined
+          }
           onSelectLandmark={(name, lat, lng) => {
             soundEngine.playClick();
             setDestinationLocation({ latitude: lat, longitude: lng, address: name });
@@ -226,13 +277,18 @@ export const HomeScreen: React.FC = () => {
         <div
           onClick={() => {
             soundEngine.playClick();
-            setScreen('profile');
+            setIsDrawerOpen(true);
           }}
           className="pointer-events-auto bg-[#0c1420]/85 backdrop-blur-2xl border border-white/10 rounded-2xl px-3.5 py-2 flex items-center gap-3 shadow-[0_8px_32px_rgba(0,0,0,0.8)] cursor-pointer hover:border-white/20 active:scale-[0.98] transition-all"
         >
           {/* Hamburger Menu Icon */}
           <button
             type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              soundEngine.playClick();
+              setIsDrawerOpen(true);
+            }}
             className="text-neutral-300 hover:text-white p-0.5 active:scale-90 transition-transform"
             aria-label="Navigation Menu"
           >
@@ -280,8 +336,7 @@ export const HomeScreen: React.FC = () => {
           <button
             onClick={() => {
               soundEngine.playClick();
-              setIsDriverMode(true);
-              setScreen('driver-home');
+              setModeSwitchTarget('driver');
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-[#9EE6B5] text-[#9EE6B5] shadow-[0_0_14px_rgba(158,230,181,0.35)] hover:bg-[#9EE6B5]/10 active:scale-95 transition-all text-xs font-JakartaBold"
             title="Switch to Broader Driver Console"
@@ -478,38 +533,82 @@ export const HomeScreen: React.FC = () => {
 
         {/* ALWAYS-VISIBLE SEARCH CAPSULE & QUICK SHORTCUTS */}
         <div className="px-4 pb-3 space-y-2.5 shrink-0 select-none">
-          {/* Destination Search Capsule */}
-          <div
-            onClick={() => {
-              soundEngine.playClick();
-              setScreen('find-ride');
-            }}
-            className="flex items-center justify-between bg-[#131b26]/90 backdrop-blur-2xl px-3.5 py-2.5 rounded-2xl cursor-pointer group shadow-[0_6px_20px_rgba(0,0,0,0.6)] border border-white/[0.1] transition-all hover:border-[#9EE6B5]/50 active:scale-[0.99]"
-          >
-            <div className="flex items-center gap-3 min-w-0 flex-1">
-              <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/15 border border-[#9EE6B5]/30 flex items-center justify-center text-[#9EE6B5] group-hover:scale-105 transition-transform shrink-0">
-                <Search className="w-4 h-4" />
+          {/* Destination Search Capsule with Compact Suggestion Overlay */}
+          <div className="relative">
+            <div
+              className={`flex items-center justify-between bg-[#131b26]/95 backdrop-blur-2xl px-3.5 py-2 rounded-2xl group shadow-[0_6px_20px_rgba(0,0,0,0.6)] border transition-all ${
+                isSearchFocused
+                  ? 'border-[#9EE6B5] ring-2 ring-[#9EE6B5]/30'
+                  : 'border-white/[0.1] hover:border-[#9EE6B5]/50'
+              }`}
+            >
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-8 h-8 rounded-xl bg-[#9EE6B5]/15 border border-[#9EE6B5]/30 flex items-center justify-center text-[#9EE6B5] group-hover:scale-105 transition-transform shrink-0">
+                  <Search className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => {
+                      setIsSearchFocused(true);
+                      setSheetSnap('expanded');
+                    }}
+                    placeholder="Where to in Lagos? (Airport, Lekki...)"
+                    className="w-full text-xs font-JakartaBold text-white placeholder-neutral-400 focus:outline-none bg-transparent"
+                  />
+                  <p className="text-[10px] text-neutral-400 font-JakartaMedium truncate">
+                    Tap to view verified places & routes
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-JakartaBold text-white truncate">Where to?</p>
-                <p className="text-[10px] text-neutral-400 font-JakartaMedium truncate">
-                  Search Lekki, Victoria Island, Ikeja, Airport...
-                </p>
-              </div>
+
+              {searchQuery ? (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="p-1 text-neutral-400 hover:text-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                /* Quick Full-Screen Search Navigation Pill */
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    soundEngine.playClick();
+                    setScreen('find-ride');
+                  }}
+                  className="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-neutral-300 hover:text-white text-[10px] font-JakartaBold flex items-center gap-1 transition-all ml-1 shrink-0"
+                  title="Open Search Planner"
+                >
+                  <span>Search</span>
+                  <ChevronRight className="w-3 h-3 text-[#9EE6B5]" />
+                </button>
+              )}
             </div>
 
-            {/* Voice Mic Button */}
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
+            {/* Compact Suggestion Overlay / Dropdown */}
+            <PlaceSuggestionDropdown
+              query={searchQuery}
+              isOpen={isSearchFocused}
+              onClose={() => setIsSearchFocused(false)}
+              onSelect={(item) => {
                 soundEngine.playClick();
-                setScreen('find-ride');
+                setDestinationLocation({
+                  latitude: item.latitude,
+                  longitude: item.longitude,
+                  address: item.name,
+                });
+                setIsSearchFocused(false);
+                setSearchQuery('');
+                setScreen('confirm-ride');
               }}
-              className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-neutral-400 hover:text-white transition-colors shrink-0 ml-2"
-              title="Voice Search"
-            >
-              <Mic className="w-4 h-4 text-neutral-300" />
-            </div>
+              osmResults={nominatimResults}
+              isSearchingOsm={isSearchingOsm}
+            />
           </div>
 
           {/* 4 Quick Shortcuts (Home, Work, Favorites, Recent) */}
@@ -817,6 +916,50 @@ export const HomeScreen: React.FC = () => {
         isOpen={isStreetViewerOpen}
         onClose={() => setIsStreetViewerOpen(false)}
       />
+
+      {/* ========================================================================= */}
+      {/* 7. SECONDARY NAVIGATION & SETTINGS DRAWER */}
+      {/* ========================================================================= */}
+      <NavigationDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onSwitchMode={() => {
+          setModeSwitchTarget('driver');
+        }}
+      />
+
+      {/* ========================================================================= */}
+      {/* 8. PASSENGER ↔ DRIVER POLISHED MODE SWITCH SPLASH OVERLAY */}
+      {/* ========================================================================= */}
+      {modeSwitchTarget !== 'none' && (
+        <ModeSwitchSplash
+          targetMode={modeSwitchTarget}
+          onComplete={() => {
+            if (modeSwitchTarget === 'driver') {
+              setIsDriverMode(true);
+              setScreen('driver-home');
+            } else {
+              setIsDriverMode(false);
+              setScreen('home');
+            }
+            setModeSwitchTarget('none');
+          }}
+        />
+      )}
+
+      {/* ========================================================================= */}
+      {/* 9. ACTIVE TRIP FLOATING FULL-SCREEN NAVIGATION HUD OVERLAY */}
+      {/* ========================================================================= */}
+      {isLiveRideActive && activeTrip && (
+        <LiveRideNavigationHUD
+          telemetry={liveTelemetry}
+          onOpenChat={() => setScreen('chat')}
+          onOpenSafety={() => setIsLayerModalOpen(true)}
+          onCancelTrip={() => {
+            cancelActiveTrip();
+          }}
+        />
+      )}
     </div>
   );
 };

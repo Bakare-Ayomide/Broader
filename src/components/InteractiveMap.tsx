@@ -61,6 +61,13 @@ interface InteractiveMapProps {
   onRecenter?: () => void;
   onResetNorth?: () => void;
   interactive?: boolean;
+  liveVehiclePosition?: {
+    latitude: number;
+    longitude: number;
+    heading?: number;
+    speed?: number;
+    isMoving?: boolean;
+  };
 }
 
 /**
@@ -251,6 +258,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   onRecenter,
   onResetNorth,
   interactive = true,
+  liveVehiclePosition,
 }) => {
   const userLatitude = useBroaderStore((s) => s.userLatitude) || 6.4281;
   const userLongitude = useBroaderStore((s) => s.userLongitude) || 3.4219;
@@ -729,14 +737,20 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
     // 4. Assigned Driver Marker (Tracking Mode on Route)
     if (isTracking && activeTrip) {
-      // Midpoint on route for tracking
-      const activeCarLng = (userLongitude + targetDestLng) / 2;
-      const activeCarLat = (userLatitude + targetDestLat) / 2;
+      // Use live vehicle position if provided, else smooth midpoint on route
+      const activeCarLng = liveVehiclePosition
+        ? liveVehiclePosition.longitude
+        : (userLongitude + targetDestLng) / 2;
+      const activeCarLat = liveVehiclePosition
+        ? liveVehiclePosition.latitude
+        : (userLatitude + targetDestLat) / 2;
+      const heading = liveVehiclePosition?.heading ?? 35;
+      const isMoving = liveVehiclePosition?.isMoving ?? (liveVehiclePosition?.speed !== undefined ? liveVehiclePosition.speed > 3 : true);
 
       const activeCarEl = createVehicleMarkerElement({
         vehicleType: activeTrip.vehicle?.category || 'car',
-        heading: 35,
-        isMoving: true,
+        heading: heading,
+        isMoving: isMoving,
         hasHeadlights: true,
         size: 'md',
         selected: true,
@@ -793,6 +807,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     selectedDriver,
     isTracking,
     activeTrip,
+    liveVehiclePosition,
     layerSettings.showRoute,
     layerSettings.showPois,
     onSelectLandmark,

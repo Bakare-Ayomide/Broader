@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useBroaderStore } from '../store/useBroaderStore';
 import { getVehicle3DImage } from '../data/vehicleAssets';
+import { CancelRideModal } from './modals/CancelRideModal';
 import {
   Phone,
   MessageSquare,
@@ -481,36 +482,15 @@ export const DriverTrackingPanel: React.FC<DriverTrackingPanelProps> = ({
       )}
 
       {/* Cancel Confirmation Modal */}
-      {showCancelModal && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-          <div className="glass-panel w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-white/15 animate-in zoom-in-95 text-white">
-            <h4 className="text-base font-JakartaBold text-white">Cancel Ride?</h4>
-            <p className="text-xs font-JakartaMedium text-neutral-400 mt-1 mb-4 leading-relaxed">
-              Are you sure you want to cancel this trip with {activeTrip.driver.first_name}? No cancellation fee will be charged within 5 minutes.
-            </p>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowCancelModal(false)}
-                className="flex-1 py-2.5 rounded-xl border border-white/15 text-neutral-300 font-JakartaBold text-xs hover:bg-white/10"
-              >
-                Keep Ride
-              </button>
-
-              <button
-                onClick={() => {
-                  setShowCancelModal(false);
-                  cancelActiveTrip();
-                  showToast('Trip cancelled');
-                }}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-JakartaBold text-xs shadow-md shadow-red-600/30"
-              >
-                Yes, Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CancelRideModal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirmCancel={(reason) => {
+          cancelActiveTrip();
+          showToast(`Trip cancelled: ${reason}`);
+        }}
+        driverName={activeTrip.driver.first_name}
+      />
     </div>
   );
 };
