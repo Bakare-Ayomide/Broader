@@ -116,7 +116,7 @@ export const AutoPartsScreen: React.FC<AutoPartsScreenProps> = ({ onClose, isMod
 
   const handleOrderPart = (part: AutoPartItem) => {
     soundEngine.playSuccess();
-    setOrderSuccess(`Order placed for ${part.name}! Dispatch rider assigned (ETA: ${part.etaMins}m)`);
+    setOrderSuccess(`Order placed for ${part.name}! Dispatch courier assigned (ETA: ${part.etaMins}m)`);
     setSelectedPart(null);
     setTimeout(() => setOrderSuccess(null), 5000);
   };

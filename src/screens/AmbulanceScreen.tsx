@@ -163,7 +163,7 @@ export const AmbulanceScreen: React.FC<AmbulanceScreenProps> = ({ onClose, isMod
             <div className="glass-panel rounded-2xl border border-red-500/20 p-3.5 flex items-center gap-3.5 bg-gradient-to-r from-red-950/30 to-black/40">
               <img
                 src={VEHICLE_3D_ASSETS.ambulance}
-                alt="3D Ambulance"
+                alt="Ambulance"
                 className="w-24 h-16 object-contain filter drop-shadow-[0_4px_14px_rgba(239,68,68,0.5)] shrink-0"
               />
               <div>

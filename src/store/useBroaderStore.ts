@@ -485,7 +485,7 @@ let state: BroaderStoreState = {
 
     const driverRecord: DriverTripRecord = {
       id: 'dtrip_' + trip.id,
-      passengerName: state.user.fullName || 'Passenger Rider',
+      passengerName: state.user.fullName || 'Passenger',
       passengerRating: 4.9,
       passengerImage: state.user.imageUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
       pickup: trip.pickup.address,
@@ -851,7 +851,7 @@ let state: BroaderStoreState = {
     if (state.activeTrip) {
       const cancelledRecord: DriverTripRecord = {
         id: 'dtrip_can_' + Date.now().toString().slice(-4),
-        passengerName: 'Passenger Rider',
+        passengerName: 'Passenger',
         passengerRating: 4.8,
         pickup: state.activeTrip.pickup.address,
         destination: state.activeTrip.destination.address,

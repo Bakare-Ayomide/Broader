@@ -199,7 +199,7 @@ export const fetchBackendVehiclePricing = async (
     {
       category: 'bicycle',
       name: 'Bicycle',
-      capacity: '1 rider',
+      capacity: '1 passenger',
       baseFare: 300,
       perKmRate: 70,
       minFare: 650,

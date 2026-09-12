@@ -165,7 +165,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
             <div className="glass-panel rounded-2xl border border-white/[0.08] p-3.5 flex items-center gap-3.5 bg-gradient-to-r from-[#9EE6B5]/10 via-white/[0.02] to-transparent">
               <img
                 src={VEHICLE_3D_ASSETS.dispatch}
-                alt="3D Dispatch Rider"
+                alt="Dispatch Courier"
                 className="w-20 h-16 object-contain filter drop-shadow-[0_4px_12px_rgba(158,230,181,0.4)] shrink-0"
               />
               <div>
@@ -341,7 +341,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
 
               <div>
                 <label className="block text-[10px] font-JakartaSemiBold text-neutral-400 mb-1">
-                  Delivery Notes for Rider
+                  Delivery Notes for Courier
                 </label>
                 <input
                   type="text"
@@ -370,7 +370,7 @@ export const ParcelScreen: React.FC<ParcelScreenProps> = ({ onClose, isModal = f
                 className="px-5 py-3 rounded-xl bg-[#9EE6B5] hover:bg-[#8fd8a6] active:scale-95 text-black font-extrabold font-JakartaBold text-xs shadow-[0_0_18px_rgba(158,230,181,0.4)] transition-all flex items-center gap-1.5"
               >
                 <Truck className="w-4 h-4" />
-                <span>Dispatch Rider</span>
+                <span>Dispatch Courier</span>
               </button>
             </div>
           </form>

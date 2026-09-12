@@ -163,7 +163,8 @@ export type ScreenType =
   | 'parts'
   | 'become-driver'
   | 'driver-home'
-  | 'driver-earnings';
+  | 'driver-earnings'
+  | 'notifications';
 
 export type ServiceType = 'ride' | 'rental' | 'parcel' | 'freight' | 'ambulance';
 

@@ -148,7 +148,7 @@ export const DriverEarningsScreen: React.FC = () => {
           </div>
 
           <div className="flex justify-between py-1 border-b border-slate-100">
-            <span className="text-slate-500 font-JakartaMedium">Gross Rider Fares</span>
+            <span className="text-slate-500 font-JakartaMedium">Gross Passenger Fares</span>
             <span className="font-JakartaBold text-slate-800">
               ₦{(driverEarnings.today + driverEarnings.commissionDeducted).toLocaleString()}
             </span>

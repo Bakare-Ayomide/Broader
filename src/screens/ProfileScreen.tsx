@@ -32,6 +32,7 @@ export const ProfileScreen: React.FC = () => {
   const setScreen = useBroaderStore((s) => s.setScreen);
   const driverApplication = useBroaderStore((s) => s.driverApplication);
   const setIsDriverMode = useBroaderStore((s) => s.setIsDriverMode);
+  const isDriverMode = useBroaderStore((s) => s.isDriverMode);
   const savedLocations = useBroaderStore((s) => s.savedLocations);
   const addSavedLocation = useBroaderStore((s) => s.addSavedLocation);
   const deleteSavedLocation = useBroaderStore((s) => s.deleteSavedLocation);
@@ -104,13 +105,13 @@ export const ProfileScreen: React.FC = () => {
         <div className="flex items-center gap-1.5 mt-2.5">
           <h3 className="text-base font-JakartaBold text-white">{user.fullName}</h3>
           <span className="text-[10px] font-JakartaBold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-            Verified Rider
+            {isDriverMode ? 'Verified Driver' : 'Verified Passenger'}
           </span>
         </div>
         <p className="text-xs font-JakartaMedium text-neutral-400 mt-0.5">{user.email}</p>
         <p className="text-xs font-mono text-neutral-500">{user.phone}</p>
 
-        {/* Rider Stats badge */}
+        {/* Mode & Activity Stats badge */}
         <div className="flex items-center gap-4 mt-3 glass-panel px-4 py-2 rounded-2xl border border-white/10 shadow-xs text-xs">
           <div className="flex items-center gap-1 text-neutral-200 font-JakartaBold">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -118,7 +119,7 @@ export const ProfileScreen: React.FC = () => {
           </div>
           <span className="text-white/20">|</span>
           <div className="text-neutral-200 font-JakartaBold">
-            <span>{rides.length} Rides Taken</span>
+            <span>{isDriverMode ? '142 Trips Driven' : `${rides.length} Rides Taken`}</span>
           </div>
         </div>
       </div>

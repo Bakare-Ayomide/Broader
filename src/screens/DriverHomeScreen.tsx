@@ -24,7 +24,6 @@ import {
   ChevronDown,
   Sparkles,
   X,
-  Camera,
 } from 'lucide-react';
 import { InteractiveMap } from '../components/InteractiveMap';
 import { DriverIncomingModal } from '../components/driver/DriverIncomingModal';
@@ -34,6 +33,8 @@ import { DriverTripsView } from '../components/driver/DriverTripsView';
 import { DriverVehiclesView } from '../components/driver/DriverVehiclesView';
 import { DriverSafetyModal } from '../components/driver/DriverSafetyModal';
 import { DriverHUD } from '../components/dashboard/DriverHUD';
+import { FullScreenSpeedometerModal } from '../components/dashboard/FullScreenSpeedometerModal';
+import { MapOptionsSpeedDial } from '../components/map/MapOptionsSpeedDial';
 import { useRideSimulation } from '../components/simulation/useRideSimulation';
 import { SAMPLE_INCOMING_DRIVER_REQUESTS } from '../services/backendService';
 import { getVehicle3DImage } from '../data/vehicleAssets';
@@ -67,7 +68,7 @@ export const DriverHomeScreen: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [modeSwitchTarget, setModeSwitchTarget] = useState<'none' | 'passenger' | 'driver'>('none');
   const [safetyModalOpen, setSafetyModalOpen] = useState(false);
-  const [showDriverCockpitHUD, setShowDriverCockpitHUD] = useState(false);
+  const [isSpeedometerExpanded, setIsSpeedometerExpanded] = useState(false);
 
   // Map Controls State (matching Passenger Home)
   const [bearing, setBearing] = useState(18);
@@ -99,7 +100,7 @@ export const DriverHomeScreen: React.FC = () => {
   const liveTripTelemetry = useLiveRideTracking(isOnTrip);
 
   const telemetry = useRideSimulation({
-    active: showDriverCockpitHUD || isOnTrip,
+    active: isSpeedometerExpanded || isOnTrip,
     initialSpeed: 52,
   });
 
@@ -280,17 +281,17 @@ export const DriverHomeScreen: React.FC = () => {
       <div className="absolute top-[68px] left-3 right-3 z-30 flex items-center justify-between pointer-events-none">
         {/* Left Action Buttons */}
         <div className="flex items-center gap-2 pointer-events-auto">
-          {/* Passenger Rider App Switch (Mint Accent Border & Glow) */}
+          {/* Passenger App Switch (Mint Accent Border & Glow) */}
           <button
             onClick={() => {
               soundEngine.playClick();
               setModeSwitchTarget('passenger');
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-[#9EE6B5] text-[#9EE6B5] shadow-[0_0_14px_rgba(158,230,181,0.35)] hover:bg-[#9EE6B5]/10 active:scale-95 transition-all text-xs font-JakartaBold"
-            title="Switch to Passenger Rider App"
+            title="Switch to Passenger Mode"
           >
             <User className="w-3.5 h-3.5 text-[#9EE6B5]" />
-            <span>Rider</span>
+            <span>Passenger</span>
           </button>
 
           {/* Quick Online/Offline Toggle Pill */}
@@ -307,20 +308,19 @@ export const DriverHomeScreen: React.FC = () => {
             <span>{driverStatus === 'online' ? 'Online' : 'Offline'}</span>
           </button>
 
-          {/* Cockpit Speedometer HUD toggle */}
+          {/* Compact Floating Speedometer Trigger */}
           <button
+            type="button"
             onClick={() => {
               soundEngine.playClick();
-              setShowDriverCockpitHUD((v) => !v);
+              setIsSpeedometerExpanded(true);
             }}
-            className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-2xl border transition-all active:scale-95 ${
-              showDriverCockpitHUD
-                ? 'bg-[#9EE6B5] text-[#020408] border-[#9EE6B5] shadow-[0_0_12px_rgba(158,230,181,0.5)]'
-                : 'bg-[#0c1420]/85 text-cyan-300 border-white/12 hover:bg-white/10'
-            }`}
-            title="Toggle Cockpit Speedometer HUD"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-cyan-500/35 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.25)] hover:bg-cyan-500/15 hover:border-cyan-400 active:scale-95 transition-all text-xs font-JakartaBold"
+            title="Open Fullscreen Cockpit Speedometer"
           >
-            <Gauge className="w-3.5 h-3.5" />
+            <Gauge className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="font-mono">{Math.round(telemetry.speed)}</span>
+            <span className="text-[9px] text-cyan-400/80 font-mono">KM/H</span>
           </button>
 
           {/* Test Dispatch Pill when Online */}
@@ -352,121 +352,47 @@ export const DriverHomeScreen: React.FC = () => {
         </button>
       </div>
 
-      {/* ========================================================================= */}
-      {/* COCKPIT HUD OVERLAY (IF ENABLED) */}
-      {/* ========================================================================= */}
-      {showDriverCockpitHUD && (
-        <div className="absolute top-[114px] left-3 right-3 max-w-sm z-30 pointer-events-auto">
-          <div className="relative">
-            <button
-              onClick={() => setShowDriverCockpitHUD(false)}
-              className="absolute -top-2 -right-2 z-40 w-6 h-6 rounded-full bg-[#0c1420] border border-white/20 text-neutral-400 hover:text-white flex items-center justify-center shadow-md active:scale-90"
-              title="Hide Speedometer HUD"
-            >
-              <X className="w-3 h-3" />
-            </button>
-            <DriverHUD
-              speed={telemetry.speed}
-              speedLimit={80}
-              tripStatus={isOnTrip ? 'EN ROUTE' : driverStatus === 'online' ? 'SEARCHING' : 'IDLE'}
-              etaMinutes={telemetry.etaMinutes}
-              distanceKm={telemetry.distanceRemainingKm}
-              passengerName="Adewale Adeleke"
-              pickupAddress={activeTrip?.pickup?.address || 'Victoria Island, Lagos'}
-              destinationAddress={activeTrip?.destination?.address || 'Admiralty Way, Lekki Phase 1'}
-              currentInstruction={telemetry.currentInstruction}
-              isOnline={driverStatus === 'online'}
-              onToggleOnline={toggleOnlineStatus}
-              onOpenEarnings={() => {
-                setDriverActiveTab('earnings');
-                setSheetSnap('expanded');
-              }}
-              onEmergencySOS={() => setSafetyModalOpen(true)}
-              onOpenDriverView={() => {
-                const btn = document.querySelector('[title="Open 3D Street View"]') as HTMLButtonElement;
-                if (btn) btn.click();
-              }}
-            />
-          </div>
-        </div>
-      )}
+      {/* FULLSCREEN 100% SOLID BLACK COCKPIT SPEEDOMETER DASHBOARD (EXPANDABLE, COLLAPSIBLE, DOCK STATIC) */}
+      <FullScreenSpeedometerModal
+        isOpen={isSpeedometerExpanded}
+        onClose={() => setIsSpeedometerExpanded(false)}
+        speed={telemetry.speed}
+        speedLimit={80}
+        distanceKm={telemetry.distanceRemainingKm}
+        etaMinutes={telemetry.etaMinutes}
+        currentInstruction={telemetry.currentInstruction}
+        streetName={activeTrip?.pickup?.address || 'Victoria Island, Lagos'}
+        fuelLevel={0.82}
+        isDriverMode={true}
+        passengerName="Adewale Adeleke"
+        tripStatus={isOnTrip ? 'EN ROUTE' : driverStatus === 'online' ? 'SEARCHING' : 'IDLE'}
+      />
 
       {/* ========================================================================= */}
-      {/* 4. RIGHT VERTICAL FLOATING CONTROLS (COMPASS, 3D, LAYERS, CROSSHAIR) */}
+      {/* 4. RIGHT VERTICAL FLOATING CONTROLS (MAP FOCUS & CONSOLIDATED MAP OPTIONS) */}
       {/* ========================================================================= */}
-      <div className="absolute right-3 top-32 z-30 flex flex-col items-center gap-2 pointer-events-auto">
-        {/* Working Compass Needle */}
+      <div className="absolute right-3 top-32 z-30 flex flex-col items-center gap-2.5 pointer-events-auto select-none">
+        {/* MAP FOCUS ICON (ALWAYS VISIBLE & STANDALONE) */}
         <button
-          onClick={() => {
-            soundEngine.playClick();
-            setBearing(0);
-          }}
-          className="w-10 h-10 rounded-full bg-[#0c1420]/85 backdrop-blur-2xl border border-white/15 shadow-2xl flex flex-col items-center justify-center hover:border-white/30 active:scale-90 transition-all group/compass relative"
-          title="Heading (Click to reset North)"
-        >
-          <div
-            className="w-5 h-5 flex items-center justify-center transition-transform duration-300"
-            style={{ transform: `rotate(${-bearing}deg)` }}
-          >
-            <div className="w-0.5 h-2.5 bg-red-500 rounded-t-sm" />
-            <div className="w-0.5 h-2.5 bg-slate-300 rounded-b-sm" />
-          </div>
-          <span className="text-[8px] font-JakartaBold text-neutral-300 -mt-0.5 tracking-tighter">
-            N
-          </span>
-        </button>
-
-        {/* 3D Mode Toggle Button */}
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            setIs3D((v) => !v);
-          }}
-          className={`w-9 h-9 rounded-full backdrop-blur-2xl border flex items-center justify-center text-xs font-JakartaBold shadow-xl active:scale-90 transition-all ${
-            is3D
-              ? 'bg-[#0c1420]/90 border-[#9EE6B5] text-[#9EE6B5] shadow-[0_0_10px_rgba(158,230,181,0.3)]'
-              : 'bg-[#0c1420]/85 border-white/15 text-neutral-400 hover:text-white'
-          }`}
-          title={is3D ? 'Perspective: 3D Tilt' : 'Perspective: 2D Top-Down'}
-        >
-          3D
-        </button>
-
-        {/* Street Level 360 Imagery (Mapillary) */}
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            setIsStreetViewerOpen(true);
-          }}
-          className="w-9 h-9 rounded-full backdrop-blur-2xl border border-white/15 bg-[#0c1420]/85 text-emerald-400 hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all"
-          title="Open Mapillary Street-Level Imagery"
-        >
-          <Camera className="w-4 h-4" />
-        </button>
-
-        {/* Map Layers & Services Control Modal */}
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            setIsLayerModalOpen(true);
-          }}
-          className="w-9 h-9 rounded-full backdrop-blur-2xl border border-white/15 bg-[#0c1420]/85 text-[#9EE6B5] hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all"
-          title="Open Map Layers Control (3D, Traffic, Satellite)"
-        >
-          <Layers className="w-4 h-4" />
-        </button>
-
-        {/* Re-center User GPS Crosshair */}
-        <button
+          type="button"
           onClick={() => {
             soundEngine.playClick();
             setRecenterKey((k) => k + 1);
           }}
-          className="w-9 h-9 rounded-full bg-[#0c1420]/85 backdrop-blur-2xl border border-white/15 flex items-center justify-center text-[#9EE6B5] hover:text-white shadow-xl active:scale-90 transition-all"
-          title="Re-center My GPS Location"
+          className="w-9 h-9 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-white/15 text-[#9EE6B5] hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all hover:border-[#9EE6B5]/60 hover:shadow-[0_0_12px_rgba(158,230,181,0.3)]"
+          title="Map Focus: Recenter on Current Location"
         >
           <Crosshair className="w-4 h-4" />
         </button>
+
+        {/* ALL OTHER MAP OPTIONS CONSOLIDATED IN ONE SMALL ICON (EXPAND/COLLAPSE ONLY WHEN TAPPED) */}
+        <MapOptionsSpeedDial
+          is3D={is3D}
+          onToggle3D={() => setIs3D((v) => !v)}
+          bearing={bearing}
+          onResetBearing={() => setBearing(0)}
+          onOpenLayersModal={() => setIsLayerModalOpen(true)}
+        />
       </div>
 
       {/* ========================================================================= */}

@@ -122,7 +122,7 @@ export const BookRideScreen: React.FC = () => {
 
             <div className="flex items-center justify-between">
               <span className="text-neutral-400 font-JakartaMedium">Vehicle Class</span>
-              <span className="font-JakartaBold text-white">Broader 3D Premium Sedan</span>
+              <span className="font-JakartaBold text-white">Broader Premium Sedan</span>
             </div>
           </div>
 

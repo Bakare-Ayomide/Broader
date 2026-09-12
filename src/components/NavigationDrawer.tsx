@@ -127,7 +127,7 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
             >
               <div className="flex items-center gap-2">
                 <Car className="w-4 h-4" />
-                <span>{isDriverMode ? 'Switch to Passenger Mode' : 'Switch to Driver Console'}</span>
+                <span>{isDriverMode ? 'Switch to Passenger Mode' : 'Switch to Driver Mode'}</span>
               </div>
               <Sparkles className="w-3.5 h-3.5 animate-spin duration-3000" />
             </button>

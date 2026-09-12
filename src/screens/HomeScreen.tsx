@@ -4,6 +4,8 @@ import { InteractiveMap } from '../components/InteractiveMap';
 import { RideCard } from '../components/RideCard';
 import { BROADER_3D_FLEET } from '../data/vehicleAssets';
 import { PassengerHUD } from '../components/dashboard/PassengerHUD';
+import { FullScreenSpeedometerModal } from '../components/dashboard/FullScreenSpeedometerModal';
+import { MapOptionsSpeedDial } from '../components/map/MapOptionsSpeedDial';
 import { useRideSimulation } from '../components/simulation/useRideSimulation';
 import { AutoPartsScreen } from './AutoPartsScreen';
 import { ParcelScreen } from './ParcelScreen';
@@ -38,7 +40,6 @@ import {
   User,
   ChevronUp,
   ChevronDown,
-  Camera,
 } from 'lucide-react';
 import { SavedLocation, RecentDestination, ScreenType } from '../types';
 import { soundEngine } from '../services/soundNotification';
@@ -106,8 +107,8 @@ export const HomeScreen: React.FC = () => {
     }, 350);
     return () => clearTimeout(timer);
   }, [searchQuery]);
-  const [showTelemetryHUD, setShowTelemetryHUD] = useState(false);
-  const telemetry = useRideSimulation({ active: showTelemetryHUD });
+  const [isSpeedometerExpanded, setIsSpeedometerExpanded] = useState(false);
+  const telemetry = useRideSimulation({ active: true });
 
   // Map Controls State
   const [bearing, setBearing] = useState(18);
@@ -339,7 +340,7 @@ export const HomeScreen: React.FC = () => {
               setModeSwitchTarget('driver');
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-[#9EE6B5] text-[#9EE6B5] shadow-[0_0_14px_rgba(158,230,181,0.35)] hover:bg-[#9EE6B5]/10 active:scale-95 transition-all text-xs font-JakartaBold"
-            title="Switch to Broader Driver Console"
+            title="Switch to Driver Mode"
           >
             <Car className="w-3.5 h-3.5 text-[#9EE6B5]" />
             <span>Driver</span>
@@ -358,20 +359,19 @@ export const HomeScreen: React.FC = () => {
             <span>Rides</span>
           </button>
 
-          {/* Telematics HUD toggle */}
+          {/* Compact Floating Speedometer Trigger */}
           <button
+            type="button"
             onClick={() => {
               soundEngine.playClick();
-              setShowTelemetryHUD((v) => !v);
+              setIsSpeedometerExpanded(true);
             }}
-            className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-2xl border transition-all active:scale-95 ${
-              showTelemetryHUD
-                ? 'bg-[#9EE6B5] text-[#020408] border-[#9EE6B5] shadow-[0_0_12px_rgba(158,230,181,0.5)]'
-                : 'bg-[#0c1420]/85 text-cyan-300 border-white/12 hover:bg-white/10'
-            }`}
-            title="Toggle Live Telematics HUD"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-cyan-500/35 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.25)] hover:bg-cyan-500/15 hover:border-cyan-400 active:scale-95 transition-all text-xs font-JakartaBold"
+            title="Open Fullscreen Cockpit Speedometer"
           >
-            <Gauge className="w-3.5 h-3.5" />
+            <Gauge className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="font-mono">{Math.round(telemetry.speed)}</span>
+            <span className="text-[9px] text-cyan-400/80 font-mono">KM/H</span>
           </button>
         </div>
 
@@ -379,111 +379,56 @@ export const HomeScreen: React.FC = () => {
         <button
           onClick={() => {
             soundEngine.playClick();
-            setScreen('chat');
+            setScreen('notifications');
           }}
           className="pointer-events-auto w-9 h-9 rounded-full bg-[#0c1420]/85 backdrop-blur-2xl border border-white/12 flex items-center justify-center text-neutral-300 shadow-xl active:scale-95 transition-all relative hover:text-white"
-          title="Notifications & Messages"
+          title="Notifications & Alerts"
         >
           <Bell className="w-4 h-4" />
           <span className="w-2 h-2 rounded-full bg-red-500 absolute top-2 right-2 ring-2 ring-[#0c1420] animate-pulse" />
         </button>
       </div>
 
-      {/* COMPACT PASSENGER HUD OVERLAY (IF ENABLED) */}
-      {showTelemetryHUD && (
-        <div className="absolute top-[114px] left-3 right-3 max-w-sm z-30 pointer-events-auto">
-          <PassengerHUD
-            speed={telemetry.speed}
-            speedLimit={telemetry.speedLimit}
-            etaMinutes={telemetry.etaMinutes}
-            distanceKm={telemetry.distanceRemainingKm}
-            currentInstruction={telemetry.currentInstruction}
-            streetName={telemetry.streetName}
-            fuelLevel={telemetry.fuelLevel}
-            onOpenStreetView={() => {
-              const btn = document.querySelector('[title="Open 3D Street View"]') as HTMLButtonElement;
-              if (btn) btn.click();
-            }}
-          />
-        </div>
-      )}
+      {/* FULLSCREEN 100% SOLID BLACK SPEEDOMETER DASHBOARD (EXPANDABLE, COLLAPSIBLE, DOCK STATIC) */}
+      <FullScreenSpeedometerModal
+        isOpen={isSpeedometerExpanded}
+        onClose={() => setIsSpeedometerExpanded(false)}
+        speed={telemetry.speed}
+        speedLimit={telemetry.speedLimit}
+        etaMinutes={telemetry.etaMinutes}
+        distanceKm={telemetry.distanceRemainingKm}
+        currentInstruction={telemetry.currentInstruction}
+        streetName={telemetry.streetName}
+        fuelLevel={telemetry.fuelLevel}
+        isDriverMode={false}
+        tripStatus="PASSENGER EN ROUTE"
+      />
 
       {/* ========================================================================= */}
-      {/* 4. RIGHT VERTICAL FLOATING CONTROLS (COMPASS, 3D, LAYERS, CROSSHAIR) */}
+      {/* 4. RIGHT VERTICAL FLOATING CONTROLS (MAP FOCUS & CONSOLIDATED MAP OPTIONS) */}
       {/* ========================================================================= */}
-      <div className="absolute right-3 top-32 z-30 flex flex-col items-center gap-2 pointer-events-auto">
-        {/* Working Compass Needle */}
+      <div className="absolute right-3 top-32 z-30 flex flex-col items-center gap-2.5 pointer-events-auto select-none">
+        {/* MAP FOCUS ICON (ALWAYS VISIBLE & STANDALONE) */}
         <button
-          onClick={() => {
-            soundEngine.playClick();
-            setBearing(0);
-          }}
-          className="w-10 h-10 rounded-full bg-[#0c1420]/85 backdrop-blur-2xl border border-white/15 shadow-2xl flex flex-col items-center justify-center hover:border-white/30 active:scale-90 transition-all group/compass relative"
-          title="Heading (Click to reset North)"
-        >
-          <div
-            className="w-5 h-5 flex items-center justify-center transition-transform duration-300"
-            style={{ transform: `rotate(${-bearing}deg)` }}
-          >
-            <div className="w-0.5 h-2.5 bg-red-500 rounded-t-sm" />
-            <div className="w-0.5 h-2.5 bg-slate-300 rounded-b-sm" />
-          </div>
-          <span className="text-[8px] font-JakartaBold text-neutral-300 -mt-0.5 tracking-tighter">
-            N
-          </span>
-        </button>
-
-        {/* 3D Mode Toggle Button */}
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            setIs3D((v) => !v);
-          }}
-          className={`w-9 h-9 rounded-full backdrop-blur-2xl border flex items-center justify-center text-xs font-JakartaBold shadow-xl active:scale-90 transition-all ${
-            is3D
-              ? 'bg-[#0c1420]/90 border-[#9EE6B5] text-[#9EE6B5] shadow-[0_0_10px_rgba(158,230,181,0.3)]'
-              : 'bg-[#0c1420]/85 border-white/15 text-neutral-400 hover:text-white'
-          }`}
-          title={is3D ? 'Perspective: 3D Tilt' : 'Perspective: 2D Top-Down'}
-        >
-          3D
-        </button>
-
-        {/* Street Level 360 Imagery (Mapillary) */}
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            setIsStreetViewerOpen(true);
-          }}
-          className="w-9 h-9 rounded-full backdrop-blur-2xl border border-white/15 bg-[#0c1420]/85 text-emerald-400 hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all"
-          title="Open Mapillary Street-Level Imagery"
-        >
-          <Camera className="w-4 h-4" />
-        </button>
-
-        {/* Map Layers & Services Control Modal */}
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            setIsLayerModalOpen(true);
-          }}
-          className="w-9 h-9 rounded-full backdrop-blur-2xl border border-white/15 bg-[#0c1420]/85 text-[#9EE6B5] hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all"
-          title="Open Map Layers Control (3D, Satellite, Traffic)"
-        >
-          <Layers className="w-4 h-4" />
-        </button>
-
-        {/* Re-center User GPS Crosshair */}
-        <button
+          type="button"
           onClick={() => {
             soundEngine.playClick();
             setRecenterKey((k) => k + 1);
           }}
-          className="w-9 h-9 rounded-full bg-[#0c1420]/85 backdrop-blur-2xl border border-white/15 flex items-center justify-center text-[#9EE6B5] hover:text-white shadow-xl active:scale-90 transition-all"
-          title="Re-center My GPS Location"
+          className="w-9 h-9 rounded-full bg-[#0c1420]/90 backdrop-blur-2xl border border-white/15 text-[#9EE6B5] hover:text-white flex items-center justify-center shadow-xl active:scale-90 transition-all hover:border-[#9EE6B5]/60 hover:shadow-[0_0_12px_rgba(158,230,181,0.3)]"
+          title="Map Focus: Recenter on Current Location"
         >
           <Crosshair className="w-4 h-4" />
         </button>
+
+        {/* ALL OTHER MAP OPTIONS CONSOLIDATED IN ONE SMALL ICON (EXPAND/COLLAPSE ONLY WHEN TAPPED) */}
+        <MapOptionsSpeedDial
+          is3D={is3D}
+          onToggle3D={() => setIs3D((v) => !v)}
+          bearing={bearing}
+          onResetBearing={() => setBearing(0)}
+          onOpenLayersModal={() => setIsLayerModalOpen(true)}
+        />
       </div>
 
       {/* ========================================================================= */}
@@ -685,7 +630,7 @@ export const HomeScreen: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <Car className="w-3.5 h-3.5 text-[#9EE6B5]" />
                 <h3 className="text-xs font-JakartaBold text-white tracking-wider uppercase">
-                  3D Vehicle Fleet
+                  Vehicle Fleet
                 </h3>
               </div>
               <span className="text-[10px] text-neutral-400 font-JakartaMedium">

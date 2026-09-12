@@ -190,7 +190,7 @@ export const DriverActiveTripHUD: React.FC = () => {
                   <div className="flex items-center gap-1 text-[10px] text-amber-400 font-JakartaBold">
                     <Star className="w-2.5 h-2.5 fill-amber-400" />
                     <span>{passengerRating}</span>
-                    <span className="text-neutral-400 font-normal ml-1">• Broader Rider</span>
+                    <span className="text-neutral-400 font-normal ml-1">• Broader Passenger</span>
                   </div>
                 </div>
               </div>
@@ -298,7 +298,7 @@ export const DriverActiveTripHUD: React.FC = () => {
             <div className="p-3 bg-[#9EE6B5]/10 border border-[#9EE6B5]/20 rounded-2xl space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-JakartaBold text-[#9EE6B5] flex items-center gap-1">
-                  <span>Verify Rider PIN</span>
+                  <span>Verify Passenger PIN</span>
                 </span>
                 <button
                   type="button"

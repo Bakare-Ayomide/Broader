@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Car, ShieldCheck, Sparkles, Navigation, User } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Car, Sparkles, User } from 'lucide-react';
 import { soundEngine } from '../services/soundNotification';
 
 interface ModeSwitchSplashProps {
@@ -8,19 +8,34 @@ interface ModeSwitchSplashProps {
 }
 
 export const ModeSwitchSplash: React.FC<ModeSwitchSplashProps> = ({ targetMode, onComplete }) => {
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+  const hasFinishedRef = useRef(false);
+
+  const finishTransition = () => {
+    if (!hasFinishedRef.current) {
+      hasFinishedRef.current = true;
+      onCompleteRef.current?.();
+    }
+  };
+
   useEffect(() => {
     soundEngine.playSuccess();
     const timer = setTimeout(() => {
-      onComplete();
-    }, 1100);
+      finishTransition();
+    }, 850);
 
     return () => clearTimeout(timer);
-  }, [onComplete]);
+  }, []); // Run once on mount - immune to parent re-render loops!
 
   const isDriver = targetMode === 'driver';
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#020408]/95 backdrop-blur-3xl select-none animate-in fade-in duration-200">
+    <div
+      onClick={finishTransition}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#020408]/95 backdrop-blur-3xl select-none animate-in fade-in duration-200 cursor-pointer"
+      title="Tap to continue"
+    >
       {/* Background Ambient Glow */}
       <div
         className={`absolute w-72 h-72 rounded-full blur-[90px] opacity-40 animate-pulse pointer-events-none ${
@@ -70,7 +85,7 @@ export const ModeSwitchSplash: React.FC<ModeSwitchSplashProps> = ({ targetMode, 
         <p className="text-xs sm:text-sm font-JakartaMedium text-neutral-300 max-w-xs mx-auto">
           {isDriver
             ? 'Accessing driver command center, live radar dispatches, and telematics.'
-            : 'Switching to passenger ride booking, 3D fleet selection, and route planner.'}
+            : 'Switching to passenger ride booking, fleet selection, and route planner.'}
         </p>
       </div>
 

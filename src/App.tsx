@@ -20,6 +20,7 @@ import { AutoPartsScreen } from './screens/AutoPartsScreen';
 import { BecomeDriverScreen } from './screens/BecomeDriverScreen';
 import { DriverHomeScreen } from './screens/DriverHomeScreen';
 import { DriverEarningsScreen } from './screens/DriverEarningsScreen';
+import { NotificationsScreen } from './screens/NotificationsScreen';
 import { useDeviceGps } from './hooks/useDeviceGps';
 
 export default function App() {
@@ -104,6 +105,17 @@ export default function App() {
           <div className="flex flex-col min-h-screen justify-between relative">
             <div className="flex-1 pb-24">
               <ProfileScreen />
+            </div>
+            <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40">
+              <BottomNav />
+            </div>
+          </div>
+        );
+      case 'notifications':
+        return (
+          <div className="flex flex-col min-h-screen justify-between relative">
+            <div className="flex-1 pb-24">
+              <NotificationsScreen />
             </div>
             <div className="fixed bottom-0 left-0 right-0 max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto z-40">
               <BottomNav />

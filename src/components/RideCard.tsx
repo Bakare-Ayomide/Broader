@@ -43,9 +43,6 @@ export const RideCard: React.FC<RideCardProps> = ({ ride, onPress }) => {
             referrerPolicy="no-referrer"
             className="w-full h-full object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]"
           />
-          <div className="absolute bottom-0 right-0 px-1.5 py-0.5 rounded-full bg-black/80 text-[8px] font-JakartaBold text-[#9EE6B5] border border-white/10 shadow-xs">
-            3D
-          </div>
         </div>
 
         {/* Origin & Destination route points */}

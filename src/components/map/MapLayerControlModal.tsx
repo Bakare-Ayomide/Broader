@@ -6,7 +6,6 @@ import {
   Building2,
   Navigation2,
   AlertTriangle,
-  Camera,
   MapPin,
   Sparkles,
   ShieldCheck,
@@ -253,49 +252,6 @@ export const MapLayerControlModal: React.FC<MapLayerControlModalProps> = ({
                 }`}
               />
             </button>
-          </div>
-
-          {/* 360° Street View */}
-          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-black/40 border border-white/10 hover:border-white/20 transition-all">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                <Camera className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-xs font-JakartaBold text-white flex items-center gap-1.5">
-                  360° Street View
-                  <span className="text-[9px] bg-emerald-400/20 text-emerald-300 px-1.5 py-0.2 rounded-full font-bold">
-                    360°
-                  </span>
-                </p>
-                <p className="text-[10px] text-neutral-400">Available street-level photography</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {onOpenStreetViewer && (
-                <button
-                  type="button"
-                  onClick={onOpenStreetViewer}
-                  className="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-JakartaBold text-[#9EE6B5] transition-all"
-                  title="Open Street Level HUD"
-                >
-                  View HUD
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => onChangeLayers({ showStreetImagery: !layers.showStreetImagery })}
-                className={`w-11 h-6 rounded-full transition-colors relative flex items-center p-0.5 ${
-                  layers.showStreetImagery ? 'bg-[#9EE6B5]' : 'bg-neutral-800'
-                }`}
-              >
-                <span
-                  className={`w-5 h-5 rounded-full bg-black shadow-md transform transition-transform ${
-                    layers.showStreetImagery ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
-            </div>
           </div>
         </div>
 

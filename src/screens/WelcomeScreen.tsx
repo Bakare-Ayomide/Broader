@@ -27,7 +27,7 @@ export const WelcomeScreen: React.FC = () => {
       id: 3,
       title: "Your journey, your way. Let's ride.",
       tag: 'REAL-TIME TELEMETRICS',
-      description: 'Live 3D navigation, verified background-checked drivers, and transparent cashless pricing.',
+      description: 'Live navigation, verified background-checked drivers, and transparent cashless pricing.',
       image: 'https://admin.cashquora.com/vehicle/van.png',
     },
   ];
