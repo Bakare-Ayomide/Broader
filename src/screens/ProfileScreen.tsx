@@ -324,6 +324,17 @@ export const ProfileScreen: React.FC = () => {
             Call 112
           </a>
         </div>
+
+        <div
+          onClick={() => setScreen('welcome')}
+          className="flex items-center justify-between text-xs p-2 rounded-xl hover:bg-white/5 cursor-pointer text-neutral-300"
+        >
+          <div className="flex items-center gap-2 font-JakartaMedium">
+            <Globe className="w-4 h-4 text-[#9EE6B5]" />
+            <span>Replay Onboarding & Fleet Tour</span>
+          </div>
+          <ChevronRight className="w-4 h-4 text-neutral-500" />
+        </div>
       </div>
 
       {/* Add Location Modal */}

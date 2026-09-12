@@ -30,6 +30,9 @@ export const BroaderLogo: React.FC<BroaderLogoProps> = ({
         src={BROADER_LOGO_URL}
         alt="Broader"
         referrerPolicy="no-referrer"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = '/assets/images/broader-logo.svg';
+        }}
         className="w-full h-full object-contain relative z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
       />
     </div>
